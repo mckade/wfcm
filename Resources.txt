@@ -1,0 +1,9 @@
+Wave Function Collapse
+  The README for the Wave Function Collapse has good descriptions of the algorithm.
+  https://github.com/mxgmn/WaveFunctionCollapse
+
+  Here is a good demo for the algorithm
+  http://oskarstalberg.com/game/wave/wave.html
+
+Markov Chains
+  https://en.wikipedia.org/wiki/Markov_chain
