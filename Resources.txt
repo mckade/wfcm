@@ -6,4 +6,8 @@ Wave Function Collapse
   http://oskarstalberg.com/game/wave/wave.html
 
 Markov Chains
+  The wikipedia page has some good introductory info for Markov chains.
   https://en.wikipedia.org/wiki/Markov_chain
+  
+  This paper also describes something similar to what we would aim for.
+  https://link.springer.com/chapter/10.1007/978-3-540-24677-0_115
