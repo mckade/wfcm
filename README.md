@@ -1,8 +1,8 @@
 # Group Name: 
-  not this name.
+  Procedural Music
   
 # Group Members:
-Person1, person 2, etc.
+McKade Umbenhower, Taylor Bleizeffer, Robert Randolph
 
 ## Description of the project
-  something about something that does something.
+  Computers making music.
