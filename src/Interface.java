@@ -17,19 +17,17 @@
 public class Interface {
     
     // Fields
-    private MarkovTable markovTable = new MarkovTable();
+    private MusicGenerator mgen;
+    private String filename;
 
     // Constructor
-    public Interface() {
-        // Ask for midi
-        // Give filename to MidiReader
-        markovTable.generateTable(/*midi filename*/);
-        // Ask ?
-        // Play Music || New Music || New Midi || Done
-        markovTable.generateMusic(/*midi filename*/);   // New Midi
-        markovTable.generateMusic(/*midi filename*/);   // New Music
-        markovTable.getMusic();                         // Play Music
-        
-        // Done
+    public Interface()
+    {
+        // get filename from userr
+        // push filename to music generator
+        mgen = new MusicGenerator(filename);
+        mgen.generateMusic(10);
+        mgen.playSong();
+        mgen.saveSong();
     }
 }

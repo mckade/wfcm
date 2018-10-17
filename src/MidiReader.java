@@ -10,7 +10,8 @@
 public class MidiReader {
     
     // Constructor
-    public MidiReader() {
+    public MidiReader(String filename)
+    {
         
     }
     

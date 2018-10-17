@@ -10,33 +10,21 @@
 public class MarkovTable {
     
     // Fields
-    private MidiReader midiReader = new MidiReader();
-    private int[][] table;
+    private MidiReader midiReader;
     //*** private Music music
     
     // Constructor
-    public MarkovTable() {
-        
+    public MarkovTable(String filename) {
+        midiReader = new MidiReader(filename);
     }
     
     // Generate a music table given a midi file.
     // Then creates music.
-    public void generateTable(/*midi filename*/) {
-        /*** midi data = */ midiReader.readMidi(/*midi filename*/);
-        // With midi data create table @table
-        generateMusic();
-    }
-    
-    // Create music
-    public void generateMusic() {
-        // with table generate music using WFC
-        // Make sure table isn't null
-    }
-    
-    // Return Music
-    public void/*music*/ getMusic() {
-        //*** return generate music
-        // Make sure music isn't null
+    public int[][] generateTable(/*midi filename*/) {
+        int[][] table = new int[5][5];
+        /*** midi data = */midiReader.readMidi(/*midi filename*/);
+
+        return table;
     }
 
 }
