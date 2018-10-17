@@ -23,9 +23,12 @@ public class Interface {
     // Constructor
     public Interface()
     {
-        // get filename from userr
+        // Init
+        mgen = new MusicGenerator();
+        
+        // get filename from user
         // push filename to music generator
-        mgen = new MusicGenerator(filename);
+        mgen.loadMidiFile(filename);
         mgen.generateMusic(10);
         mgen.playSong();
         mgen.saveSong();

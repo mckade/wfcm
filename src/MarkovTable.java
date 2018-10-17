@@ -14,15 +14,20 @@ public class MarkovTable {
     //*** private Music music
     
     // Constructor
-    public MarkovTable(String filename) {
-        midiReader = new MidiReader(filename);
+    public MarkovTable() {
+        midiReader = new MidiReader();
     }
     
-    // Generate a music table given a midi file.
+    // Loads midi file
+    public void loadMidiFile(String filename) {
+        // Get midi data for processing.
+        midiReader.readMidi(filename);
+    }
+    
+    // Generate a music table given midi data
     // Then creates music.
-    public int[][] generateTable(/*midi filename*/) {
+    public int[][] generateTable(/*midi data*/) {
         int[][] table = new int[5][5];
-        /*** midi data = */midiReader.readMidi(/*midi filename*/);
 
         return table;
     }

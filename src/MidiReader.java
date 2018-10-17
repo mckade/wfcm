@@ -10,14 +10,14 @@
 public class MidiReader {
     
     // Constructor
-    public MidiReader(String filename)
+    public MidiReader()
     {
         
     }
     
     // Given a filename it will attempt to read a midi file.
     // Returns the midi data for processing.
-    public void/*midi data*/ readMidi(/*midi filename*/) {
+    public void/*midi data*/ readMidi(String filename) {
         // with midi filename read in midi data
     }
 
