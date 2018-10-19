@@ -39,7 +39,7 @@ public class WaveFC
             }
         }
 
-        //printTable();
+        printTable();
         generate(15);
     }
 
@@ -68,6 +68,17 @@ public class WaveFC
         System.out.println("]");
     }
 
+    private void printArr(float[] a)
+    {
+        System.out.print("[");
+        for(int i = 0; i < a.length; i++)
+        {
+            String val = String.format("%.2f", a[i]);
+            System.out.print(" "+val+" ");
+        }
+        System.out.println("]");
+    }
+
     private void print2dArr(int[][] a)
     {
         for(int i = 0; i < a.length; i++)
@@ -88,20 +99,108 @@ public class WaveFC
             }
         }
 
-        //print2dArr(result);
         // Collapse the note with the lowest Shannon Entropy
         int rtn = lowestSE(result);
-        int foo = 2;
+        int foo = 3;
         while(foo != -1)
         {
             collapse(result, rtn);
             //System.out.println(rtn);
             rtn = lowestSE(result);
             foo--;
+            //print2dArr(result);
+            // System.out.println();
         }
-        //print2dArr(result);
+        print2dArr(result);
 
         return result;
+    }
+
+    private float[] getProbabilities(int[][] notes, int index)
+    {
+        float[] prev = new float[size]; // holds probabilities transitioning into superposition
+        float[] next = new float[size]; // holds probabilities transitioning out of superposition
+        float[] sum  = new float[size]; // holds the aggregate probabilities going in and out
+
+        int prevc = 0;
+        int nextc = 0;
+
+        // aggregate prev and next probabilities
+        for(int i = 0; i < size; i++)
+        {
+            if(index > 0 && notes[index-1][i] != 0)
+            {
+                add(prev, getRowProbability(i, notes[index]));
+                prevc++;
+            }
+
+            if(index < size - 1 && notes[index][i] != 0)
+            {
+                add(next, getRowProbability(i, notes[index+1]));
+                nextc++;
+            }
+        }
+
+        // normalize prev and next probabilites
+        for(int i = 0; i < size; i++)
+        {
+            if(index > 0 && notes[index-1][i] != 0)
+            {
+                prev[i] /= prevc;
+            }
+
+            if(index < size - 1 && notes[index+1][i] != 0)
+            {
+                next[i] /= nextc;
+            }
+        }
+
+        // average prev and next
+        if(index == 0)
+            return next;
+        else if(index == size - 1)
+            return prev;
+
+        for(int i = 0; i < size; i++)
+        {
+            sum[i] = (prev[i] + next[i]) / 2.0f;
+        }
+
+        return sum;
+    }
+
+    private float[] getRowProbability(int r, int[] mask)
+    {
+        float[] res = new float[size];
+        float unused = 0f;
+        int count = 0;
+        for(int i = 0; i < size; i++)
+        {
+            if(mask[i] == 0)
+            {
+                unused += table[r][i];
+                count++;
+                res[i] = 0f;
+            }
+        }
+
+        for(int i = 0; i < size; i++)
+        {
+            if(mask[i] != 0)
+            {
+                res[i] = (count > 0) ? table[r][i] + unused / count : table[r][i];
+            }
+        }
+
+        return res;
+    }
+
+    private void add(float[] ths, float[] other)
+    {
+        for(int i = 0; i < ths.length; i++)
+        {
+            ths[i] += other[i];
+        }
     }
 
     /*
@@ -112,6 +211,8 @@ public class WaveFC
     * */
     private void collapse(int[][] notes, int index)
     {
+        float[] probabilities = getProbabilities(notes, index);
+
         // random roll between 0 and 1
         double rnd = Math.random();
         // find the value associated with the roll
@@ -120,7 +221,7 @@ public class WaveFC
         for(int i = 0; i < table.length; i++)
         {
             // if the note was picked
-            if(table[index][i] + sum >+ rnd)
+            if(probabilities[i] + sum >+ rnd)
             {
                 // define the note in the array
                 for(int j = 0; j < notes[index].length; j++)
@@ -144,7 +245,7 @@ public class WaveFC
                 return;
             }
 
-            sum += table[index][i];
+            sum += probabilities[i];
         }
     }
 
