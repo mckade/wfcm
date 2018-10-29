@@ -40,7 +40,8 @@ public class MarkovTable {
     // Loads midi file
     public void loadMidiFile(String filename) {
         // Get midi data for processing.
-        notes = midiReader.readMidi(filename);
+        // TODO: temporary... notes = midiReader.readMidi(filename);
+        notes = midiReader.readMidi("res\\Cmajor.MID");
     }
     
     // Generate a music table given midi data
@@ -51,15 +52,20 @@ public class MarkovTable {
         Note note; // examining interval from note
         Note next; // to next note
         int intervals = 0;  // accumulator for occurances of intervals
+        int firstNoteMatch;
         double occurs = 0;  // probability of this interval
         for (int i = 0; i < notes.length - 1; ++i) {
             note = notes[i];    // Examining all intervals starting with this note
             next = notes[i + 1];
-            ++intervals;
+            //++intervals;
+            intervals = 1;
+            firstNoteMatch = 1;
             // search rest of notes for more occurances of interval
             for (int j = i + 1; j < notes.length - 1; ++j) {
                 if (notes[j] != note)
                     continue;   // sift until we find another occurance of the first note
+                else
+                    firstNoteMatch++;
                 if (notes[j + 1] != next)
                     continue;   // if first note matches but the 2nd does not, keep sifting
                 ++intervals; // should only reach here if notes[j] == note && notes[j + 1] == next
@@ -69,9 +75,56 @@ public class MarkovTable {
             // Calculate probability of interval occurance
             // Add Interval entry to our HashTable (Markov Table)
             MarkovKey key = new MarkovKey(note.getPitch(), next.getPitch());
-            occurs = intervals / notes.length;
+            occurs = (double)intervals / firstNoteMatch;
             markovTable.put(key, occurs);
         }
+    }
+
+    /*
+    * Conversion between the map and a 2D array
+    * Used in WFC for probabilities
+    * */
+    public double[][] toArray()
+    {
+        if(markovTable == null)
+        {
+            generateTable(notes);
+        }
+        double[][] ret = new double[notes.length][notes.length];
+        int noteInd = 0;
+        int transitionInd = 0;
+        for (Note note : notes)
+        {
+            transitionInd = 0;
+            boolean hasTransition = false;
+            for (Note next : notes)
+            {
+                if(markovTable.get(new MarkovKey(note.getPitch(), next.getPitch())) == null)
+                {
+                    ret[noteInd][transitionInd] = 0.0;
+                }
+                else
+                {
+                    hasTransition = true;
+                    ret[noteInd][transitionInd] = markovTable.get(new MarkovKey(note.getPitch(), next.getPitch()));
+                }
+                transitionInd++;
+            }
+
+            // If no transition from this note exists, equally weight all notes
+            // TODO: Is the the behavior we want?
+            if(!hasTransition)
+            {
+                for (int i = 0; i < notes.length; i++)
+                {
+                    ret[noteInd][i] = 1.0 / notes.length;
+                }
+            }
+
+            noteInd++;
+        }
+
+        return ret;
     }
 
 }

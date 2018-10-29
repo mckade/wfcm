@@ -8,14 +8,15 @@
 
 public class WaveFC
 {
-    private float[][] table;
+    private double[][] table;
     private int size;
 
-    public WaveFC(int n)
+    public WaveFC(MarkovTable m)
     {
         // simulated Markov Table
-        size = n;
-        table = new float[size][size];
+        table = m.toArray();
+        size = table.length;
+        /*table = new double[size][size];
 
         for (int i = 0; i < size; i++)
         {
@@ -37,7 +38,7 @@ public class WaveFC
             {
                 table[i][j] /= sum;
             }
-        }
+        }*/
 
         printTable();
         generate(15);
@@ -68,7 +69,7 @@ public class WaveFC
         System.out.println("]");
     }
 
-    private void printArr(float[] a)
+    private void printArr(double[] a)
     {
         System.out.print("[");
         for(int i = 0; i < a.length; i++)
@@ -116,11 +117,11 @@ public class WaveFC
         return result;
     }
 
-    private float[] getProbabilities(int[][] notes, int index)
+    private double[] getProbabilities(int[][] notes, int index)
     {
-        float[] prev = new float[size]; // holds probabilities transitioning into superposition
-        float[] next = new float[size]; // holds probabilities transitioning out of superposition
-        float[] sum  = new float[size]; // holds the aggregate probabilities going in and out
+        double[] prev = new double[size]; // holds probabilities transitioning into superposition
+        double[] next = new double[size]; // holds probabilities transitioning out of superposition
+        double[] sum  = new double[size]; // holds the aggregate probabilities going in and out
 
         int prevc = 0;
         int nextc = 0;
@@ -169,10 +170,10 @@ public class WaveFC
         return sum;
     }
 
-    private float[] getRowProbability(int r, int[] mask)
+    private double[] getRowProbability(int r, int[] mask)
     {
-        float[] res = new float[size];
-        float unused = 0f;
+        double[] res = new double[size];
+        double unused = 0f;
         int count = 0;
         for(int i = 0; i < size; i++)
         {
@@ -195,7 +196,7 @@ public class WaveFC
         return res;
     }
 
-    private void add(float[] ths, float[] other)
+    private void add(double[] ths, double[] other)
     {
         for(int i = 0; i < ths.length; i++)
         {
@@ -211,12 +212,12 @@ public class WaveFC
     * */
     private void collapse(int[][] notes, int index)
     {
-        float[] probabilities = getProbabilities(notes, index);
+        double[] probabilities = getProbabilities(notes, index);
 
         // random roll between 0 and 1
         double rnd = Math.random();
         // find the value associated with the roll
-        float sum = 0.0f;
+        double sum = 0.0f;
         // for each note in the table
         for(int i = 0; i < table.length; i++)
         {
@@ -347,9 +348,9 @@ public class WaveFC
          * all notes have an equal output probability. This should probably
          * be changed to take the current list of notes into account.
          * */
-        float logval = (float)(-1.0f/size * Math.log(1.0f/size)/Math.log(2));
-        float tmp;
-        float min = size*logval + 1; // bigger than the possible max
+        double logval = (-1.0/size * Math.log(1.0f/size)/Math.log(2));
+        double tmp;
+        double min = size*logval + 1; // bigger than the possible max
         int index = 0;
         for(int j = 0; j < notes.length; j++)
         {

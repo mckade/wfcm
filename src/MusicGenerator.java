@@ -15,7 +15,8 @@ public class MusicGenerator {
     public MusicGenerator()
     {
         mTable = new MarkovTable();
-        wfc = new WaveFC(6);
+        loadMidiFile("");
+        wfc = new WaveFC(mTable);
     }
     
     // Pushes filename to Markov table
