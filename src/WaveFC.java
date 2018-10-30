@@ -92,6 +92,11 @@ public class WaveFC
         {
             collapse(result, rtn);
             rtn = lowestSE(result);
+            if(rtn == -2)
+            {
+                System.out.println("WFC failed... Restarting");
+                return new int[0][];
+            }
         }
         // print2dArr(result);
 
@@ -104,6 +109,11 @@ public class WaveFC
     public Note[] getNotes(int length)
     {
         int[][] n = generate(length);
+        while(n.length == 0)
+        {
+            n = generate(length);
+        }
+        System.out.println("WFC succeeded!");
         Note[] res = new Note[n.length];
         for(int i = 0; i < n.length; i++)
         {
@@ -383,6 +393,8 @@ public class WaveFC
             {
                 min = tmp;
                 index = j;
+                if(min < logval)
+                    return -2;
             }
         }
 
