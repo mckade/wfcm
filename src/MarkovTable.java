@@ -40,8 +40,7 @@ public class MarkovTable {
     // Loads midi file
     public void loadMidiFile(String filename) {
         // Get midi data for processing.
-        // TODO: temporary... notes = midiReader.readMidi(filename);
-        notes = midiReader.readMidi("res\\Cmajor.MID");
+        notes = midiReader.readMidi(filename);
     }
     
     // Generate a music table given midi data
@@ -62,7 +61,7 @@ public class MarkovTable {
             firstNoteMatch = 1;
             // search rest of notes for more occurances of interval
             for (int j = i + 1; j < notes.length - 1; ++j) {
-                if (notes[j] != note)
+                if (!notes[j].equals(note))
                     continue;   // sift until we find another occurance of the first note
                 else
                     firstNoteMatch++;
@@ -86,18 +85,30 @@ public class MarkovTable {
     * */
     public double[][] toArray()
     {
+        // TODO: fix the bug in this translation where probabilities per note
+        // dont add to 1
         if(markovTable == null)
         {
             generateTable(notes);
         }
-        double[][] ret = new double[notes.length][notes.length];
+
+        // get a set of unique notes
+        Set<Integer> nPitch = new HashSet<>();
+        Set<Note> n = new HashSet<>();
+        for (Note note : notes)
+        {
+            if(nPitch.add(note.getPitch()))
+                n.add(note);
+        }
+
+        double[][] ret = new double[n.size()][n.size()];
         int noteInd = 0;
         int transitionInd = 0;
-        for (Note note : notes)
+        for (Note note : n)
         {
             transitionInd = 0;
             boolean hasTransition = false;
-            for (Note next : notes)
+            for (Note next : n)
             {
                 if(markovTable.get(new MarkovKey(note.getPitch(), next.getPitch())) == null)
                 {
@@ -125,6 +136,12 @@ public class MarkovTable {
         }
 
         return ret;
+    }
+
+    public Note getNote(int index)
+    {
+        //TODO: this should return the ith unique note, not ith note
+        return notes[index];
     }
 
 }

@@ -1,3 +1,5 @@
+import jm.music.data.Note;
+
 /**
  * @filename WaveFC.java
  * @project Procedural Music
@@ -8,40 +10,14 @@
 
 public class WaveFC
 {
+    private MarkovTable mtable;
     private double[][] table;
     private int size;
 
     public WaveFC(MarkovTable m)
     {
         // simulated Markov Table
-        table = m.toArray();
-        size = table.length;
-        /*table = new double[size][size];
-
-        for (int i = 0; i < size; i++)
-        {
-            for (int j = 0; j < size; j++)
-            {
-                table[i][j] = (i+j)%3;
-            }
-        }
-
-        for (int i = 0; i < size; i++)
-        {
-            int sum = 0;
-            for (int j = 0; j < size; j++)
-            {
-                sum += table[i][j];
-            }
-
-            for (int j = 0; j < size; j++)
-            {
-                table[i][j] /= sum;
-            }
-        }*/
-
-        printTable();
-        generate(15);
+        mtable = m;
     }
 
     private void printTable()
@@ -88,8 +64,18 @@ public class WaveFC
         }
     }
 
+    /*
+     * Generate a 2D representation of the notes
+     */
     public int[][] generate(int length)
     {
+        // Initialize the table
+        if(table == null)
+        {
+            table = mtable.toArray();
+            size = table.length;
+        }
+
         // initialize all notes to superposition of all possible notes
         int[][] result = new int[length][size];
         for(int i = 0; i < length; i++)
@@ -102,21 +88,42 @@ public class WaveFC
 
         // Collapse the note with the lowest Shannon Entropy
         int rtn = lowestSE(result);
-        int foo = 3;
-        while(foo != -1)
+        while(rtn != -1)
         {
             collapse(result, rtn);
-            //System.out.println(rtn);
             rtn = lowestSE(result);
-            foo--;
-            //print2dArr(result);
-            // System.out.println();
         }
-        print2dArr(result);
+        // print2dArr(result);
 
         return result;
     }
 
+    /*
+     * Return an array of generated notes
+     */
+    public Note[] getNotes(int length)
+    {
+        int[][] n = generate(length);
+        Note[] res = new Note[n.length];
+        for(int i = 0; i < n.length; i++)
+        {
+            for(int j = 0; j < size; j++)
+            {
+                if(n[i][j] == 1)
+                {
+                    res[i] = mtable.getNote(j);
+                    break;
+                }
+            }
+        }
+
+        return res;
+    }
+
+    /*
+     * Using the previous and next superpositions, find the
+     * transition probabilities of the current superposition
+     */
     private double[] getProbabilities(int[][] notes, int index)
     {
         double[] prev = new double[size]; // holds probabilities transitioning into superposition
@@ -170,6 +177,12 @@ public class WaveFC
         return sum;
     }
 
+    /*
+     * This function returns the probabilities of how this row can
+     * transition given a mask
+     * The mask is an array of 0s and 1s denoting the notes in the next superposition,
+     * i.e., the note that are still possible to go to
+     */
     private double[] getRowProbability(int r, int[] mask)
     {
         double[] res = new double[size];
@@ -196,6 +209,9 @@ public class WaveFC
         return res;
     }
 
+    /*
+     * Add this array to another and store it in this
+     */
     private void add(double[] ths, double[] other)
     {
         for(int i = 0; i < ths.length; i++)
@@ -272,7 +288,8 @@ public class WaveFC
             {
                 if (notes[index + 1][i] == 1)
                 {
-                    if (table[i][j] > 0)
+                    // if there is a transition from this note to the next note superposition
+                    if (table[j][i] > 0)
                     {
                         hasTransition = true;
                         break;
@@ -368,7 +385,7 @@ public class WaveFC
                 index = j;
             }
         }
-        //System.out.println("Min is: " + min);
+
         if(min != size*logval + 1)
             return index;
         else
