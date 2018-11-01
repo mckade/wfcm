@@ -15,20 +15,7 @@
 
 public class Main
 {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         new Interface();
-//        Note n = new Note(C4, MINIM);
-//        Phrase phr = new Phrase();
-//
-//        for(int i = 0; i < 8; i++)
-//        {
-//            phr.addNote(n);
-//        }
-//
-//        Part p = new Part();
-//        p.addPhrase(phr);
-//
-//        Play.midi(p);
     }
 }

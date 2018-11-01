@@ -1,10 +1,3 @@
-import jm.constants.ProgramChanges;
-import jm.music.data.Note;
-import jm.music.data.Phrase;
-import jm.music.data.Score;
-import jm.music.data.Part;
-import jm.util.Play;
-
 /**
  * @filename MusicGenerator.java
  * @project Procedural Music
@@ -13,9 +6,15 @@ import jm.util.Play;
  * Controller to use separate pieces to generate music.
  */
 
+import jm.constants.ProgramChanges;
+import jm.music.data.Note;
+import jm.music.data.Part;
+import jm.music.data.Phrase;
+import jm.music.data.Score;
+import jm.util.Play;
+
 public class MusicGenerator {
 
-    private int[][] table;
     MarkovTable mTable;
     WaveFC wfc;
     Score s;
@@ -27,9 +26,9 @@ public class MusicGenerator {
     }
     
     // Pushes filename to Markov table
-    public void loadMidiFile(String filename)
+    public boolean loadMidiFile(String filename)
     {
-        mTable.loadMidiFile(filename);
+        return mTable.loadMidiFile(filename);
     }
 
     public void generateMusic(int length)

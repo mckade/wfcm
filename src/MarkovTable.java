@@ -1,7 +1,3 @@
-import javafx.util.Pair;
-import jm.music.data.Note;
-import java.util.*;
-
 /**
  * @filename MarkovTable
  * @project Procedural Music
@@ -24,6 +20,13 @@ import java.util.*;
  * double prob = markovTable.get(new MarkovKey(JMC.C4, JMC.D4);
  */
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import jm.music.data.Note;
+
 public class MarkovTable {
 
     // Fields
@@ -41,10 +44,13 @@ public class MarkovTable {
     }
     
     // Loads midi file
-    public void loadMidiFile(String filename)
+    public boolean loadMidiFile(String filename)
     {
         // Get midi data for processing.
         notes = midiReader.readMidi(filename);
+        // Checking if file was successfully read.
+        if (notes == null) return false;
+         
         // get a set of unique notes
         Set<Integer> nPitch = new HashSet<>();
         n = new HashSet<>();
@@ -73,6 +79,8 @@ public class MarkovTable {
             }
             num++;
         }
+        
+        return true;
     }
     
     // Generate a music table given midi data
