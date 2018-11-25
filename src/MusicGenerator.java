@@ -12,6 +12,7 @@ import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.Play;
+import jm.util.Write;
 
 public class MusicGenerator {
 
@@ -55,6 +56,6 @@ public class MusicGenerator {
 
     public void saveSong()
     {
-
+        Write.midi(s, "output.MID");
     }
 }
