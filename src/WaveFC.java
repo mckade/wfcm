@@ -72,7 +72,7 @@ public class WaveFC
         // Initialize the table
         if(table == null)
         {
-            table = mtable.toArray();
+            table = mtable.getPitchTable();
             size = table.length;
         }
 
@@ -108,6 +108,7 @@ public class WaveFC
      */
     public Note[] getNotes(int length)
     {
+        System.out.println("Generating music with " + length + " notes");
         int[][] n = generate(length);
         while(n.length == 0)
         {
