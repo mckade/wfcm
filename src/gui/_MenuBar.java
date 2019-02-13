@@ -38,6 +38,7 @@ public class _MenuBar extends JMenuBar
 implements ActionListener {
     
     // Menu item ids
+    public static final String LOAD = "load";
     public static final String CLOSE = "close";
     public static final String SAVE = "save";
     public static final String SAVEAS = "saveas";
@@ -60,6 +61,10 @@ implements ActionListener {
         file.setMnemonic(KeyEvent.VK_F);
 
         // File menu items
+        JMenuItem load = new JMenuItem("Load");
+        load.setMnemonic(KeyEvent.VK_L);
+        load.addActionListener(this);
+        load.setActionCommand(LOAD);
         JMenuItem close = new JMenuItem("Close");
         close.setMnemonic(KeyEvent.VK_C);
         close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
@@ -79,6 +84,8 @@ implements ActionListener {
         exit.setActionCommand(EXIT);
         
         // Adding menu items to file
+        file.add(load);
+        file.addSeparator();
         file.add(close);
         file.addSeparator();
         file.add(save);

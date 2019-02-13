@@ -101,6 +101,8 @@ implements MenuListener, UpdateListener {
     // Gets events from the menu bar
     public void menuItemClicked(MenuEvent e) {
         switch (e.getID()) {
+        case _MenuBar.LOAD:
+            break;
         case _MenuBar.CLOSE:
             break;
         case _MenuBar.SAVE:
