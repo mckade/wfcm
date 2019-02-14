@@ -28,14 +28,14 @@ public class MidiReader {
     // Currently returns a Vector of Notes (in the order they appear in input)
     public Note[] readMidi(String filename) {
 
-        Part[] parts = null;
-        Phrase[][] phrases = null;
         Note[] notes = null;
 
         // with midi filename read in midi data
         // Read Score from midi file
         Score from_midi = new Score("midi_input");
         Read.midi(from_midi, filename);
+
+        /*
 
         // Convert Score into raw SMF data (Standard MIDI File)
         SMF smf = new SMF();
@@ -59,13 +59,32 @@ public class MidiReader {
         for (Vector<Event> vec : events) {
             System.out.println("\nTrack #" + i + " events:");
             System.out.println("---------------------------------------");
-
+            for (Event ev : vec) {
+                System.out.println(ev.toString());
+            }
         }
+
+        */
 
         // Checking if file was successfully read.
         if (from_midi.size() != 0) {
             // Might need reworked
             // i.e., needs to check whether "Phrases" and "Parts" actually exists in the score.
+
+            Vector<Phrase> phrases = from_midi.getPart(0).getPhraseList();
+            Vector<Vector<Note>> notess = new Vector<>();
+            System.out.println("Number of Phrases: " + phrases.size());
+            for (int i = 0; i < phrases.size(); ++i) {
+                System.out.println("----------------------------------");
+                System.out.print("Number of Notes in Phrase #" + i + ": ");
+                notess.add(phrases.get(i).getNoteList());
+                System.out.println(notess.get(i).size());
+                for (int j = 0; j < notess.get(i).size(); ++j) {
+                    if (!notess.get(i).get(j).isRest()) {
+                        System.out.println("Note #" + j + " pitch: " + notess.get(i).get(j).getPitch());
+                    }
+                }
+            }
 
             notes = from_midi.getPart(0)
                     .getPhrase(0)
@@ -75,4 +94,14 @@ public class MidiReader {
         return notes;
     }
 
+    /*
+    public int parseEvent(Event event) {
+
+        int pitch;
+
+        CharSequence eventString = event.toString();
+
+        return pitch;
+    }
+    */
 }
