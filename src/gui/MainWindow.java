@@ -62,6 +62,7 @@ implements MenuListener, UpdateListener {
         // Setting up main window.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(dim);
+        setMinimumSize(new Dimension(400,400));
         setSize(dim);
         setLocationRelativeTo(null);
         getContentPane().setBackground(BACKGROUND);
