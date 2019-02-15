@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 public class RightPanel extends JPanel {
     
     // Minimum width of the panel.
-    public static final int WIDTH = 600;
+    public static final int MINWIDTH = 600;
     
     // Panels
     private VisualizerPanel visualizerPanel;
@@ -31,11 +31,9 @@ public class RightPanel extends JPanel {
     public RightPanel() {
         
         // Setup
-        Dimension dim = new Dimension();
-        dim.width = WIDTH;
+        Dimension dim = new Dimension(MINWIDTH, 200);
         
         // Panel settings
-        setPreferredSize(dim);
         setMinimumSize(dim);
         
         // Layout and panels

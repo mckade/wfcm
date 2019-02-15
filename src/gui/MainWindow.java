@@ -126,9 +126,15 @@ implements MenuListener, UpdateListener {
     }
 
     // Gets events calling for an update
-    public void updateCalled(UpdateEvent e) {
-        if (e.getSource() == leftPanel) {
-            splitPane.setDividerLocation(LeftPanel.WIDTH);
+    public void updateEvent(UpdateEvent e) {
+        switch (e.getUpdateType()) {
+        case visible:
+            splitPane.setDividerSize(10);
+            splitPane.setDividerLocation(LeftPanel.MINWIDTH);
+            break;
+        case invisible:
+            splitPane.setDividerSize(0);
+            break;
         }
     }
 }
