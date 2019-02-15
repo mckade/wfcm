@@ -102,7 +102,11 @@ implements MenuListener, UpdateListener {
     // Gets events from the menu bar
     public void menuItemClicked(MenuEvent e) {
         switch (e.getID()) {
-        case _MenuBar.LOAD:
+        
+        // File
+        case _MenuBar.NEW:
+            break;
+        case _MenuBar.OPEN:
             break;
         case _MenuBar.CLOSE:
             break;
@@ -110,9 +114,15 @@ implements MenuListener, UpdateListener {
             break;
         case _MenuBar.SAVEAS:
             break;
+        case _MenuBar.IMPORT:
+            break;
+        case _MenuBar.EXPORT:
+            break;
         case _MenuBar.EXIT:
             System.exit(0);
             break;
+            
+        // Window
         case _MenuBar.BUTTONS:
             leftPanel.toggleButtonPanel();
             break;

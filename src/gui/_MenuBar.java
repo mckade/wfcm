@@ -38,11 +38,17 @@ public class _MenuBar extends JMenuBar
 implements ActionListener {
     
     // Menu item ids
-    public static final String LOAD = "load";
+    // File
+    public static final String NEW = "new";
+    public static final String OPEN = "open";
     public static final String CLOSE = "close";
     public static final String SAVE = "save";
     public static final String SAVEAS = "saveas";
+    public static final String IMPORT = "import";
+    public static final String EXPORT = "export";
     public static final String EXIT = "exit";
+    
+    // Window
     public static final String BUTTONS = "buttons";
     public static final String LOG = "log";
     public static final String SETTINGS = "settings";
@@ -61,10 +67,15 @@ implements ActionListener {
         file.setMnemonic(KeyEvent.VK_F);
 
         // File menu items
-        JMenuItem load = new JMenuItem("Load");
-        load.setMnemonic(KeyEvent.VK_L);
-        load.addActionListener(this);
-        load.setActionCommand(LOAD);
+        JMenuItem _new = new JMenuItem("New");
+        _new.setMnemonic(KeyEvent.VK_N);
+        _new.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        _new.addActionListener(this);
+        _new.setActionCommand(NEW);
+        JMenuItem open = new JMenuItem("Open");
+        open.setMnemonic(KeyEvent.VK_L);
+        open.addActionListener(this);
+        open.setActionCommand(OPEN);
         JMenuItem close = new JMenuItem("Close");
         close.setMnemonic(KeyEvent.VK_C);
         close.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
@@ -78,18 +89,30 @@ implements ActionListener {
         saveas.setMnemonic(KeyEvent.VK_A);
         saveas.addActionListener(this);
         saveas.setActionCommand(SAVEAS);
+        JMenuItem _import = new JMenuItem("Import");
+        _import.setMnemonic(KeyEvent.VK_I);
+        _import.addActionListener(this);
+        _import.setActionCommand(IMPORT);
+        JMenuItem export = new JMenuItem("Export");
+        export.setMnemonic(KeyEvent.VK_O);
+        export.addActionListener(this);
+        export.setActionCommand(EXPORT);
         JMenuItem exit = new JMenuItem("Exit");
         exit.setMnemonic(KeyEvent.VK_X);
         exit.addActionListener(this);
         exit.setActionCommand(EXIT);
         
         // Adding menu items to file
-        file.add(load);
+        file.add(_new);
+        file.add(open);
         file.addSeparator();
         file.add(close);
         file.addSeparator();
         file.add(save);
         file.add(saveas);
+        file.addSeparator();
+        file.add(_import);
+        file.add(export);
         file.addSeparator();
         file.add(exit);      
         
