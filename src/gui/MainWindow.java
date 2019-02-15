@@ -130,7 +130,7 @@ implements MenuListener, UpdateListener {
         switch (e.getUpdateType()) {
         case visible:
             splitPane.setDividerSize(10);
-            splitPane.setDividerLocation(LeftPanel.WIDTH);
+            splitPane.setDividerLocation(LeftPanel.MINWIDTH);
             break;
         case invisible:
             splitPane.setDividerSize(0);
