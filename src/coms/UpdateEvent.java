@@ -13,9 +13,15 @@ import java.util.EventObject;
 
 @SuppressWarnings("serial")
 public class UpdateEvent extends EventObject {
+    
+    private UpdateType updateType;
 
-    public UpdateEvent(Object source) {
+    public UpdateEvent(Object source, UpdateType updateType) {
         super(source);
+        this.updateType = updateType;
     }
 
+    public UpdateType getUpdateType() {
+        return updateType;
+    }
 }

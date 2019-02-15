@@ -5,6 +5,9 @@
  * 
  * The left half of the main window.
  * Consists of the buttons and log.
+ * 
+ * Can toggle the visibility of both the
+ * buttons and log panels
  */
 
 package gui;
@@ -24,6 +27,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import coms.UpdateEvent;
 import coms.UpdateListener;
+import coms.UpdateType;
 
 @SuppressWarnings("serial")
 public class LeftPanel extends JPanel {
@@ -84,38 +88,45 @@ public class LeftPanel extends JPanel {
     // Toggles the visibility of the buttons panel.
     public void toggleButtonPanel() {
         buttonPanel.setVisible(buttonVis = !buttonVis);
-        if (buttonVis) {
-            // Resetting buttons/log divider position
-            splitPane.setDividerLocation((int)getMinimumSize().getHeight());
-        }
-        
-        // Checking if both panels are invisible
-        if (!buttonVis && !logVis) {
-            setVisible(false);
-        }
-        // Checking if left panel is now visible
-        else if (buttonVis && !logVis){
-            setVisible(true);
-            fireUpdateEvent(this);
-        }
+        updateDividers(buttonVis);
     }
     
     // Toggles the visibility of the log panel.
     public void toggleLogPanel() {
         logPanel.setVisible(logVis = !logVis);
-        if (logVis) {
-            // Resetting buttons/log divider position
+        updateDividers(logVis);
+    }
+    
+    // Updates the button/log divider and left/right divider
+    // Based on visible panes
+    // @flag: Determines whether
+    // - Left panel was invisible but now visible (true)
+    // - Left panel was visible and still visible (false)
+    private void updateDividers(boolean flag) {
+        
+        // Updating button/log divider
+        // If both panels are now visible then resets divider
+        // Otherwise removes divider
+        if (buttonVis && logVis) {
             splitPane.setDividerLocation((int)getMinimumSize().getHeight());
+            splitPane.setDividerSize(10);
+        }
+        else {
+            splitPane.setDividerSize(0);
         }
         
-        // Checking if both panels are invisible
-        if (!buttonVis && !logVis) {
+        // Updating left/right divider
+        // If left panel is already visible, do nothing
+        // If left panel is now invisible fire update event to remove divider
+        // If left panel is now visible fire update event to reset divider
+        if (buttonVis && logVis) {} // Do nothing
+        else if (!buttonVis && !logVis) {
             setVisible(false);
+            fireUpdateEvent(this, UpdateType.invisible);
         }
-        // Checking if left panel is now visible
-        else if (!buttonVis && logVis){
+        else if (flag) {
             setVisible(true);
-            fireUpdateEvent(this);
+            fireUpdateEvent(this, UpdateType.visible);
         }
     }
     
@@ -125,9 +136,9 @@ public class LeftPanel extends JPanel {
     }
     
     // Sends out an event to reset the left/right panel divider position
-    private void fireUpdateEvent(Object source) {
+    private void fireUpdateEvent(Object source, UpdateType updateType) {
         for (UpdateListener listener : listeners) {
-            listener.updateCalled(new UpdateEvent(source));
+            listener.updateEvent(new UpdateEvent(source, updateType));
         }
     }
 }
