@@ -89,11 +89,11 @@ implements ActionListener {
         saveas.setMnemonic(KeyEvent.VK_A);
         saveas.addActionListener(this);
         saveas.setActionCommand(SAVEAS);
-        JMenuItem _import = new JMenuItem("Import");
+        JMenuItem _import = new JMenuItem("Import MIDI Sample");
         _import.setMnemonic(KeyEvent.VK_I);
         _import.addActionListener(this);
         _import.setActionCommand(IMPORT);
-        JMenuItem export = new JMenuItem("Export");
+        JMenuItem export = new JMenuItem("Export MIDI");
         export.setMnemonic(KeyEvent.VK_O);
         export.addActionListener(this);
         export.setActionCommand(EXPORT);

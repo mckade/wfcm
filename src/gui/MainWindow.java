@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -51,6 +52,8 @@ implements MenuListener, UpdateListener {
     
     // Components
     private _MenuBar menuBar;
+    
+    // Controller and controls
     
     // Constructor
     public MainWindow() {
@@ -101,22 +104,28 @@ implements MenuListener, UpdateListener {
 
     // Gets events from the menu bar
     public void menuItemClicked(MenuEvent e) {
+        File file;
+        
         switch (e.getID()) {
         
         // File
         case _MenuBar.NEW:
             break;
         case _MenuBar.OPEN:
+            file = FileDialog.openFile(this, FileDialog.SAVE_OPEN);
             break;
         case _MenuBar.CLOSE:
             break;
         case _MenuBar.SAVE:
+            file = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
             break;
         case _MenuBar.SAVEAS:
             break;
         case _MenuBar.IMPORT:
+            file = FileDialog.openFile(this, FileDialog.IMPORT_EXPORT);
             break;
         case _MenuBar.EXPORT:
+            file = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
             break;
         case _MenuBar.EXIT:
             System.exit(0);
