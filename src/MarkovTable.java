@@ -9,6 +9,7 @@
  * Used by WaveFCND to generate music
  */
 
+import java.io.IOException;
 import java.util.*;
 
 import jm.music.data.Note;
@@ -38,7 +39,11 @@ public class MarkovTable {
     public boolean loadMidiFile(String filename)
     {
         // Get midi data for processing.
-        notes = midiReader.readMidi(filename);
+        try {
+            notes = midiReader.readMidi(filename);
+        } catch (IOException ex) {
+            System.out.println("Could not read file: " + filename);
+        }
         // Checking if file was successfully read.
         if (notes == null) return false;
 
