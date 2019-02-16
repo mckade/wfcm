@@ -113,6 +113,7 @@ public class MidiReader {
 
                         NoteOn on = (NoteOn) ev;
                         if (on.getVelocity() != 0) {
+
                             System.out.println("NoteOn event:");
 
                             // Add pitch value to vector
@@ -200,23 +201,9 @@ public class MidiReader {
             // Might need reworked
             // i.e., needs to check whether "Phrases" and "Parts" actually exists in the score.
 
-            /*
             notes = from_midi.getPart(0)
                     .getPhrase(0)
                     .getNoteArray();
-            */
-
-            /*
-            Vector<Phrase> phrases = from_midi.getPart(0).getPhraseList();
-            int count = 1;
-            for (Phrase p : phrases) {
-                Vector<Note> nts = p.getNoteList();
-                System.out.println("Phrase #" + count + ":");
-                for (int l = 0; l < nts.size(); ++l) {
-                    System.out.println("Note " + nts.get(l).getPitch() + " Start Time: " + p.getNoteStartTime(l));
-                }
-            }
-            */
         }
         return notes;
     }
