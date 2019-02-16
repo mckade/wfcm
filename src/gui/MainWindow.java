@@ -62,6 +62,7 @@ implements MenuListener, UpdateListener {
         // Setting up main window.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(dim);
+        setMinimumSize(new Dimension(400,400));
         setSize(dim);
         setLocationRelativeTo(null);
         getContentPane().setBackground(BACKGROUND);
@@ -101,7 +102,11 @@ implements MenuListener, UpdateListener {
     // Gets events from the menu bar
     public void menuItemClicked(MenuEvent e) {
         switch (e.getID()) {
-        case _MenuBar.LOAD:
+        
+        // File
+        case _MenuBar.NEW:
+            break;
+        case _MenuBar.OPEN:
             break;
         case _MenuBar.CLOSE:
             break;
@@ -109,9 +114,15 @@ implements MenuListener, UpdateListener {
             break;
         case _MenuBar.SAVEAS:
             break;
+        case _MenuBar.IMPORT:
+            break;
+        case _MenuBar.EXPORT:
+            break;
         case _MenuBar.EXIT:
             System.exit(0);
             break;
+            
+        // Window
         case _MenuBar.BUTTONS:
             leftPanel.toggleButtonPanel();
             break;
@@ -125,9 +136,15 @@ implements MenuListener, UpdateListener {
     }
 
     // Gets events calling for an update
-    public void updateCalled(UpdateEvent e) {
-        if (e.getSource() == leftPanel) {
-            splitPane.setDividerLocation(LeftPanel.WIDTH);
+    public void updateEvent(UpdateEvent e) {
+        switch (e.getUpdateType()) {
+        case visible:
+            splitPane.setDividerSize(10);
+            splitPane.setDividerLocation(LeftPanel.MINWIDTH);
+            break;
+        case invisible:
+            splitPane.setDividerSize(0);
+            break;
         }
     }
 }

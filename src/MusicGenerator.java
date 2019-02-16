@@ -17,13 +17,12 @@ import jm.util.Write;
 public class MusicGenerator {
 
     MarkovTable mTable;
-    WaveFC wfc;
+    WaveFCND wfc;
     Score s;
 
     public MusicGenerator()
     {
         mTable = new MarkovTable();
-        wfc = new WaveFC(mTable);
     }
     
     // Pushes filename to Markov table
@@ -34,6 +33,15 @@ public class MusicGenerator {
 
     public void generateMusic(int length)
     {
+        if(wfc == null)
+        {
+            PTable[] pt = new PTable[2];
+            if(mTable.getPitchTable() == null || mTable.getLengthTable() == null)
+                System.out.println("null table");
+            pt[0] = new PTable(mTable.getPitchTable());
+            pt[1] = new PTable(mTable.getLengthTable());
+            wfc = new WaveFCND(pt);
+        }
         // use wfc and mTable
         s = new Score("Procedural");
         Part p = new Part("Piano", ProgramChanges.PIANO, 0);

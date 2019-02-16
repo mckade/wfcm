@@ -6,7 +6,7 @@
  * Manages probability modifiers and combines them into a
  * single probability table per feature (e.g., pitch & duration)
  *
- * Used by WaveFC to generate music
+ * Used by WaveFCND to generate music
  */
 
 import java.io.IOException;
@@ -84,8 +84,11 @@ public class MarkovTable {
         // TODO link the modifier lists to UI so users can select
         // different generation parameters. For now, just using
         // dist-1 and dist-4 NoteTransition (see NoteTransition.java for details)
+        // and dist-1 NoteDuration (see NoteDuration.java for details)
         pitchMods.add(new NoteTransition(1, notes, pitch.size()));
         pitchMods.add(new NoteTransition(4, notes, pitch.size()));
+
+        lengthMods.add(new NoteDuration(1, notes, length.size()));
 
         // TODO add modifier weighting, i.e, make some modifiers more
         // important than others with regard to final probability table
@@ -102,6 +105,18 @@ public class MarkovTable {
                 }
             }
         }
+
+        for(int i = 0; i < lengthMods.size(); i++)
+        {
+            double[][] modProbabilities = lengthMods.get(i).getProbabilities();
+            for(int x = 0; x < length.size(); x++)
+            {
+                for(int y = 0; y < length.size(); y++)
+                {
+                    lengthTable[x][y] = modProbabilities[x][y] / lengthMods.size();
+                }
+            }
+        }
     }
 
     public double[][] getPitchTable()
@@ -109,19 +124,34 @@ public class MarkovTable {
         return pitchTable;
     }
 
-    // TODO update this to take a pitch key and length key
-    public Note getNote(int index)
+    public double[][] getLengthTable()
+    {
+        return lengthTable;
+    }
+
+    public static int getPitch(int index)
     {
         for(Map.Entry<Integer, Integer> e : pitch.entrySet())
         {
             if(index == e.getValue())
             {
-                Note n = new Note(e.getKey(), Note.DEFAULT_RHYTHM_VALUE);
-                n.setDuration(0.5);
-                return n;
+                return e.getKey();
             }
         }
 
-        return null;
+        return 0;
+    }
+
+    public static double getDuration(int index)
+    {
+        for(Map.Entry<Double, Integer> e : length.entrySet())
+        {
+            if(index == e.getValue())
+            {
+                return e.getKey();
+            }
+        }
+
+        return 0.0;
     }
 }

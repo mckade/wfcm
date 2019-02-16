@@ -28,7 +28,7 @@ public class SettingsPanel extends JPanel {
     public SettingsPanel(Dimension dim) {
         
         // Panel settings
-        setPreferredSize(new Dimension(dim.width, 200));
+        setPreferredSize(dim);
         setBackground(MainWindow.BACKGROUND);
         setBorder(MainWindow.BORDER);
         
