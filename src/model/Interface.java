@@ -15,6 +15,7 @@ package model;
  * Play music again || New music generation || new midi file || done
  */
 
+import java.io.File;
 import java.util.Scanner;
 
 public class Interface {
@@ -99,7 +100,7 @@ public class Interface {
                 }
                 
                 // Attempts to load midi file
-                if (mgen.loadMidiFile(filename)) {
+                if (mgen.importSample(new File(filename))) {
                     valid = true;                   // Marking that a file has been read.
                     mgen.generateMusic(nodeCount);  // Generating music
                 }
@@ -134,7 +135,7 @@ public class Interface {
             }
 // SAVE
             else if (input.equalsIgnoreCase("SAVE"))
-                if (valid) mgen.saveSong();
+                if (valid) mgen.exportMIDI(null);
                 else System.out.println("Please first load a midi file before you save music.");
 // PLAY
             else if (input.equalsIgnoreCase("PLAY"))

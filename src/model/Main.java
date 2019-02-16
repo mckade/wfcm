@@ -25,7 +25,5 @@ public class Main
             public void run() {
                 new MainWindow();
             }});
-        new Interface();
-        // keep in mind that the only way to exit the program atm is if you exit out of the gui
     }
 }

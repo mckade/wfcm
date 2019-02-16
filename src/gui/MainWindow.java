@@ -32,6 +32,7 @@ import coms.MenuEvent;
 import coms.MenuListener;
 import coms.UpdateEvent;
 import coms.UpdateListener;
+import model.MusicGenerator;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame 
@@ -54,6 +55,7 @@ implements MenuListener, UpdateListener {
     private _MenuBar menuBar;
     
     // Controller and controls
+    private MusicGenerator mgen;
     
     // Constructor
     public MainWindow() {
@@ -61,6 +63,7 @@ implements MenuListener, UpdateListener {
         // Setup
         super("Proc Music");
         Dimension dim = new Dimension(1024, 768);
+        mgen = new MusicGenerator();
         
         // Setting up main window.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -113,19 +116,23 @@ implements MenuListener, UpdateListener {
             break;
         case _MenuBar.OPEN:
             file = FileDialog.openFile(this, FileDialog.SAVE_OPEN);
+            mgen.openGenerationTable(file);
             break;
         case _MenuBar.CLOSE:
             break;
         case _MenuBar.SAVE:
             file = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
+            mgen.saveGenerationTable(file);
             break;
         case _MenuBar.SAVEAS:
             break;
         case _MenuBar.IMPORT:
             file = FileDialog.openFile(this, FileDialog.IMPORT_EXPORT);
+            mgen.importSample(file);
             break;
         case _MenuBar.EXPORT:
             file = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
+            mgen.exportMIDI(file);
             break;
         case _MenuBar.EXIT:
             System.exit(0);
