@@ -28,6 +28,8 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
+import coms.ButtonEvent;
+import coms.ButtonListener;
 import coms.MenuEvent;
 import coms.MenuListener;
 import coms.UpdateEvent;
@@ -36,7 +38,7 @@ import model.MusicGenerator;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame 
-implements MenuListener, UpdateListener {
+implements MenuListener, UpdateListener, ButtonListener {
     
     // Default visual settings
     public static final Color BACKGROUND = new Color(0, 6, 5);
@@ -79,6 +81,7 @@ implements MenuListener, UpdateListener {
         // Creating Panels and components
         leftPanel = new LeftPanel();
         leftPanel.addUpdateListener(this);
+        leftPanel.addButtonListener(this);
         rightPanel = new RightPanel();
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -162,5 +165,9 @@ implements MenuListener, UpdateListener {
             splitPane.setDividerSize(0);
             break;
         }
+    }
+
+    public void generateButtonClicked(ButtonEvent e) {
+        mgen.generateMusic(10);
     }
 }

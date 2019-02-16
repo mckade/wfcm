@@ -10,20 +10,31 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import coms.ButtonEvent;
+import coms.ButtonListener;
+
 @SuppressWarnings("serial")
-public class ButtonPanel extends JPanel {
+public class ButtonPanel extends JPanel
+implements ActionListener {
     
-    JLabel comingSoon;  // Temp
+    private ArrayList<ButtonListener> listeners;
+    
+    // Components
+    JButton generate;
     
     // Constructor
     public ButtonPanel(Dimension dim) {
+        
+        // Setup
+        listeners = new ArrayList<ButtonListener>();
         
         // Panel settings
         setMinimumSize(dim);
@@ -34,12 +45,23 @@ public class ButtonPanel extends JPanel {
         setLayout(new BorderLayout());
         
         // Creating components
-        comingSoon = new JLabel("Buttons Coming Soon!");
-        comingSoon.setFont(new Font(Font.DIALOG, Font.PLAIN, 15));
-        comingSoon.setForeground(Color.WHITE);
-        comingSoon.setHorizontalAlignment(JLabel.CENTER);
+        generate = new JButton("Generate");
+        generate.addActionListener(this);
         
-        // Adding components
-        add(comingSoon, BorderLayout.CENTER);
+        add(generate);
+    }
+    
+    public void addButtonListener(ButtonListener listener) {
+        listeners.add(listener);
+    }
+    
+    private void fireButtonClicked(Object source) {
+        for (ButtonListener listener : listeners) {
+            listener.generateButtonClicked(new ButtonEvent(source));
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        fireButtonClicked(e.getSource());
     }
 }
