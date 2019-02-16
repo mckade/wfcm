@@ -1,3 +1,4 @@
+package model;
 /**
  * @filename Modifier.java
  * @project Procedural Music

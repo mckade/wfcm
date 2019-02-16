@@ -1,3 +1,4 @@
+package model;
 /**
  * @filename MusicGenerator.java
  * @project Procedural Music

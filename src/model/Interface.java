@@ -1,3 +1,4 @@
+package model;
 /**
  * @filename Interface.java
  * @project Procedural Music

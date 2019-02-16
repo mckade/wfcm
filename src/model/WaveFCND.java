@@ -1,3 +1,4 @@
+package model;
 import jm.music.data.Note;
 
 /**

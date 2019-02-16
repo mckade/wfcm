@@ -1,3 +1,4 @@
+package model;
 /**
  * @filename Main.java
  * @project Procedural Music

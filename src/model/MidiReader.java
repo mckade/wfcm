@@ -1,3 +1,4 @@
+package model;
 /**
  * @filename MidiReader.java
  * @project Procedural Music

@@ -1,22 +1,23 @@
+package model;
 import jm.music.data.Note;
 
 /**
- * @filename NoteTransition.java
+ * @filename NoteDuration.java
  * @project Procedural Music
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer
  *
- * NoteTransition controls probabilities related to going from one note pitch
+ * NoteDuration controls probabilities related to going from one note duration
  * to another. The probabilities are constrained by the notes in the sample.
- * If a transition is seen between two pitches 'distance' notes apart, the
- * probability of those two pitches appearing together in the output increases.
+ * If a transition is seen between two durations 'distance' notes apart, the
+ * probability of those two durations appearing together in the output increases.
  * Distance of 1 denotes two adjacent notes.
  * */
-public class NoteTransition extends Modifier
+public class NoteDuration extends Modifier
 {
     int distance;
     Note[] notes;
     int cardinality;
-    public NoteTransition(int dist, Note[] n, int c)
+    public NoteDuration(int dist, Note[] n, int c)
     {
         // set notes to be the sample notes
         notes = n;
@@ -45,10 +46,10 @@ public class NoteTransition extends Modifier
         int[] counts = new int[cardinality];
         while(i + distance < notes.length)
         {
-            // index of note[i]'s pitch
-            first = MarkovTable.pitch.get(notes[i].getPitch());
-            // index of note[i+distance]'s pitch
-            second = MarkovTable.pitch.get(notes[i+distance].getPitch());
+            // index of note[i]'s duration
+            first = MarkovTable.length.get(notes[i].getDuration());
+            // index of note[i+distance]'s duration
+            second = MarkovTable.length.get(notes[i+distance].getDuration());
             probabilities[first][second] += 1.0;
             counts[first] += 1;
 
@@ -57,7 +58,7 @@ public class NoteTransition extends Modifier
 
         // normalize the counts to make them probabilities
         // if no data was seen for a note, make all transitions
-        // from that note have equal probability
+        // from that note duration have equal probability
         for(int x = 0; x < probabilities.length; x++)
         {
             for(int y = 0; y < probabilities.length; y++)

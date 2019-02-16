@@ -1,3 +1,4 @@
+package model;
 /**
  * @filename PTable.java
  * @project Procedural Music

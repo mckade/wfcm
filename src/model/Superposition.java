@@ -1,3 +1,4 @@
+package model;
 /**
  * @filename Superposition.java
  * @project Procedural Music

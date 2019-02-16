@@ -1,3 +1,4 @@
+package model;
 /**
  * @filename MarkovTable
  * @project Procedural Music
