@@ -21,23 +21,35 @@ import java.util.Vector;
 
 public class MidiReader {
 
+    // Holds MIDI data which will be grabbed by MarkovTable
+    MidiData midiData = null;
+
+    // Constructor
+    public MidiReader() {
+    }
+
     // Inner class used to encapsulate data obtained form parsing
     // Event object from SMF
     public class MidiData {
 
         CPhrase chords;
-        Note[] notes;
+        Vector<Note> notes;
 
-        public MidiData(CPhrase c, Note[] n) {
+        public MidiData() {
+            this.chords = new CPhrase();
+            this.notes = new Vector<>();
+        }
+
+        public MidiData(CPhrase c, Vector<Note> n) {
             this.chords = c;
             this.notes = n;
         }
+
+        public Note[] getNotes() { return vectorToNoteArr(this.notes); }
+
+        public CPhrase getChords() { return this.chords; }
     }
 
-    // Constructor
-    public MidiReader() {
-    }
-    
     // Given a filename it will attempt to read a midi file.
     // Returns the midi data for processing.
     // Currently returns a Vector of Notes (in the order they appear in input)
@@ -45,82 +57,55 @@ public class MidiReader {
 
         Note[] notes = null;
 
+        midiData = new MidiData();
+
         // with midi filename read in midi data
         // Read Score from midi file
         Score from_midi = new Score("midi_input");
         Read.midi(from_midi, filename/*.getCanonicalPath()*/);
 
-
-        // Convert Score into raw SMF data (Standard MIDI File)
-        SMF smf = new SMF();
-        MidiParser.scoreToSMF(from_midi, smf);
-
-        // Get Tracks from SMF. Track 1 should be header data.
-        // Might need to check instanceof ?
-        Vector<Track> tracks = smf.getTrackList();
-        Vector<Vector<Event>> events = new Vector<>();
-
-        System.out.println("PPQN: " + smf.getPPQN()); // Pulses per Quarter Note
-        System.out.println("Number of tracks: " + tracks.size()); // Track 1 is header data
-
-        // Get EventList from each Track
-        for (Track trk : tracks) {
-            events.add(trk.getEvtList());
-        }
-
-        // Get Event data
-        int i = 1; // Keeping track of Track #
-        int j; // Event Vector index
-        for (Vector<Event> vec : events) { // Loop through Tracks
-
-            System.out.println("\nTrack #" + i + " events:");
-            System.out.println("---------------------------------------");
-
-            parseEvents(vec);
-
-            ++i;
-        }
-        
-        // Checking if file was successfully read.
         if (from_midi.size() != 0) {
-            // Might need reworked
-            // i.e., needs to check whether "Phrases" and "Parts" actually exists in the score.
 
-            notes = from_midi.getPart(0)
-                    .getPhrase(0)
-                    .getNoteArray();
+            // Convert Score into raw SMF data (Standard MIDI File)
+            SMF smf = new SMF();
+            MidiParser.scoreToSMF(from_midi, smf);
+
+            // Get Tracks from SMF. Track 1 should be header data.
+            // Might need to check instanceof ?
+            Vector<Track> tracks = smf.getTrackList();
+            Vector<Vector<Event>> events = new Vector<>();
+
+            // Don't really need this information
+            System.out.println("PPQN: " + smf.getPPQN()); // Pulses per Quarter Note
+            System.out.println("Number of tracks: " + tracks.size()); // Track 1 is header data
+
+            // Get EventList from each Track
+            for (Track trk : tracks) { events.add(trk.getEvtList()); }
+
+            // Loop through Tracks &
+            // Get Event data
+            for (Vector<Event> vec : events) { parseEvents(vec); }
         }
-        return notes;
+
+        // Will eventually want to return a MidiData object
+        // Or have MarkovTable access MidiReader's personal MidiData object to get what it needs
+        return midiData.getNotes();
     }
 
+    // Cycles through each event in the event vector passed to it
+    // Get's notes/chord data (pitch, etc.) and places it in
+    // MidiReader's MidiData object
+    public void parseEvents(Vector<Event> vec) {
 
-    public int parseEvents(Vector<Event> vec) {
+        // Needed for chord tracking
+        Vector<Integer> pitches = new Vector<>();
 
         for (Event ev : vec) { // Loop through Events
 
             short eventID = ev.getID(); // ID determines type of event
 
-            // Needed for chord tracking
-            CPhrase chord = new CPhrase();
-            chord.
-            Vector<Integer> pitches = new Vector<>();
-
             // We're mostly interested in the NoteOn/NoteOff events for chords.
             switch (eventID) {
-                /*
-                case 1: // ATouch event (Aftertouch. Polyphonic key pressure)
-                    ATouch touch = (ATouch) ev;
-                    System.out.println("ATouch event:");
-                    break;
-                case 2: // CPres event (Channel pressure)
-                    CPres cpres = (CPres) ev;
-                    System.out.println("CPres event:");
-                    break;
-                case 3: // CChange event (Controller change)
-                    CChange cchange = (CChange) ev;
-                    System.out.println("CChange event:");
-                    break;
-                    */
                 case 4: // NoteOff event
 
                     NoteOff off = (NoteOff) ev;
@@ -129,7 +114,9 @@ public class MidiReader {
                     // Check if more than one NoteOn event
                     if (pitches.size() > 1) {
                         // If so, we just read a chord, so att it to CPhrase
-                        chord.addChord(vectorToIntArr(pitches), 1);
+                        midiData.chords.addChord(vectorToIntArr(pitches), 1);
+                    } else { // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
+                        midiData.notes.add(new Note(off.getPitch(), 1));
                     }
 
                     // Clear pitch vector for next chord.
@@ -154,50 +141,17 @@ public class MidiReader {
                         // Check if more than NoteOn event
                         if (pitches.size() > 1) {
                             // If so, we just read a chord, so att it to CPhrase
-                            chord.addChord(vectorToIntArr(pitches), 1);
+                            midiData.chords.addChord(vectorToIntArr(pitches), 1);
+                        } else { // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
+                            midiData.notes.add(new Note(on.getPitch(), 1));
                         }
 
                         // Clear pitch vector for next chord.
                         pitches.clear();
                     }
                     break;
-                    /*
-                case 6: // PWheel event (Pitch wheel)
-                    PWheel wheel = (PWheel) ev;
-                    System.out.println("PWheel event:");
-                    break;
-                case 7: // PChange event (Program change)
-                    PChange pchange = (PChange) ev;
-                    System.out.println("PChange event:");
-                    break;
-                case 8: // SysEx event
-                    SysEx sysex = (SysEx) ev;
-                    System.out.println("SysEx event(s):");
-                    // Note sure what to do here. Has a method to return a list of System Exclusive events
-                    break;
-                case 16: // Tempo event
-                    TempoEvent tempevt = (TempoEvent) ev;
-                    System.out.println("TempoEvent event:");
-                    break;
-                case 17: // TimeSig event
-                    TimeSig timesig = (TimeSig) ev;
-                    System.out.println("TimeSig event:");
-                    break;
-                case 18: // KeySig event
-                    KeySig key = (KeySig) ev;
-                    System.out.println("KeySig event:" );
-                    break;
-                case 23: // EndTrack event
-                    EndTrack end = (EndTrack) ev;
-                    System.out.println("EndTrack event:");
-                    break;
-                default:
-                    System.out.println("Unknown event type.");
-                    break;
-                    */
             }
         }
-        return 0;
     }
 
     // CPhrase.addChord only takes int[] or Note[]
@@ -212,5 +166,18 @@ public class MidiReader {
         }
 
         return ints;
+    }
+
+    // Same as above except for Notes instead of ints.
+    // MarkovTable requires Note[]
+    public Note[] vectorToNoteArr(Vector<Note> ns) {
+
+        Note[] notes = new Note[ns.size()];
+
+        for (int k = 0; k < ns.size(); ++k) {
+            notes[k] = ns.get(k);
+        }
+
+        return notes;
     }
 }
