@@ -40,6 +40,16 @@ public class Superposition
             next.reset();
     }
 
+    public void print()
+    {
+        System.out.print("[ ");
+        for(int i = 0; i < sp.length; i++)
+        {
+            System.out.print(sp[i] + " ");
+        }
+        System.out.print("]\n");
+    }
+
     public void setNext(Superposition n)
     {
         next = n;
@@ -97,6 +107,10 @@ public class Superposition
                     {
                         sp[j] = 0;
                     }
+                    else
+                    {
+                        sp[j] = 1;
+                    }
                 }
 
                 // Propagate the constraints of the selection
@@ -122,11 +136,12 @@ public class Superposition
      */
     private double[] getProbabilities()
     {
-        double[] prevp = new double[sp.length]; // holds probabilities transitioning into superposition
-        double[] nextp = new double[sp.length]; // holds probabilities transitioning out of superposition
+        double [] prevp = new double[sp.length]; // holds probabilities of what the prev note is given this sp
+        double [] nextp = new double[sp.length]; // holds probabilities of what the current note is given next sp
+        double [] cur = new double[sp.length];
 
-        int prevc = 0;
-        int nextc = 0;
+        double nextsum = 0.0;
+        double cursum = 0.0;
 
         // aggregate prev and next probabilities
         for(int i = 0; i < sp.length; i++)
@@ -134,39 +149,65 @@ public class Superposition
             if(prev != null && prev.getSPAt(i) != 0)
             {
                 add(prevp, getRowProbability(i, sp));
-                prevc++;
             }
 
             if(next != null && sp[i] != 0)
             {
                 add(nextp, getRowProbability(i, next.getSP()));
-                nextc++;
             }
         }
 
-        // normalize prev and next probabilites
+        if(prev != null)
+        {
+            // Given the probability of the previous sp, calculate the probability
+            // of this one. That is, what is the chance I am sp[i]?
+            // This is done by weighting the previous sp's transitions from r with the
+            // probability the previous note is r. Then, multiply by sp[c] to eliminate
+            // impossibilities.
+            for(int r = 0; r < sp.length; r++)
+            {
+                for(int c = 0; c < sp.length; c++)
+                {
+                    cur[c] += sp[c] * prevp[r] * prob.get(r,c);
+                }
+            }
+        }
+
+        // normalize cur and next probabilities
         for(int i = 0; i < sp.length; i++)
         {
             if(prev != null)
             {
-                prevp[i] /= prevc;
+                cursum += cur[i];
+            }
+            if(next != null)
+            {
+                nextsum += sp[i] * nextp[i];
+            }
+        }
+
+        for(int i = 0; i < sp.length; i++)
+        {
+            if(prev != null)
+            {
+                cur[i] /= cursum;
             }
 
             if(next != null)
             {
-                nextp[i] /= nextc;
+                nextp[i] *= sp[i] / nextsum;
             }
         }
 
-        // average prev and next
+        // average cur and next
         if(prev == null)
             return nextp;
         else if(next == null)
-            return prevp;
+            return cur;
 
         for(int i = 0; i < sp.length; i++)
         {
-            nextp[i] = (prevp[i] + nextp[i]) / 2.0;
+            nextp[i] = (cur[i] + nextp[i]) / 2.0;
         }
 
         return nextp;
@@ -185,11 +226,8 @@ public class Superposition
         double sum = 0.0;
         for(int i = 0; i < sp.length; i++)
         {
-            if(mask[i] != 0)
-            {
-                res[i] = prob.get(r, i);
-                sum += res[i];
-            }
+            res[i] = mask[i] * prob.get(r, i);
+            sum += res[i];
         }
 
         // normalize res
@@ -242,6 +280,7 @@ public class Superposition
     private void propagateRight(int[] p)
     {
         boolean changed = false;
+        int[] spc = sp.clone();
 
         for(int i = 0; i < sp.length; i++)
         {

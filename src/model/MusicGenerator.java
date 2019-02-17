@@ -41,28 +41,25 @@ public class MusicGenerator {
     
     // Imports a MIDI sample to use in music generation
     public boolean importSample(File file) {
-        return mTable.loadMidiFile(file.getAbsolutePath()); // Taylor you're here! Do things!
+        boolean test = mTable.loadMidiFile(file.getAbsolutePath());
+        PTable[] pt = new PTable[2];
+        pt[0] = new PTable(mTable.getPitchTable());
+        pt[1] = new PTable(mTable.getLengthTable());
+        wfc = new WaveFCND(pt);
+
+        return test;
     }
     
     // Exports a music generation table as a new MIDI file
     public void exportMIDI(File file) {
-        Write.midi(s, "output.MID");    // McKade you're here! Do things!
+        Write.midi(s, "output.MID");
     }
     
     // Generates music given a note length
     public void generateMusic(int length)
     {
-        if(wfc == null)
-        {
-            PTable[] pt = new PTable[2];
-            if(mTable.getPitchTable() == null || mTable.getLengthTable() == null)
-                System.out.println("null table");
-            pt[0] = new PTable(mTable.getPitchTable());
-            pt[1] = new PTable(mTable.getLengthTable());
-            wfc = new WaveFCND(pt);
-        }
         // use wfc and mTable
-        s = new Score("Procedural");
+        s = new Score("Procedural", 105);
         Part p = new Part("Piano", ProgramChanges.PIANO, 0);
         Note[] notes = wfc.getNotes(length);
 

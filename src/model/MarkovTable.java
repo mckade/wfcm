@@ -87,7 +87,7 @@ public class MarkovTable {
         // dist-1 and dist-4 NoteTransition (see NoteTransition.java for details)
         // and dist-1 NoteDuration (see NoteDuration.java for details)
         pitchMods.add(new NoteTransition(1, notes, pitch.size()));
-        pitchMods.add(new NoteTransition(4, notes, pitch.size()));
+        //pitchMods.add(new NoteTransition(4, notes, pitch.size()));
 
         lengthMods.add(new NoteDuration(1, notes, length.size()));
 
