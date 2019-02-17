@@ -80,4 +80,12 @@ public class MusicGenerator {
     {
         Play.midi(s);
     }
+    
+    public void stopSong() {
+        
+    }
+    
+    public boolean isPlaying() {
+        return true;
+    }
 }

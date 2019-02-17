@@ -32,6 +32,7 @@ implements ActionListener {
     // Buttons
     public static final String GENERATE = "generate";
     public static final String PLAY = "play";
+    public static final String STOP = "stop";
     
     private ArrayList<ButtonListener> listeners;
     
@@ -39,6 +40,7 @@ implements ActionListener {
     private JButton generate;
     private JSpinner noteLength;
     private JButton play;
+    private JButton stop;
     
     // Constructor
     public ButtonPanel(Dimension dim) {
@@ -63,6 +65,9 @@ implements ActionListener {
         play = new JButton("Play");
         play.addActionListener(this);
         play.setActionCommand(PLAY);
+        stop = new JButton("Stop");
+        stop.addActionListener(this);
+        stop.setActionCommand(STOP);
         
         GridBagConstraints gc = new GridBagConstraints();
         
@@ -88,12 +93,14 @@ implements ActionListener {
         ////////// Row 2 //////////
         gc.gridy = 1;
         gc.gridx = 0;
-        gc.gridwidth = 2;
         gc.weightx = 1;
         gc.weighty = 1;
         gc.anchor = GridBagConstraints.LINE_START;
         gc.insets = new Insets(5,5,5,5);
         add(play, gc);
+        
+        gc.gridx = 1;
+        add(stop, gc);
     }
     
     public int getNoteLength() {

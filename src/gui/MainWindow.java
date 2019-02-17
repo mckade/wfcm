@@ -19,7 +19,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
 import java.io.File;
 
 import javax.swing.BorderFactory;
@@ -144,11 +143,16 @@ implements MenuListener, UpdateListener, ButtonListener {
             }
             break;
         case _MenuBar.EXPORT:
-            file = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
-            if (file != null) {
-                leftPanel.addLog("- Exporting MIDI...\n");
-                mgen.exportMIDI(file);
-                leftPanel.addLog("- Finished\n");
+            if (sample) {
+                file = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
+                if (file != null) {
+                    leftPanel.addLog("- Exporting MIDI...\n");
+                    mgen.exportMIDI(file);
+                    leftPanel.addLog("- Finished\n");
+                }
+            }
+            else {
+                leftPanel.addLog("- Could not export music\n- First import a MIDI sample\n");
             }
             break;
         case _MenuBar.EXIT:
@@ -195,9 +199,24 @@ implements MenuListener, UpdateListener, ButtonListener {
         case ButtonPanel.PLAY:
             if (sample) {
                 mgen.playSong();
+                leftPanel.addLog("- Playing song\n");
             }
             else {
                 leftPanel.addLog("- Could not play music\n- First import a MIDI sample\n");
+            }
+            break;
+        case ButtonPanel.STOP:
+            if (sample) {
+                if (mgen.isPlaying()) {
+                    mgen.stopSong();
+                    leftPanel.addLog("- Song stopped\n");
+                }
+                else {
+                    leftPanel.addLog("- No song is playing\n");
+                }
+            }
+            else {
+                leftPanel.addLog("- No song is playing\n");
             }
             break;
         }

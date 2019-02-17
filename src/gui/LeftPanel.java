@@ -34,7 +34,7 @@ import coms.UpdateType;
 public class LeftPanel extends JPanel {
     
     // Minimum width of the panel.
-    public static final int MINWIDTH = 200;
+    public static final int MINWIDTH = 250;
     
     // Holds listeners to send events to.
     private ArrayList<UpdateListener> listeners;
