@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
 import java.io.File;
 
 import javax.swing.BorderFactory;
@@ -58,6 +59,7 @@ implements MenuListener, UpdateListener, ButtonListener {
     
     // Controller and controls
     private MusicGenerator mgen;
+    private boolean sample = false;
     
     // Constructor
     public MainWindow() {
@@ -131,11 +133,23 @@ implements MenuListener, UpdateListener, ButtonListener {
             break;
         case _MenuBar.IMPORT:
             file = FileDialog.openFile(this, FileDialog.IMPORT_EXPORT);
-            mgen.importSample(file);
+            if (file != null) {
+                if (mgen.importSample(file)) {
+                    sample = true;
+                    leftPanel.addLog("- Sample loaded\n");
+                    leftPanel.addLog("- Generating...\n");
+                    mgen.generateMusic(leftPanel.getNoteLength());
+                    leftPanel.addLog("- Finished\n");
+                }
+            }
             break;
         case _MenuBar.EXPORT:
             file = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
-            mgen.exportMIDI(file);
+            if (file != null) {
+                leftPanel.addLog("- Exporting MIDI...\n");
+                mgen.exportMIDI(file);
+                leftPanel.addLog("- Finished\n");
+            }
             break;
         case _MenuBar.EXIT:
             System.exit(0);
@@ -167,7 +181,25 @@ implements MenuListener, UpdateListener, ButtonListener {
         }
     }
 
-    public void generateButtonClicked(ButtonEvent e) {
-        mgen.generateMusic(e.getLength());
+    public void buttonClicked(ButtonEvent e) {
+        switch (e.getID()) {
+        case ButtonPanel.GENERATE:
+            if (sample) {
+                leftPanel.addLog("- Genearting music with " + leftPanel.getNoteLength() + " notes\n");
+                mgen.generateMusic(leftPanel.getNoteLength());
+            }
+            else {
+                leftPanel.addLog("- Could not generate music\n- First import a MIDI sample\n");
+            }
+            break;
+        case ButtonPanel.PLAY:
+            if (sample) {
+                mgen.playSong();
+            }
+            else {
+                leftPanel.addLog("- Could not play music\n- First import a MIDI sample\n");
+            }
+            break;
+        }
     }
 }

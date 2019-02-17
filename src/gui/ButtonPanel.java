@@ -9,8 +9,10 @@
 
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import coms.ButtonEvent;
 import coms.ButtonListener;
@@ -26,11 +29,16 @@ import coms.ButtonListener;
 public class ButtonPanel extends JPanel
 implements ActionListener {
     
+    // Buttons
+    public static final String GENERATE = "generate";
+    public static final String PLAY = "play";
+    
     private ArrayList<ButtonListener> listeners;
     
     // Components
-    JButton generate;
-    JSpinner noteLength;
+    private JButton generate;
+    private JSpinner noteLength;
+    private JButton play;
     
     // Constructor
     public ButtonPanel(Dimension dim) {
@@ -44,29 +52,65 @@ implements ActionListener {
         setBorder(MainWindow.BORDER);
         
         // Layout and components
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
         
         // Creating components
         generate = new JButton("Generate");
         generate.addActionListener(this);
-        noteLength = new JSpinner();
-        noteLength.setValue(10);
+        generate.setActionCommand(GENERATE);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(100, 2, 99999, 1);
+        noteLength = new JSpinner(spinnerModel);
+        play = new JButton("Play");
+        play.addActionListener(this);
+        play.setActionCommand(PLAY);
         
-        add(generate, BorderLayout.CENTER);
-        add(noteLength, BorderLayout.SOUTH);
+        GridBagConstraints gc = new GridBagConstraints();
+        
+        ////////// Row 1 //////////
+        // Generate Button
+        gc.gridx = 0;
+        gc.gridy = 0;
+        gc.weightx = 0;
+        gc.weighty = 1;
+        gc.fill = GridBagConstraints.NONE;
+        gc.anchor = GridBagConstraints.LINE_START;
+        gc.insets = new Insets(5,5,5,5);
+        add(generate, gc);
+        
+        // Generate note length
+        gc.gridx = 1;
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        gc.insets = new Insets(5,5,5,5);
+        add(noteLength, gc);
+        
+        ////////// Row 2 //////////
+        gc.gridy = 1;
+        gc.gridx = 0;
+        gc.gridwidth = 2;
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        gc.insets = new Insets(5,5,5,5);
+        add(play, gc);
+    }
+    
+    public int getNoteLength() {
+        return (int)noteLength.getValue();
     }
     
     public void addButtonListener(ButtonListener listener) {
         listeners.add(listener);
     }
     
-    private void fireButtonClicked(Object source) {
+    private void fireButtonClicked(Object source, String id) {
         for (ButtonListener listener : listeners) {
-            listener.generateButtonClicked(new ButtonEvent(source, (int)noteLength.getValue()));
+            listener.buttonClicked(new ButtonEvent(source, id));
         }
     }
 
     public void actionPerformed(ActionEvent e) {
-        fireButtonClicked(e.getSource());
+        fireButtonClicked(e.getSource(), e.getActionCommand());
     }
 }

@@ -5,14 +5,14 @@ import java.util.EventObject;
 @SuppressWarnings("serial")
 public class ButtonEvent extends EventObject {
     
-    private int length;
-
-    public ButtonEvent(Object source, int length ) {
+    String id;
+    
+    public ButtonEvent(Object source, String id ) {
         super(source);
-        this.length = length;
+        this.id = id;
     }
     
-    public int getLength() {
-        return length;
+    public String getID() {
+        return id;
     }
 }

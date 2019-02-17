@@ -1,5 +1,5 @@
 package coms;
 
 public interface ButtonListener {
-    public void generateButtonClicked(ButtonEvent e);
+    public void buttonClicked(ButtonEvent e);
 }

@@ -128,6 +128,14 @@ public class LeftPanel extends JPanel {
         }
     }
     
+    public int getNoteLength() {
+        return buttonPanel.getNoteLength();
+    }
+    
+    public void addLog(String log) {
+        logPanel.addLog(log);
+    }
+    
     // Adds a listener to the list to send events to.
     public void addUpdateListener(UpdateListener listener) {
         listeners.add(listener);
