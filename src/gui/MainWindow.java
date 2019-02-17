@@ -136,9 +136,9 @@ implements MenuListener, UpdateListener, ButtonListener {
                 if (mgen.importSample(file)) {
                     sample = true;
                     leftPanel.addLog("- Sample loaded\n");
-                    leftPanel.addLog("- Generating...\n");
+                    //leftPanel.addLog("- Generating...\n");
                     //mgen.generateMusic(leftPanel.getNoteLength());
-                    leftPanel.addLog("- Finished\n");
+                    //leftPanel.addLog("- Finished\n");
                 }
             }
             break;
