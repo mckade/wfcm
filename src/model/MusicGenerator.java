@@ -41,7 +41,7 @@ public class MusicGenerator {
     
     // Imports a MIDI sample to use in music generation
     public boolean importSample(File file) {
-        return mTable.loadMidiFile(file.getName()); // Taylor you're here! Do things!
+        return mTable.loadMidiFile(file.getAbsolutePath()); // Taylor you're here! Do things!
     }
     
     // Exports a music generation table as a new MIDI file
