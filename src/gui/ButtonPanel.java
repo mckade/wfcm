@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 
 import coms.ButtonEvent;
 import coms.ButtonListener;
@@ -29,6 +30,7 @@ implements ActionListener {
     
     // Components
     JButton generate;
+    JSpinner noteLength;
     
     // Constructor
     public ButtonPanel(Dimension dim) {
@@ -47,8 +49,11 @@ implements ActionListener {
         // Creating components
         generate = new JButton("Generate");
         generate.addActionListener(this);
+        noteLength = new JSpinner();
+        noteLength.setValue(10);
         
-        add(generate);
+        add(generate, BorderLayout.CENTER);
+        add(noteLength, BorderLayout.SOUTH);
     }
     
     public void addButtonListener(ButtonListener listener) {
@@ -57,7 +62,7 @@ implements ActionListener {
     
     private void fireButtonClicked(Object source) {
         for (ButtonListener listener : listeners) {
-            listener.generateButtonClicked(new ButtonEvent(source));
+            listener.generateButtonClicked(new ButtonEvent(source, (int)noteLength.getValue()));
         }
     }
 

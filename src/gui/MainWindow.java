@@ -168,6 +168,6 @@ implements MenuListener, UpdateListener, ButtonListener {
     }
 
     public void generateButtonClicked(ButtonEvent e) {
-        mgen.generateMusic(10);
+        mgen.generateMusic(e.getLength());
     }
 }
