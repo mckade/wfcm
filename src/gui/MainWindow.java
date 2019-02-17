@@ -28,14 +28,17 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
+import coms.ButtonEvent;
+import coms.ButtonListener;
 import coms.MenuEvent;
 import coms.MenuListener;
 import coms.UpdateEvent;
 import coms.UpdateListener;
+import model.MusicGenerator;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame 
-implements MenuListener, UpdateListener {
+implements MenuListener, UpdateListener, ButtonListener {
     
     // Default visual settings
     public static final Color BACKGROUND = new Color(0, 6, 5);
@@ -54,6 +57,8 @@ implements MenuListener, UpdateListener {
     private _MenuBar menuBar;
     
     // Controller and controls
+    private MusicGenerator mgen;
+    private boolean sample = false;
     
     // Constructor
     public MainWindow() {
@@ -61,6 +66,7 @@ implements MenuListener, UpdateListener {
         // Setup
         super("Proc Music");
         Dimension dim = new Dimension(1024, 768);
+        mgen = new MusicGenerator();
         
         // Setting up main window.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,6 +82,7 @@ implements MenuListener, UpdateListener {
         // Creating Panels and components
         leftPanel = new LeftPanel();
         leftPanel.addUpdateListener(this);
+        leftPanel.addButtonListener(this);
         rightPanel = new RightPanel();
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -113,19 +120,40 @@ implements MenuListener, UpdateListener {
             break;
         case _MenuBar.OPEN:
             file = FileDialog.openFile(this, FileDialog.SAVE_OPEN);
+            mgen.openGenerationTable(file);
             break;
         case _MenuBar.CLOSE:
             break;
         case _MenuBar.SAVE:
             file = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
+            mgen.saveGenerationTable(file);
             break;
         case _MenuBar.SAVEAS:
             break;
         case _MenuBar.IMPORT:
             file = FileDialog.openFile(this, FileDialog.IMPORT_EXPORT);
+            if (file != null) {
+                if (mgen.importSample(file)) {
+                    sample = true;
+                    leftPanel.addLog("- Sample loaded\n");
+                    //leftPanel.addLog("- Generating...\n");
+                    //mgen.generateMusic(leftPanel.getNoteLength());
+                    //leftPanel.addLog("- Finished\n");
+                }
+            }
             break;
         case _MenuBar.EXPORT:
-            file = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
+            if (sample) {
+                file = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
+                if (file != null) {
+                    leftPanel.addLog("- Exporting MIDI...\n");
+                    mgen.exportMIDI(file);
+                    leftPanel.addLog("- Finished\n");
+                }
+            }
+            else {
+                leftPanel.addLog("- Could not export music\nFirst import a MIDI sample\n");
+            }
             break;
         case _MenuBar.EXIT:
             System.exit(0);
@@ -153,6 +181,43 @@ implements MenuListener, UpdateListener {
             break;
         case invisible:
             splitPane.setDividerSize(0);
+            break;
+        }
+    }
+
+    public void buttonClicked(ButtonEvent e) {
+        switch (e.getID()) {
+        case ButtonPanel.GENERATE:
+            if (sample) {
+                leftPanel.addLog("- Genearting music with " + leftPanel.getNoteLength() + " notes\n");
+                mgen.generateMusic(leftPanel.getNoteLength());
+            }
+            else {
+                leftPanel.addLog("- Could not generate music\nFirst import a MIDI sample\n");
+            }
+            break;
+        case ButtonPanel.PLAY:
+            if (sample) {
+                mgen.playSong();
+                leftPanel.addLog("- Playing song\n");
+            }
+            else {
+                leftPanel.addLog("- Could not play music\nFirst import a MIDI sample\n");
+            }
+            break;
+        case ButtonPanel.STOP:
+            if (sample) {
+                if (mgen.isPlaying()) {
+                    mgen.stopSong();
+                    leftPanel.addLog("- Song stopped\n");
+                }
+                else {
+                    leftPanel.addLog("- No song is playing\n");
+                }
+            }
+            else {
+                leftPanel.addLog("- No song is playing\n");
+            }
             break;
         }
     }

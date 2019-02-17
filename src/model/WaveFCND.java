@@ -55,6 +55,7 @@ public class WaveFCND
             while(rtn != null)
             {
                 rtn.collapse();
+
                 rtn = lowestSE(heads[i]);
                 if(rtn == null && failed)
                 {
@@ -67,6 +68,18 @@ public class WaveFCND
         return heads;
     }
 
+    private void dumpSP(Superposition head)
+    {
+        System.out.println("----------DUMP----------");
+        Superposition cur = head;
+        while(cur != null)
+        {
+            cur.print();
+
+            cur = cur.getNext();
+        }
+    }
+
     /*
      * Return an array of generated notes
      */
@@ -76,6 +89,7 @@ public class WaveFCND
         Superposition[] heads = generate(length);
         while(failed == true)
         {
+            //dumpSP(heads[0]);
             failed = false;
             for(int i = 0; i < heads.length; i++)
             {

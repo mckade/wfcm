@@ -62,6 +62,6 @@ public class LogPanel extends JPanel {
     
     // Adds log to the log text area.
     public void addLog(String log) {
-        text.append(log + "\n");
+        text.append(log);
     }
 }

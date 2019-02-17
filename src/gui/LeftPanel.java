@@ -25,6 +25,7 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
+import coms.ButtonListener;
 import coms.UpdateEvent;
 import coms.UpdateListener;
 import coms.UpdateType;
@@ -33,7 +34,7 @@ import coms.UpdateType;
 public class LeftPanel extends JPanel {
     
     // Minimum width of the panel.
-    public static final int MINWIDTH = 200;
+    public static final int MINWIDTH = 250;
     
     // Holds listeners to send events to.
     private ArrayList<UpdateListener> listeners;
@@ -127,9 +128,21 @@ public class LeftPanel extends JPanel {
         }
     }
     
+    public int getNoteLength() {
+        return buttonPanel.getNoteLength();
+    }
+    
+    public void addLog(String log) {
+        logPanel.addLog(log);
+    }
+    
     // Adds a listener to the list to send events to.
     public void addUpdateListener(UpdateListener listener) {
         listeners.add(listener);
+    }
+    
+    public void addButtonListener(ButtonListener listener) {
+        buttonPanel.addButtonListener(listener);
     }
     
     // Sends out an event to reset the left/right panel divider position
