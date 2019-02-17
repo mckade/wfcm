@@ -9,6 +9,8 @@ package model;
 
 import java.io.File;
 
+import jm.audio.AOException;
+import jm.audio.Instrument;
 import jm.constants.ProgramChanges;
 import jm.music.data.Note;
 import jm.music.data.Part;
@@ -79,7 +81,7 @@ public class MusicGenerator {
     }
     
     public void stopSong() {
-        
+        Play.stopMidi();
     }
     
     public boolean isPlaying() {
