@@ -152,7 +152,7 @@ implements MenuListener, UpdateListener, ButtonListener {
                 }
             }
             else {
-                leftPanel.addLog("- Could not export music\n- First import a MIDI sample\n");
+                leftPanel.addLog("- Could not export music\nFirst import a MIDI sample\n");
             }
             break;
         case _MenuBar.EXIT:
@@ -193,7 +193,7 @@ implements MenuListener, UpdateListener, ButtonListener {
                 mgen.generateMusic(leftPanel.getNoteLength());
             }
             else {
-                leftPanel.addLog("- Could not generate music\n- First import a MIDI sample\n");
+                leftPanel.addLog("- Could not generate music\nFirst import a MIDI sample\n");
             }
             break;
         case ButtonPanel.PLAY:
@@ -202,7 +202,7 @@ implements MenuListener, UpdateListener, ButtonListener {
                 leftPanel.addLog("- Playing song\n");
             }
             else {
-                leftPanel.addLog("- Could not play music\n- First import a MIDI sample\n");
+                leftPanel.addLog("- Could not play music\nFirst import a MIDI sample\n");
             }
             break;
         case ButtonPanel.STOP:

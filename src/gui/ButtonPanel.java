@@ -91,14 +91,16 @@ implements ActionListener {
         add(noteLength, gc);
         
         ////////// Row 2 //////////
+        // Play Button
         gc.gridy = 1;
         gc.gridx = 0;
-        gc.weightx = 1;
+        gc.weightx = 0;
         gc.weighty = 1;
         gc.anchor = GridBagConstraints.LINE_START;
         gc.insets = new Insets(5,5,5,5);
         add(play, gc);
         
+        // Stop Button
         gc.gridx = 1;
         add(stop, gc);
     }
