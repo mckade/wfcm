@@ -13,6 +13,7 @@ package model;
 import java.io.IOException;
 import java.util.*;
 
+import jm.music.data.CPhrase;
 import jm.music.data.Note;
 
 public class MarkovTable {
@@ -20,6 +21,7 @@ public class MarkovTable {
     // Fields
     private MidiReader midiReader;
     private Note[] notes;
+    private CPhrase chords;
     private double[][] pitchTable;  // pitch transition probabilities
     private double[][] lengthTable; // duration transition probabilities
 
@@ -41,7 +43,9 @@ public class MarkovTable {
     {
         // Get midi data for processing.
         try {
-            notes = midiReader.readMidi(filename);
+            midiReader.readMidi(filename);
+            notes = midiReader.midiData.getNotes();
+            chords = midiReader.midiData.getChords();
         } catch (IOException ex) {
             System.out.println("Could not read file: " + filename);
         }

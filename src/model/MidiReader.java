@@ -53,7 +53,7 @@ public class MidiReader {
     // Given a filename it will attempt to read a midi file.
     // Returns the midi data for processing.
     // Currently returns a Vector of Notes (in the order they appear in input)
-    public Note[] readMidi(String/*File*/ filename) throws IOException {
+    public void readMidi(String/*File*/ filename) throws IOException {
 
         Note[] notes = null;
 
@@ -89,7 +89,6 @@ public class MidiReader {
 
         // Will eventually want to return a MidiData object
         // Or have MarkovTable access MidiReader's personal MidiData object to get what it needs
-        return midiData.getNotes();
     }
 
     // Cycles through each event in the event vector passed to it
