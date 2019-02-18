@@ -14,6 +14,8 @@ import jm.midi.SMF;
 import jm.midi.Track;
 import jm.midi.event.*;
 import jm.music.data.*;
+import jm.music.tools.ChordAnalysis;
+import jm.music.tools.PhraseAnalysis;
 import jm.util.Read;
 
 import java.io.*;
@@ -85,6 +87,7 @@ public class MidiReader {
             // Loop through Tracks &
             // Get Event data
             for (Vector<Event> vec : events) { parseEvents(vec); }
+            System.out.println(midiData.getChords().toString());
         }
 
         // Will eventually want to return a MidiData object
@@ -114,7 +117,7 @@ public class MidiReader {
                     if (pitches.size() > 1) {
                         // If so, we just read a chord, so att it to CPhrase
                         midiData.chords.addChord(vectorToIntArr(pitches), 1);
-                    } else { // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
+                    } else if (pitches.size() == 1){ // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
                         midiData.notes.add(new Note(off.getPitch(), 1));
                     }
 
@@ -141,7 +144,7 @@ public class MidiReader {
                         if (pitches.size() > 1) {
                             // If so, we just read a chord, so att it to CPhrase
                             midiData.chords.addChord(vectorToIntArr(pitches), 1);
-                        } else { // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
+                        } else if (pitches.size() == 1) { // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
                             midiData.notes.add(new Note(on.getPitch(), 1));
                         }
 
