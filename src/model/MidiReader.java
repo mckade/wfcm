@@ -34,22 +34,22 @@ public class MidiReader {
     // Event object from SMF
     public class MidiData {
 
-        CPhrase chords;
+        Vector<int[]> chords;
         Vector<Note> notes;
 
         public MidiData() {
-            this.chords = new CPhrase();
+            this.chords = new Vector<>();
             this.notes = new Vector<>();
         }
 
-        public MidiData(CPhrase c, Vector<Note> n) {
+        public MidiData(Vector<int[]> c, Vector<Note> n) {
             this.chords = c;
             this.notes = n;
         }
 
         public Note[] getNotes() { return vectorToNoteArr(this.notes); }
 
-        public CPhrase getChords() { return this.chords; }
+        public Vector<int[]> getChords() { return this.chords; }
     }
 
     // Given a filename it will attempt to read a midi file.
@@ -87,7 +87,7 @@ public class MidiReader {
             // Loop through Tracks &
             // Get Event data
             for (Vector<Event> vec : events) { parseEvents(vec); }
-            System.out.println(midiData.getChords().toString());
+
         }
 
         // Will eventually want to return a MidiData object
@@ -114,9 +114,9 @@ public class MidiReader {
                     System.out.println("NoteOff event:");
 
                     // Check if more than one NoteOn event
-                    if (pitches.size() > 1) {
+                    if (pitches.size() > 2) {
                         // If so, we just read a chord, so att it to CPhrase
-                        midiData.chords.addChord(vectorToIntArr(pitches), 1);
+                        midiData.chords.add(vectorToIntArr(pitches));
                     } else if (pitches.size() == 1){ // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
                         midiData.notes.add(new Note(off.getPitch(), 1));
                     }
@@ -141,9 +141,9 @@ public class MidiReader {
                         System.out.println("NoteOff event:");
 
                         // Check if more than NoteOn event
-                        if (pitches.size() > 1) {
+                        if (pitches.size() > 2) {
                             // If so, we just read a chord, so att it to CPhrase
-                            midiData.chords.addChord(vectorToIntArr(pitches), 1);
+                            midiData.chords.add(vectorToIntArr(pitches));
                         } else if (pitches.size() == 1) { // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
                             midiData.notes.add(new Note(on.getPitch(), 1));
                         }

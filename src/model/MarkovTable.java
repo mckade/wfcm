@@ -21,7 +21,7 @@ public class MarkovTable {
     // Fields
     private MidiReader midiReader;
     private Note[] notes;
-    private CPhrase chords;
+    private Vector<int[]> chords;
     private double[][] pitchTable;  // pitch transition probabilities
     private double[][] lengthTable; // duration transition probabilities
 
@@ -123,6 +123,52 @@ public class MarkovTable {
             }
         }
     }
+
+    /** @author Taylor Bleizeffer
+     *
+     * Analyzes a vector of int[] containing pitches that make up chords.
+     * Determines the most likely chord contructed from each pitch array.
+     * Generates a chord table.
+     * Only determines Major, Minor, and Seventh chords
+     *
+     * @return
+     */
+    public void generateChordTable(Vector<int[]> chords) {
+
+        int root;
+
+        // Iterate through each pitch array in the chord vector
+        for (int[] chord : chords) {
+
+            // If only 3 notes in chord - Major or Minor
+            // If 4 notes - Seventh
+            if (chord.length == 3) {
+
+                // Grab "root" note
+                root = chord[0];
+
+                // Determine if Major
+
+                    // Determine if Root Position
+
+                    // Determine if First Inversion
+
+                    // Determine if Second Inversion
+
+                // Determine if Minor
+
+                    // Determine if Root Position
+
+                    // Determine if First Inversion
+
+                    // Determine if Second Inversion
+            }
+            if (chord.length == 4) {
+                
+            }
+        }
+    }
+
 
     public double[][] getPitchTable()
     {
