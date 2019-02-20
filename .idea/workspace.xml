@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13a496eb-155a-4ca8-917d-4a5593a0ecd3" name="Default Changelist" comment="">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/src/model/Chord.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+=======
+>>>>>>> master
       <change beforePath="$PROJECT_DIR$/src/model/MarkovTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/MarkovTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/MidiReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/MidiReader.java" afterDir="false" />
     </list>
@@ -18,8 +21,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/model/MidiReader.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="240">
               <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+=======
+            <state relative-caret-position="782">
+              <caret line="91" column="23" selection-start-line="91" selection-start-column="23" selection-end-line="91" selection-end-column="23" />
+>>>>>>> master
             </state>
           </provider>
         </entry>
@@ -63,6 +71,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/model/MarkovTable.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="240">
               <caret line="166" column="16" selection-start-line="166" selection-start-column="16" selection-end-line="166" selection-end-column="16" />
               <folding>
@@ -78,6 +87,10 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="51">
               <caret line="3" selection-start-line="3" selection-end-line="3" />
+=======
+            <state relative-caret-position="850">
+              <caret line="74" lean-forward="true" selection-start-line="74" selection-end-line="74" />
+>>>>>>> master
             </state>
           </provider>
         </entry>
@@ -118,7 +131,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+<<<<<<< HEAD
       <pane id="Scope" />
+=======
+>>>>>>> master
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -188,6 +204,10 @@
           <select />
         </subPane>
       </pane>
+<<<<<<< HEAD
+=======
+      <pane id="Scope" />
+>>>>>>> master
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -267,19 +287,31 @@
       <workItem from="1550186384080" duration="13607000" />
       <workItem from="1550351230185" duration="6475000" />
       <workItem from="1550443579290" duration="3275000" />
+<<<<<<< HEAD
       <workItem from="1550516426208" duration="1283000" />
       <workItem from="1550532965047" duration="4181000" />
+=======
+      <workItem from="1550477536220" duration="266000" />
+>>>>>>> master
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="46195000" />
+=======
+    <option name="totallyTimeSpent" value="40342000" />
+>>>>>>> master
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
+<<<<<<< HEAD
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20149253" />
+=======
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19722815" />
+>>>>>>> master
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -462,19 +494,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/model/MidiReader.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="240">
           <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+=======
+        <state relative-caret-position="782">
+          <caret line="91" column="23" selection-start-line="91" selection-start-column="23" selection-end-line="91" selection-end-column="23" />
+>>>>>>> master
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/model/MarkovTable.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="240">
           <caret line="166" column="16" selection-start-line="166" selection-start-column="16" selection-end-line="166" selection-end-column="16" />
           <folding>
             <element signature="e#5787#5788#0" expanded="true" />
             <element signature="e#5867#5868#0" expanded="true" />
           </folding>
+=======
+        <state relative-caret-position="850">
+          <caret line="74" lean-forward="true" selection-start-line="74" selection-end-line="74" />
+>>>>>>> master
         </state>
       </provider>
     </entry>
