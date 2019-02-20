@@ -150,49 +150,49 @@ public class MarkovTable {
         }
     }
 
-    /** @author Taylor Bleizeffer
-     *
-     * Analyzes a vector of int[] containing pitches that make up chords.
-     * Determines the most likely chord contructed from each pitch array.
-     * Generates a chord table.
-     * Only determines Major, Minor, and Seventh chords
-     *
-     * @return
-     */
     public void generateChordTable(Vector<int[]> chords) {
 
-        int root;
+        System.out.println("Starting table generation");
+        List<Modifier> chordMods = new ArrayList<>();
+        //List<Modifier> lengthMods = new ArrayList<>();
 
-        // Iterate through each pitch array in the chord vector
-        for (int[] chord : chords) {
+        // TODO link the modifier lists to UI so users can select
+        // different generation parameters. For now, just using
+        // dist-1 and dist-4 ChordTransition (see ChordTransition.java for details)
+        // and dist-1 ChordDuration (see ChordDuration.java for details)
+        chordMods.add(new ChordTransition(1, chords, chord.size()));
 
-            // If only 3 notes in chord - Major or Minor
-            // If 4 notes - Seventh
-            if (chord.length == 3) {
+        //lengthMods.add(new ChordDuration(1, chords, chordLength.size()));
 
-                // Grab "root" note
-                root = chord[0];
-
-                // Determine if Major
-
-                    // Determine if Root Position
-
-                    // Determine if First Inversion
-
-                    // Determine if Second Inversion
-
-                // Determine if Minor
-
-                    // Determine if Root Position
-
-                    // Determine if First Inversion
-
-                    // Determine if Second Inversion
-            }
-            if (chord.length == 4) {
-
+        // TODO add modifier weighting, i.e, make some modifiers more
+        // important than others with regard to final probability table
+        // (Do we want this user controlled with presets?)
+        System.out.println("Aggregating modifier probabilities");
+        for(int i = 0; i < chordMods.size(); i++)
+        {
+            double[][] modProbabilities = chordMods.get(i).getProbabilities();
+            for(int x = 0; x < chord.size(); x++)
+            {
+                for(int y = 0; y < chord.size(); y++)
+                {
+                    chordTable[x][y] = modProbabilities[x][y] / chordMods.size();
+                }
             }
         }
+
+        /*
+        for(int i = 0; i < lengthMods.size(); i++)
+        {
+            double[][] modProbabilities = lengthMods.get(i).getProbabilities();
+            for(int x = 0; x < length.size(); x++)
+            {
+                for(int y = 0; y < length.size(); y++)
+                {
+                    lengthTable[x][y] = modProbabilities[x][y] / lengthMods.size();
+                }
+            }
+        }
+        */
     }
 
 
@@ -204,6 +204,14 @@ public class MarkovTable {
     public double[][] getLengthTable()
     {
         return lengthTable;
+    }
+
+    public double[][] getChordTable() {
+        return chordTable;
+    }
+
+    public double[][] getChordLengthTable() {
+        return chordLengthTable;
     }
 
     public static int getPitch(int index)
@@ -225,6 +233,26 @@ public class MarkovTable {
         {
             if(index == e.getValue())
             {
+                return e.getKey();
+            }
+        }
+
+        return 0.0;
+    }
+
+    public static int[] getChord(int index) {
+        for (Map.Entry<int[], Integer> e: chord.entrySet()) {
+            if (index == e.getValue()){
+                return e.getKey();
+            }
+        }
+
+        return null;
+    }
+
+    public static double getChordDuration(int index) {
+        for (Map.Entry<Double, Integer> e: chordLength.entrySet()) {
+            if (index == e.getValue()) {
                 return e.getKey();
             }
         }
