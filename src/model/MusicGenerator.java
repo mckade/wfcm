@@ -54,7 +54,7 @@ public class MusicGenerator {
     
     // Exports a music generation table as a new MIDI file
     public void exportMIDI(File file) {
-        Write.midi(s, "output.MID");
+        Write.midi(s, file.getAbsolutePath());
     }
     
     // Generates music given a note length
@@ -69,8 +69,9 @@ public class MusicGenerator {
         Phrase phr = new Phrase(startTime);
         for(Note note : notes)
         {
-            phr.addNote(note);
+            phr.addNote(note.getPitch(), note.getDuration());
         }
+        //phr.addNoteList(notes, false);
         p.addPhrase(phr);
         s.addPart(p);
     }
