@@ -32,6 +32,7 @@ public class MidiReader {
 
     // Inner class used to encapsulate data obtained form parsing
     // Event object from SMF
+    // TODO: Store chord durations in first/last index of pitch arrays
     public class MidiData {
 
         Vector<int[]> chords;
@@ -94,6 +95,8 @@ public class MidiReader {
         // Or have MarkovTable access MidiReader's personal MidiData object to get what it needs
     }
 
+    //TODO: Store chord durations in first/last index of pitch arrays
+
     // Cycles through each event in the event vector passed to it
     // Get's notes/chord data (pitch, etc.) and places it in
     // MidiReader's MidiData object
@@ -153,6 +156,24 @@ public class MidiReader {
                     }
                     break;
             }
+        }
+    }
+
+    public Note[] getNotes() {
+        if (this.midiData != null) {
+            return this.midiData.getNotes();
+        } else {
+            System.out.println("No MIDI data has been read yet.");
+            return null;
+        }
+    }
+
+    public Vector<int[]> getChords() {
+        if (this.midiData != null) {
+            return this.midiData.getChords();
+        } else {
+            System.out.println("No MIDI data has been read yet.");
+            return null;
         }
     }
 

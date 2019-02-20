@@ -24,6 +24,8 @@ public class MarkovTable {
     private Vector<int[]> chords;
     private double[][] pitchTable;  // pitch transition probabilities
     private double[][] lengthTable; // duration transition probabilities
+    private double[][] chordTable; // chord transition probabilities
+    private double[][] chordLengthTable; // chord duration transition probabilities
 
     // pitch holds a static reference to the unique note pitches in the sample
     // mapped to an integer (the index used in probability arrays)
@@ -31,7 +33,14 @@ public class MarkovTable {
     // length holds a static reference to the unique note durations in the sample
     // mapped to an integer (the index used in probability arrays)
     public static HashMap<Double, Integer> length;
-    
+
+    // chord holds a static reference to the unique pitch arrays in the sample
+    // mapped to an integer (the index used in probability arrays)
+    public static HashMap<int[], Integer> chord;
+    // chord holds a static reference to the unique chord durations in the sample
+    // mapped to an integer (the index used in probability arrays)
+    public static HashMap<Double, Integer> chordLength;
+
     // Constructor
     public MarkovTable()
     {
@@ -44,8 +53,8 @@ public class MarkovTable {
         // Get midi data for processing.
         try {
             midiReader.readMidi(filename);
-            notes = midiReader.midiData.getNotes();
-            chords = midiReader.midiData.getChords();
+            notes = midiReader.getNotes();
+            chords = midiReader.getChords();
         } catch (IOException ex) {
             System.out.println("Could not read file: " + filename);
         }
@@ -55,8 +64,12 @@ public class MarkovTable {
         // initialize keys to 0
         int pitchKey = 0;
         int lengthKey = 0;
+        int chordKey = 0;
+        int chordLengthKey = 0;
         pitch = new HashMap<>();
         length = new HashMap<>();
+        chord = new HashMap<>();
+        chordLength = new HashMap<>();
 
         // scan the sample and update the pitch and length maps
         System.out.println("Creating pitch and length maps");
@@ -73,6 +86,19 @@ public class MarkovTable {
 
         pitchTable = new double[pitch.size()][pitch.size()];
         lengthTable = new double[length.size()][length.size()];
+
+        System.out.println("Creating chord and chord length maps");
+        for (int[] chrd : chords) {
+            if (chord.putIfAbsent(chrd, chordKey) == null)
+                chordKey++;
+
+            // TODO: Store chord durations in first/last index of pitch arrays
+            //if (chordLength.putIfAbsent(chord[4], chordLengthKey) == null)
+            //    chordLengthKey++;
+        }
+
+        chordTable = new double[chord.size()][chord.size()];
+        // chordLengthTable = new double[chordLength.size()][chordLength.size()];
 
         generateTable(notes);
 
@@ -164,7 +190,7 @@ public class MarkovTable {
                     // Determine if Second Inversion
             }
             if (chord.length == 4) {
-                
+
             }
         }
     }
