@@ -88,7 +88,7 @@ public class MidiReader {
 
             // Loop through Tracks &
             // Get Event data
-            for (Vector<Event> vec : events) { parseEvents(vec); }
+            for (Vector<Event> vec : events) { parseEvents(vec, smf.getPPQN()); }
             System.out.println(midiData.myTestPhrase.toString());
         }
     }
@@ -98,8 +98,10 @@ public class MidiReader {
     // Cycles through each event in the event vector passed to it
     // Get's notes/chord data (pitch, etc.) and places it in
     // MidiReader's MidiData object
-    public void parseEvents(Vector<Event> vec) {
+    public void parseEvents(Vector<Event> vec, int ppqn) {
 
+        // Needed to calculate durations
+        int resolution = ppqn; // Number of ticks in a quarter note
 
         // Needed for note tracking
         Note note;
@@ -113,6 +115,13 @@ public class MidiReader {
 
             // We're mostly interested in the NoteOn/NoteOff events for chords.
             switch (eventID) {
+                case 17: // TimeSig event
+
+                    TimeSig timeSig = (TimeSig) ev;
+                    System.out.println("TimeSig event:");
+                    System.out.println("1/32 per beat: " + timeSig.getThirtySecondNotesPerBeat());
+                    System.out.println("Metronome pulse: " + timeSig.getMetronomePulse());
+                    break;
                 case 4: // NoteOff event
 
                     NoteOff off = (NoteOff) ev;
@@ -122,11 +131,13 @@ public class MidiReader {
                     if (pitches.size() > 2) {
                         // If so, we just read a chord, so add it to "Chord" array
                         // (last element of "Chord" array is chord duration)
-                        midiData.myTestPhrase.addChord(vectorToIntArr(pitches), 1);
                         pitches.add(off.getTime() - lastTime);
                         midiData.chords.add(vectorToIntArr(pitches));
+                        midiData.myTestPhrase.addChord(vectorToIntArr(pitches), pitches.get(pitches.size() - 1));
+
                     } else if (pitches.size() == 1){ // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
                         note = new Note(off.getPitch(), 1);
+                        note.setRhythmValue(off.getTime() - lastTime);
                         note.setDuration(off.getTime() - lastTime);
                         midiData.notes.add(note);
 
@@ -145,10 +156,12 @@ public class MidiReader {
                     if (on.getVelocity() != 0) {
 
                         System.out.println("NoteOn event:");
+                        on.print();
 
                         // Add pitch value to vector
                         pitches.add(Short.toUnsignedInt(on.getPitch()));
                         lastTime = on.getTime();
+
                     } else {
                         System.out.println("NoteOff event:");
 
@@ -156,9 +169,9 @@ public class MidiReader {
                         if (pitches.size() > 2) {
                             // If so, we just read a chord, so add it to "Chord" array
                             // (last element of "Chord" array is chord duration)
-                            midiData.myTestPhrase.addChord(vectorToIntArr(pitches), 1);
                             pitches.add(on.getTime() - lastTime);
                             midiData.chords.add(vectorToIntArr(pitches));
+                            midiData.myTestPhrase.addChord(vectorToIntArr(pitches), pitches.get(pitches.size() - 1));
                         } else if (pitches.size() == 1) { // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
                             note = new Note(on.getPitch(), 1);
                             note.setDuration(on.getTime() - lastTime);
