@@ -21,7 +21,8 @@ public class MarkovTable {
     // Fields
     private MidiReader midiReader;
     private Note[] notes;
-    private Vector<int[]> chords;
+    private Vector<double[]> chords;
+    private Vector<int[]> chordPitches;
     private double[][] pitchTable;  // pitch transition probabilities
     private double[][] lengthTable; // duration transition probabilities
     private double[][] chordTable; // chord transition probabilities
@@ -88,17 +89,28 @@ public class MarkovTable {
         lengthTable = new double[length.size()][length.size()];
 
         System.out.println("Creating chord and chord length maps");
-        for (int[] chrd : chords) {
-            if (chord.putIfAbsent(chrd, chordKey) == null)
+        for (double[] chrd : chords) {
+
+            // Make a copy of chord pitch array without the duration at the end
+            int[] newChrd = new int[chrd.length - 2];
+            for (int i = 0; i < chrd.length - 2; ++i) {
+                newChrd[i] = (int)chrd[i];
+            }
+
+            // Add new chord to chordPitches as int[]
+            chordPitches.add(newChrd);
+
+            if (chord.putIfAbsent(newChrd, chordKey) == null)
                 chordKey++;
 
-            // TODO: Store chord durations in first/last index of pitch arrays
-            //if (chordLength.putIfAbsent(chord[4], chordLengthKey) == null)
-            //    chordLengthKey++;
+            // TODO: Store chord durations in last index of pitch arrays
+            if (chordLength.putIfAbsent(chrd[chrd.length - 1], chordLengthKey) == null)
+                chordLengthKey++;
+
         }
 
         chordTable = new double[chord.size()][chord.size()];
-        // chordLengthTable = new double[chordLength.size()][chordLength.size()];
+        chordLengthTable = new double[chordLength.size()][chordLength.size()];
 
         generateTable(notes);
 
@@ -150,19 +162,19 @@ public class MarkovTable {
         }
     }
 
-    public void generateChordTable(Vector<int[]> chords) {
+    public void generateChordTable(Vector<int[]> chordPitches, Vector<double[]> chords) {
 
         System.out.println("Starting table generation");
         List<Modifier> chordMods = new ArrayList<>();
-        //List<Modifier> lengthMods = new ArrayList<>();
+        List<Modifier> lengthMods = new ArrayList<>();
 
         // TODO link the modifier lists to UI so users can select
         // different generation parameters. For now, just using
         // dist-1 and dist-4 ChordTransition (see ChordTransition.java for details)
         // and dist-1 ChordDuration (see ChordDuration.java for details)
-        chordMods.add(new ChordTransition(1, chords, chord.size()));
+        chordMods.add(new ChordTransition(1, chordPitches, chord.size()));
 
-        //lengthMods.add(new ChordDuration(1, chords, chordLength.size()));
+        lengthMods.add(new ChordDuration(1, chords, chordLength.size()));
 
         // TODO add modifier weighting, i.e, make some modifiers more
         // important than others with regard to final probability table
@@ -180,7 +192,7 @@ public class MarkovTable {
             }
         }
 
-        /*
+
         for(int i = 0; i < lengthMods.size(); i++)
         {
             double[][] modProbabilities = lengthMods.get(i).getProbabilities();
@@ -192,7 +204,6 @@ public class MarkovTable {
                 }
             }
         }
-        */
     }
 
 

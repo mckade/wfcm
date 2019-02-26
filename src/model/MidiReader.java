@@ -36,7 +36,7 @@ public class MidiReader {
     public class MidiData {
 
         Phrase myTestPhrase = new Phrase();
-        Vector<int[]> chords; // Last element is chord duration
+        Vector<double[]> chords; // Last element is chord duration
         Vector<Note> notes;
 
         public MidiData() {
@@ -44,14 +44,14 @@ public class MidiReader {
             this.notes = new Vector<>();
         }
 
-        public MidiData(Vector<int[]> c, Vector<Note> n) {
+        public MidiData(Vector<double[]> c, Vector<Note> n) {
             this.chords = c;
             this.notes = n;
         }
 
         public Note[] getNotes() { return vectorToNoteArr(this.notes); }
 
-        public Vector<int[]> getChords() { return this.chords; }
+        public Vector<double[]> getChords() { return this.chords; }
     }
 
     // Given a filename it will attempt to read a midi file.
@@ -133,7 +133,7 @@ public class MidiReader {
                         // If so, we just read a chord, so add it to "Chord" array
                         // (last element of "Chord" array is chord duration)
                         pitches.add(off.getTime() / resolution);
-                        midiData.chords.add(vectorToIntArr(pitches));
+                        midiData.chords.add(vectorToPitchArr(pitches));
 
                     } else if (pitches.size() == 1){ // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
                         note = new Note(off.getPitch(), (double)off.getTime() / resolution);
@@ -169,7 +169,7 @@ public class MidiReader {
                                 pitches.add(on.getTime() / resolution );
                             }
 
-                            midiData.chords.add(vectorToIntArr(pitches));
+                            midiData.chords.add(vectorToPitchArr(pitches));
 
                         } else if (pitches.size() == 1) {
                             // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
@@ -195,7 +195,7 @@ public class MidiReader {
         }
     }
 
-    public Vector<int[]> getChords() {
+    public Vector<double[]> getChords() {
         if (this.midiData != null) {
             return this.midiData.getChords();
         } else {
@@ -207,15 +207,15 @@ public class MidiReader {
     // CPhrase.addChord only takes int[] or Note[]
     // So this method takes a Vector<Integer> of pitchs and converts to an
     // int[]
-    public int[] vectorToIntArr(Vector<Integer> pitches) {
+    public double[] vectorToPitchArr(Vector<Integer> pitches) {
 
-        int[] ints = new int[pitches.size()];
+        double[] ptchs = new double[pitches.size()];
 
         for (int k = 0; k < pitches.size(); ++k) {
-            ints[k] = pitches.get(k);
+            ptchs[k] = pitches.get(k);
         }
 
-        return ints;
+        return ptchs;
     }
 
     // Same as above except for Notes instead of ints.
