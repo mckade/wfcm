@@ -106,6 +106,7 @@ public class MidiReader {
         // Needed for note tracking
         Note note;
         int lastTime = 0;
+
         // Needed for chord tracking
         Vector<Integer> pitches = new Vector<>();
 
@@ -128,20 +129,16 @@ public class MidiReader {
                     System.out.println("NoteOff event:");
 
                     // Check if more than one NoteOn event
-                    if (pitches.size() > 2) {
+                    if (pitches.size() > 1) {
                         // If so, we just read a chord, so add it to "Chord" array
                         // (last element of "Chord" array is chord duration)
-                        pitches.add(off.getTime() - lastTime);
+                        pitches.add(off.getTime() / resolution);
                         midiData.chords.add(vectorToIntArr(pitches));
-                        midiData.myTestPhrase.addChord(vectorToIntArr(pitches), pitches.get(pitches.size() - 1));
 
                     } else if (pitches.size() == 1){ // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
-                        note = new Note(off.getPitch(), 1);
-                        note.setRhythmValue(off.getTime() - lastTime);
-                        note.setDuration(off.getTime() - lastTime);
+                        note = new Note(off.getPitch(), (double)off.getTime() / resolution);
+                        note.setDuration((double)off.getTime() / resolution);
                         midiData.notes.add(note);
-
-                        midiData.myTestPhrase.add(note);
                     }
 
                     // Clear pitch vector for next chord.
@@ -155,30 +152,30 @@ public class MidiReader {
                     // Some MIDI files encode NoteOns as NoteOffs with velocity=0
                     if (on.getVelocity() != 0) {
 
-                        System.out.println("NoteOn event:");
+                        System.out.println("\nNoteOn event:");
                         on.print();
 
                         // Add pitch value to vector
                         pitches.add(Short.toUnsignedInt(on.getPitch()));
-                        lastTime = on.getTime();
-
                     } else {
-                        System.out.println("NoteOff event:");
+                        System.out.println("\nNoteOff event:");
+                        on.print();
 
                         // Check if more than NoteOn event
-                        if (pitches.size() > 2) {
+                        if (pitches.size() > 1) {
                             // If so, we just read a chord, so add it to "Chord" array
                             // (last element of "Chord" array is chord duration)
-                            pitches.add(on.getTime() - lastTime);
+                            if (on.getTime() != 0) {
+                                pitches.add(on.getTime() / resolution );
+                            }
+
                             midiData.chords.add(vectorToIntArr(pitches));
-                            midiData.myTestPhrase.addChord(vectorToIntArr(pitches), pitches.get(pitches.size() - 1));
-                        } else if (pitches.size() == 1) { // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
-                            note = new Note(on.getPitch(), 1);
-                            note.setDuration(on.getTime() - lastTime);
+
+                        } else if (pitches.size() == 1) {
+                            // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
+                            note = new Note(on.getPitch(), (double)on.getTime() / resolution);
+                            note.setDuration((double)on.getTime() / resolution);
                             midiData.notes.add(note);
-
-
-                            midiData.myTestPhrase.add(note);
                         }
 
                         // Clear pitch vector for next chord.
