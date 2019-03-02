@@ -58,10 +58,10 @@ public class MusicGenerator {
     }
     
     // Generates music given a note length
-    public void generateMusic(int length)
+    public void generateMusic(int length, int tempo)
     {
         // use wfc and mTable
-        s = new Score("Procedural", 105);
+        s = new Score("Procedural", tempo);
         Part p = new Part("Piano", ProgramChanges.PIANO, 0);
         Note[] notes = wfc.getNotes(length);
 
@@ -87,5 +87,9 @@ public class MusicGenerator {
     
     public boolean isPlaying() {
         return true;
+    }
+    
+    public int getTempo() {
+        return 100;
     }
 }
