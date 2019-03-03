@@ -49,8 +49,7 @@ implements ActionListener {
     public static final String EXIT = "exit";
     
     // Window
-    public static final String BUTTONS = "buttons";
-    public static final String LOG = "log";
+    public static final String LEFTPANEL = "leftpanel";
     public static final String SETTINGS = "settings";
     
     // Holds listeners to send events to.
@@ -121,16 +120,11 @@ implements ActionListener {
         window.setMnemonic(KeyEvent.VK_W);
         
         // Window menu items
-        JCheckBoxMenuItem buttons = new JCheckBoxMenuItem("Buttons");
-        buttons.setSelected(true);
-        buttons.setMnemonic(KeyEvent.VK_B);
-        buttons.addActionListener(this);
-        buttons.setActionCommand(BUTTONS);
-        JCheckBoxMenuItem log = new JCheckBoxMenuItem("Log");
-        log.setSelected(true);
-        log.setMnemonic(KeyEvent.VK_L);
-        log.addActionListener(this);
-        log.setActionCommand(LOG);
+        JCheckBoxMenuItem leftPanel = new JCheckBoxMenuItem("Left Panel");
+        leftPanel.setSelected(true);
+        leftPanel.setMnemonic(KeyEvent.VK_L);
+        leftPanel.addActionListener(this);
+        leftPanel.setActionCommand(LEFTPANEL);
         JCheckBoxMenuItem settings = new JCheckBoxMenuItem("Settings");
         settings.setSelected(true);
         settings.setMnemonic(KeyEvent.VK_S);
@@ -138,8 +132,7 @@ implements ActionListener {
         settings.setActionCommand(SETTINGS);
         
         // Adding menu items to window
-        window.add(buttons);
-        window.add(log);
+        window.add(leftPanel);
         window.add(settings);
         
         // Adding menus to menu bar
