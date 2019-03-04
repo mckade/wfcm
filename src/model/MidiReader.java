@@ -37,19 +37,14 @@ public class MidiReader {
 
         Phrase myTestPhrase = new Phrase();
         Vector<double[]> chords; // Last element is chord duration
-        Vector<Note> notes;
 
         public MidiData() {
             this.chords = new Vector<>();
-            this.notes = new Vector<>();
         }
 
         public MidiData(Vector<double[]> c, Vector<Note> n) {
             this.chords = c;
-            this.notes = n;
         }
-
-        public Note[] getNotes() { return vectorToNoteArr(this.notes); }
 
         public Vector<double[]> getChords() { return this.chords; }
     }
@@ -108,7 +103,7 @@ public class MidiReader {
         int lastTime = 0;
 
         // Needed for chord tracking
-        Vector<Integer> pitches = new Vector<>();
+        Vector<Double> pitches = new Vector<>();
 
         for (Event ev : vec) { // Loop through Events
 
@@ -125,21 +120,15 @@ public class MidiReader {
                     break;
                 case 4: // NoteOff event
 
+                    if(pitches.size() == 0)
+                    {
+                        break;
+                    }
                     NoteOff off = (NoteOff) ev;
                     System.out.println("NoteOff event:");
 
-                    // Check if more than one NoteOn event
-                    if (pitches.size() > 1) {
-                        // If so, we just read a chord, so add it to "Chord" array
-                        // (last element of "Chord" array is chord duration)
-                        pitches.add(off.getTime() / resolution);
-                        midiData.chords.add(vectorToPitchArr(pitches));
-
-                    } else if (pitches.size() == 1){ // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
-                        note = new Note(off.getPitch(), (double)off.getTime() / resolution);
-                        note.setDuration((double)off.getTime() / resolution);
-                        midiData.notes.add(note);
-                    }
+                    pitches.add(1.0 * off.getTime() / resolution);
+                    midiData.chords.add(vectorToPitchArr(pitches));
 
                     // Clear pitch vector for next chord.
                     pitches.clear();
@@ -156,42 +145,26 @@ public class MidiReader {
                         on.print();
 
                         // Add pitch value to vector
-                        pitches.add(Short.toUnsignedInt(on.getPitch()));
+                        pitches.add((double)Short.toUnsignedInt(on.getPitch()));
                     } else {
+                        if(pitches.size() == 0)
+                        {
+                            break;
+                        }
                         System.out.println("\nNoteOff event:");
                         on.print();
 
-                        // Check if more than NoteOn event
-                        if (pitches.size() > 1) {
-                            // If so, we just read a chord, so add it to "Chord" array
-                            // (last element of "Chord" array is chord duration)
-                            if (on.getTime() != 0) {
-                                pitches.add(on.getTime() / resolution );
-                            }
-
-                            midiData.chords.add(vectorToPitchArr(pitches));
-
-                        } else if (pitches.size() == 1) {
-                            // pitches.size() should be AT LEAST one if we're here. Can change later if causing problems
-                            note = new Note(on.getPitch(), (double)on.getTime() / resolution);
-                            note.setDuration((double)on.getTime() / resolution);
-                            midiData.notes.add(note);
+                        if (on.getTime() != 0) {
+                            pitches.add(1.0 * on.getTime() / resolution );
                         }
+
+                        midiData.chords.add(vectorToPitchArr(pitches));
 
                         // Clear pitch vector for next chord.
                         pitches.clear();
                     }
                     break;
             }
-        }
-    }
-
-    public Note[] getNotes() {
-        if (this.midiData != null) {
-            return this.midiData.getNotes();
-        } else {
-            System.out.println("No MIDI data has been read yet.");
-            return null;
         }
     }
 
@@ -207,7 +180,7 @@ public class MidiReader {
     // CPhrase.addChord only takes int[] or Note[]
     // So this method takes a Vector<Integer> of pitchs and converts to an
     // int[]
-    public double[] vectorToPitchArr(Vector<Integer> pitches) {
+    public double[] vectorToPitchArr(Vector<Double> pitches) {
 
         double[] ptchs = new double[pitches.size()];
 
@@ -216,18 +189,5 @@ public class MidiReader {
         }
 
         return ptchs;
-    }
-
-    // Same as above except for Notes instead of ints.
-    // MarkovTable requires Note[]
-    public Note[] vectorToNoteArr(Vector<Note> ns) {
-
-        Note[] notes = new Note[ns.size()];
-
-        for (int k = 0; k < ns.size(); ++k) {
-            notes[k] = ns.get(k);
-        }
-
-        return notes;
     }
 }
