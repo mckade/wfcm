@@ -100,7 +100,8 @@ public class MidiReader {
 
         // Needed for note tracking
         Note note;
-        int lastTime = 0;
+        int onCount = 0;
+        boolean offsExpected = false;
 
         // Needed for chord tracking
         Vector<Double> pitches = new Vector<>();
@@ -120,11 +121,23 @@ public class MidiReader {
                     break;
                 case 4: // NoteOff event
 
+                    NoteOff off = (NoteOff) ev;
+                    // Disregard extra NoteOff events from chords
                     if(pitches.size() == 0)
                     {
                         break;
                     }
-                    NoteOff off = (NoteOff) ev;
+
+                    if(offsExpected)
+                    {
+                        onCount--;
+                        if(onCount == 0)
+                        {
+                            onCount = pitches.size();
+                            offsExpected = false;
+                        }
+                        break;
+                    }
                     System.out.println("NoteOff event:");
 
                     pitches.add(1.0 * off.getTime() / resolution);
@@ -132,7 +145,11 @@ public class MidiReader {
 
                     // Clear pitch vector for next chord.
                     pitches.clear();
-
+                    onCount--;
+                    if(onCount > 0)
+                    {
+                        offsExpected = true;
+                    }
                     break;
                 case 5: // NoteOn event
 
@@ -146,22 +163,40 @@ public class MidiReader {
 
                         // Add pitch value to vector
                         pitches.add((double)Short.toUnsignedInt(on.getPitch()));
+                        if(!offsExpected)
+                            onCount++;
                     } else {
+                        // Disregard extra NoteOff events from chords
                         if(pitches.size() == 0)
                         {
                             break;
                         }
+
+                        if(offsExpected)
+                        {
+                            onCount--;
+                            if(onCount == 0)
+                            {
+                                onCount = pitches.size();
+                                offsExpected = false;
+                            }
+                            break;
+                        }
+
                         System.out.println("\nNoteOff event:");
                         on.print();
 
-                        if (on.getTime() != 0) {
-                            pitches.add(1.0 * on.getTime() / resolution );
-                        }
+                        pitches.add(1.0 * on.getTime() / resolution );
 
                         midiData.chords.add(vectorToPitchArr(pitches));
 
                         // Clear pitch vector for next chord.
                         pitches.clear();
+                        onCount--;
+                        if(onCount > 0)
+                        {
+                            offsExpected = true;
+                        }
                     }
                     break;
             }
