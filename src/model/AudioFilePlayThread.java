@@ -16,8 +16,10 @@ import javax.sound.sampled.DataLine.Info;
 class AudioFilePlayThread extends Thread {
     byte[] tempBuffer = new byte[1024];
     private AudioInputStream audioInputStream;
+    MusicGenerator mg;
 
-    public AudioFilePlayThread(AudioInputStream strm) {
+    public AudioFilePlayThread(AudioInputStream strm)
+    {
         this.audioInputStream = strm;
     }
 
@@ -29,8 +31,9 @@ class AudioFilePlayThread extends Thread {
             source.open(format);
             source.start();
 
-            int index;
-            while((index = this.audioInputStream.read(this.tempBuffer, 0, this.tempBuffer.length)) != -1) {
+            int index = 0;
+            while(!MusicState.stop &&
+                    (index = this.audioInputStream.read(this.tempBuffer, 0, this.tempBuffer.length)) != -1) {
                 if (index > 0) {
                     source.write(this.tempBuffer, 0, index);
                 }

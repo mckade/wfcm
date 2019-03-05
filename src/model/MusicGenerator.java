@@ -8,28 +8,20 @@ package model;
  */
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Vector;
 
+import jm.audio.Instrument;
 import jm.music.data.Note;
 import jm.music.data.Part;
 import jm.music.data.CPhrase;
 import jm.music.data.Score;
-import jm.util.Play;
 import jm.util.Write;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 public class MusicGenerator {
-
-    private static AudioInputStream audioInputStream;
 
     private MarkovTable mTable;
     private WaveFCND wfc;
     private Score s;
-    private String OUTPUT = "out.MID";
 
     public MusicGenerator()
     {
@@ -68,7 +60,7 @@ public class MusicGenerator {
     {
         // use wfc and mTable
         s = new Score("Procedural", tempo);
-        Part p = new Part("Piano", 0, 0);
+        Part p = new Part("Piano", Instrument.BAG_PIPES, 0);
         Vector<Note[]> notes = wfc.getNotes(length);
 
         CPhrase phr = new CPhrase();
@@ -85,15 +77,17 @@ public class MusicGenerator {
         //phr.addNoteList(notes, false);
         p.addCPhrase(phr);
         s.addPart(p);
+        Write.midi(s, MusicState.OUTPUT);
     }
     
     public void playSong()
     {
-        audioFile(OUTPUT);
+        MusicState.audioFile(MusicState.OUTPUT);
     }
     
-    public void stopSong() {
-        Play.stopAudio();
+    public void stopSong()
+    {
+        MusicState.stop();
     }
     
     public boolean isPlaying() {
@@ -102,22 +96,5 @@ public class MusicGenerator {
     
     public int getTempo() {
         return 100;
-    }
-
-    /*
-    audioFile is used to playback MIDI files.
-    NOTE: taken from the jMusic library (http://www.explodingart.com/jmusic)
-    and extended to fit our needs
-     */
-    public static void audioFile(String var0) {
-        try {
-            audioInputStream = AudioSystem.getAudioInputStream(new File(var0));
-            (new AudioFilePlayThread(audioInputStream)).start();
-            System.out.println("Playing audio file " + var0);
-        } catch (IOException var2) {
-            System.err.println("Play audioFile error: in playAudioFile(): " + var2.getMessage());
-        } catch (UnsupportedAudioFileException var3) {
-            System.err.println("Unsupported Audio File error: in Play.audioFile():" + var3.getMessage());
-        }
     }
 }
