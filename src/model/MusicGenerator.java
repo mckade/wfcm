@@ -1,29 +1,27 @@
 package model;
-/**
+/*
  * @filename MusicGenerator.java
  * @project Procedural Music
- * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
- * 
+ * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer
+ *
  * Controller to use separate pieces to generate music.
  */
 
 import java.io.File;
+import java.util.Vector;
 
-import jm.audio.AOException;
 import jm.audio.Instrument;
-import jm.constants.ProgramChanges;
 import jm.music.data.Note;
 import jm.music.data.Part;
-import jm.music.data.Phrase;
+import jm.music.data.CPhrase;
 import jm.music.data.Score;
-import jm.util.Play;
 import jm.util.Write;
 
 public class MusicGenerator {
 
-    MarkovTable mTable;
-    WaveFCND wfc;
-    Score s;
+    private MarkovTable mTable;
+    private WaveFCND wfc;
+    private Score s;
 
     public MusicGenerator()
     {
@@ -58,34 +56,45 @@ public class MusicGenerator {
     }
     
     // Generates music given a note length
-    public void generateMusic(int length)
+    public void generateMusic(int length, int tempo)
     {
         // use wfc and mTable
-        s = new Score("Procedural", 105);
-        Part p = new Part("Piano", ProgramChanges.PIANO, 0);
-        Note[] notes = wfc.getNotes(length);
+        s = new Score("Procedural", tempo);
+        Part p = new Part("Piano", Instrument.BAG_PIPES, 0);
+        Vector<Note[]> notes = wfc.getNotes(length);
 
-        double startTime = 0.0;
-        Phrase phr = new Phrase(startTime);
-        for(Note note : notes)
+        CPhrase phr = new CPhrase();
+        for(Note[] chord : notes)
         {
-            phr.addNote(note.getPitch(), note.getDuration());
+            System.out.println(chord);
+            int[] pitches = new int[chord.length];
+            for(int i = 0; i < chord.length; i++)
+            {
+                pitches[i] = chord[i].getPitch();
+            }
+            phr.addChord(pitches, chord[0].getDuration());
         }
         //phr.addNoteList(notes, false);
-        p.addPhrase(phr);
+        p.addCPhrase(phr);
         s.addPart(p);
+        Write.midi(s, MusicState.OUTPUT);
     }
     
     public void playSong()
     {
-        Play.midi(s);
+        MusicState.audioFile(MusicState.OUTPUT);
     }
     
-    public void stopSong() {
-        Play.stopMidi();
+    public void stopSong()
+    {
+        MusicState.stop();
     }
     
     public boolean isPlaying() {
         return true;
+    }
+    
+    public int getTempo() {
+        return 100;
     }
 }

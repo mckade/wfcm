@@ -1,7 +1,9 @@
 package model;
 import jm.music.data.Note;
 
-/**
+import java.util.Vector;
+
+/*
  * @filename WaveFCND.java
  * @project Procedural Music
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer
@@ -9,12 +11,12 @@ import jm.music.data.Note;
  * An implementation of n-dimensional wave function collapse
  */
 
-public class WaveFCND
+class WaveFCND
 {
     private PTable[] tables;
     private boolean failed = false;
 
-    public WaveFCND(PTable[] ts)
+    WaveFCND(PTable[] ts)
     {
         if(ts.length < 1)
         {
@@ -83,23 +85,22 @@ public class WaveFCND
     /*
      * Return an array of generated notes
      */
-    public Note[] getNotes(int length)
+    Vector<Note[]> getNotes(int length)
     {
         System.out.println("Generating music with " + length + " notes");
         Superposition[] heads = generate(length);
-        while(failed == true)
+        while(failed)
         {
             //dumpSP(heads[0]);
             failed = false;
-            for(int i = 0; i < heads.length; i++)
-            {
-                heads[i].reset();
+            for (Superposition head : heads) {
+                head.reset();
             }
             heads = generate(length);
         }
 
         System.out.println("WFC succeeded!");
-        Note[] res = new Note[length];
+        Vector<Note[]> res = new Vector<>();
 
         // pitch
         int t = 0, noteIndex = 0;
@@ -110,7 +111,13 @@ public class WaveFCND
             {
                 if(cur.getSPAt(j) == 1)
                 {
-                    res[noteIndex] = new Note(MarkovTable.getPitch(j), Note.DEFAULT_RHYTHM_VALUE);
+                    int[] chord = MarkovTable.getPitch(j);
+                    Note[] note = new Note[chord.length];
+                    for(int k = 0; k < chord.length; k++)
+                    {
+                        note[k] = new Note(chord[k], Note.DEFAULT_RHYTHM_VALUE);
+                    }
+                    res.add(note);
                     break;
                 }
             }
@@ -129,7 +136,10 @@ public class WaveFCND
             {
                 if(cur.getSPAt(j) == 1)
                 {
-                    res[noteIndex].setDuration(MarkovTable.getDuration(j));
+                    for(Note n : res.get(noteIndex))
+                    {
+                        n.setDuration(MarkovTable.getDuration(j));
+                    }
                     break;
                 }
             }

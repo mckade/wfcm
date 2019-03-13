@@ -41,7 +41,7 @@ public class RightPanel extends JPanel {
         
         // Creating panels
         visualizerPanel = new VisualizerPanel();
-        settingsPanel = new SettingsPanel(dim);
+        settingsPanel = new SettingsPanel();
         
         // Adding panels
         add(visualizerPanel, BorderLayout.CENTER);
@@ -51,5 +51,13 @@ public class RightPanel extends JPanel {
     // Toggles the visibility of the settings panel.
     public void toggleSettingsPanel() {
         settingsPanel.setVisible(settingsVis = !settingsVis);
+    }
+    
+    public void setTempo(int tempo) {
+        settingsPanel.setTempo(tempo);
+    }
+    
+    public int getTempo() {
+        return settingsPanel.getTempo();
     }
 }

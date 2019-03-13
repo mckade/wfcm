@@ -11,12 +11,17 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -27,21 +32,17 @@ public class LogPanel extends JPanel {
     private JLabel title;
     private JTextArea text;
 
-    public LogPanel(Dimension dim) {
+    public LogPanel() {
         
-        // Panel settings
-        setMinimumSize(dim);
+        // Setup
         setBackground(MainWindow.BACKGROUND);
         setBorder(MainWindow.BORDER);
-        
-        // Layout and components
         setLayout(new BorderLayout());
         
         // Creating Log Label
-        title = new JLabel("Log");
+        title = new JLabel("Log", JLabel.CENTER);
         title.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
         title.setForeground(Color.WHITE);
-        title.setHorizontalAlignment(JLabel.CENTER);
         
         // Creating Log Text Area
         text = new JTextArea();
@@ -50,6 +51,7 @@ public class LogPanel extends JPanel {
         text.setFont(new Font(Font.DIALOG, Font.PLAIN, 14));
         text.setBackground(this.getBackground());
         text.setForeground(Color.WHITE);
+        setUpMouselistener();
         
         // Creating text area scroll pane
         JScrollPane scrollPane = new JScrollPane(text);
@@ -62,6 +64,27 @@ public class LogPanel extends JPanel {
     
     // Adds log to the log text area.
     public void addLog(String log) {
-        text.append(log);
+        text.append(log + '\n');
+    }
+    
+    // Sets up the mouse listener over the log.
+    // This allows a right click to give a popup menu.
+    // This menu then allows the user to clear the log.
+    private void setUpMouselistener() {
+        text.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    JPopupMenu menu = new JPopupMenu();
+                    JMenuItem clear = new JMenuItem("Clear Log");
+                    clear.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            text.setText("");
+                        }
+                    });
+                    menu.add(clear);
+                    menu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 }
