@@ -21,6 +21,8 @@ import jm.util.Read;
 import java.io.*;
 import java.util.Vector;
 
+import static java.lang.Math.sqrt;
+
 public class MidiReader {
 
     // Holds MIDI data which will be grabbed by MarkovTable
@@ -224,5 +226,93 @@ public class MidiReader {
         }
 
         return ptchs;
+    }
+
+    // This method performs an analysis on the notes
+    // to try and best estimate the key signature
+    // of the piece.
+    // Modeled after the description of the algorithm
+    // found at this URL: http://rnhart.net/articles/key-finding/
+    public void krumhanslSchmuckler(double[] pitchDurations) {
+
+        // The algorithm calculates correlation coefficient(s) between
+        // the Major and Minor profiles defined below and
+        // the duration of each pitch found in the piece.
+        // The Key (ordering of pitches vs the profile values)
+        // yielding the highest correlation coefficient
+        // is chosen.
+
+        double[] majProfile = {6.35, 2.23, 3.48, 2.33, 4.38, 4.09,
+                2.52, 5.19, 2.39, 3.66, 2.29, 2.88};
+        double[] minProfile = {6.33, 2.68, 3.52, 5.38, 2.60, 3.53,
+                2.54, 4.75, 3.98, 2.69, 3.34, 3.17};
+        double majAvg = 3.4825;
+        double minAvg = 3.709166667;
+        double durAvg = 0;
+
+        double[] majDiffs = new double[12];
+        double[] minDiffs = new double[12];
+        double[] durDiffs = new double[12];
+
+        // This vector will hold all the calculated coefficients
+        // Each index will correspond to a specific key
+        // The key whose coefficient is the highest is selected
+        Vector<Double> corrCoeffs = new Vector<>();
+
+        // Calculate the average note duration
+        for (double duration : pitchDurations) {
+            durAvg += duration;
+        }
+        durAvg /= 12;
+
+        // Calculate difference between samples and averages
+        // because the equation uses them. Makes things easier.
+        for (int i = 0; i < 12; ++i) {
+            majDiffs[i] = majProfile[i] - majAvg;
+            minDiffs[i] = minProfile[i] - minAvg;
+            durDiffs[i] = pitchDurations[i] - durAvg;
+        }
+
+        double numerator = 0;
+        double denominator = 0;
+        double profileDiffSumSq = 0;
+        double durDiffSumSq = 0;
+
+        //
+        for (int i = 0; i < 24; ++i) {
+            profileDiffSumSq = 0;
+            durDiffSumSq = 0;
+
+            // Calculate coefficient for this key
+                // Calculate numerator
+            if (i % 2 == 0) {
+                for (int j = 0; j < 12; ++j) {
+                    numerator += (majDiffs[j] * durDiffs[j]);
+                }
+            } else {
+                for (int j = 0; j < 12; ++j) {
+                    numerator += (minDiffs[j] * durDiffs[j]);
+                }
+            }
+
+                // Calculate denominator
+            for (int j = 0; j < 12; ++j) {
+                if (i % 2 == 0)
+                    profileDiffSumSq += (majDiffs[j] * majDiffs[j]);
+                else
+                    profileDiffSumSq += (minDiffs[j] * minDiffs[j]);
+                durDiffSumSq += (durDiffs[j] * durDiffs[j]);
+            }
+            denominator = sqrt(profileDiffSumSq * durDiffSumSq);
+
+            // Add coefficient
+            corrCoeffs.add(numerator / denominator);
+
+            // Rotate pitchDurations left
+            double temp = pitchDurations[0];
+            for (int j = 1; j < 12; ++j)
+                pitchDurations[j - 1] = pitchDurations[j];
+            pitchDurations[11] = temp;
+        }
     }
 }
