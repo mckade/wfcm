@@ -129,6 +129,52 @@ class MarkovTable {
         }
     }
 
+    /**
+     *
+     * Modifies the pitch and duration probability tables.
+     * Slightly increases probability of notes in the key
+     * of the piece.
+     * If a note in the key signature does not appear in
+     * the piece, the duration probabilities for that note
+     * will be modified to be equal (and not 0).
+     *
+     * @param key - int 1 - 24 specifying the key signature to weight
+     *            the pitch table for
+     */
+    // TODO: May be able to be simplified to less than 12 cases
+    private void weightForKeySig(int key) {
+
+        switch(key) {
+            case 1: // CMaj (/ Amin)
+                break;
+            case 2: // Cmin (/ D# (Eb))
+                break;
+            case 3: // C#Maj (/ A#min (Bbmin))
+                break;
+            case 4: // C#min (/ E)
+                break;
+            case 5: // DMaj (/ Bm)
+                break;
+            case 6: // Dmin (/ F)
+                break;
+            case 7: // D#Maj (/ Cm)
+                break;
+            case 8: // D#min (/ F#)
+                break;
+            case 9: // EMaj (/ C#min)
+                break;
+            case 10: // Emin (/ G)
+                break;
+            case 11: // FMaj (/ Dm)
+                break;
+            case 12: // Fmin (/ Ab)
+                break;
+            default:
+                System.out.println("Markov table: Invalid input in weightForKeySig method call.");
+                break;
+        }
+    }
+
     double[][] getPitchTable()
     {
         return chordTable;

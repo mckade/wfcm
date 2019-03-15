@@ -37,7 +37,6 @@ public class MidiReader {
     // TODO: Store chord durations in first/last index of pitch arrays
     public class MidiData {
 
-        Phrase myTestPhrase = new Phrase();
         Vector<double[]> chords; // Last element is chord duration
 
         public MidiData() {
@@ -86,7 +85,6 @@ public class MidiReader {
             // Loop through Tracks &
             // Get Event data
             for (Vector<Event> vec : events) { parseEvents(vec, smf.getPPQN()); }
-            System.out.println(midiData.myTestPhrase.toString());
         }
     }
 
@@ -114,6 +112,14 @@ public class MidiReader {
 
             // We're mostly interested in the NoteOn/NoteOff events for chords.
             switch (eventID) {
+                case 18: // KeySig event
+
+                    KeySig keySig = (KeySig) ev;
+                    System.out.println("KeySig event:");
+                    System.out.println("Key Signature: " + keySig.getKeySig()); // int -7 - 7. -7 means 7 flats. 7 means sharps
+                    System.out.println("Key Quality: " + keySig.getKeyQuality()); // 0 for Major, 1 for minor
+                    System.out.println("Time?: " + keySig.getTime());
+                    break;
                 case 17: // TimeSig event
 
                     TimeSig timeSig = (TimeSig) ev;
@@ -157,7 +163,7 @@ public class MidiReader {
 
                     NoteOn on = (NoteOn) ev;
 
-                    // Some MIDI files encode NoteOns as NoteOffs with velocity=0
+                    // Some MIDI files encode NoteOffs as NoteOns with velocity=0
                     if (on.getVelocity() != 0) {
 
                         System.out.println("\nNoteOn event:");
@@ -228,19 +234,25 @@ public class MidiReader {
         return ptchs;
     }
 
-    // This method performs an analysis on the notes
-    // to try and best estimate the key signature
-    // of the piece.
-    // Modeled after the description of the algorithm
-    // found at this URL: http://rnhart.net/articles/key-finding/
-    public void krumhanslSchmuckler(double[] pitchDurations) {
+    /**
+     *     This method performs an analysis on the notes
+     *     to try and best estimate the key signature
+     *     of the piece.
+     *     Modeled after the description of the algorithm
+     *     found at this URL: http://rnhart.net/articles/key-finding
+     * @param pitchDurations - an array containing the the
+     *                       total durations of each note in the piece.
+     * @return An int 1 - 24 corresponding to a specific key.
+     *          e.g. 1 -> CMaj, 2 -> Cmin, 3 -> C#Maj, etc.
+     */
+
+    public int krumhanslSchmuckler(double[] pitchDurations) {
 
         // The algorithm calculates correlation coefficient(s) between
-        // the Major and Minor profiles defined below and
-        // the duration of each pitch found in the piece.
+        // the Major/Minor profiles (x-coordinates) defined below and
+        // the duration of each pitch found in the piece (y-coordinates).
         // The Key (ordering of pitches vs the profile values)
-        // yielding the highest correlation coefficient
-        // is chosen.
+        // yielding the highest correlation coefficient is chosen.
 
         double[] majProfile = {6.35, 2.23, 3.48, 2.33, 4.38, 4.09,
                 2.52, 5.19, 2.39, 3.66, 2.29, 2.88};
@@ -279,7 +291,7 @@ public class MidiReader {
         double durDiffSumSq = 0;
 
         //
-        for (int i = 0; i < 24; ++i) {
+        for (int i = 0; i < 12; ++i) {
             profileDiffSumSq = 0;
             durDiffSumSq = 0;
 
@@ -314,5 +326,16 @@ public class MidiReader {
                 pitchDurations[j - 1] = pitchDurations[j];
             pitchDurations[11] = temp;
         }
+
+        // Determine highest correlation coefficient and return corresponding index
+        double highCoef = corrCoeffs.get(0);
+        int index = 0;
+        for (int i = 1; i < 24; ++i) {
+            if (corrCoeffs.get(i) > highCoef) {
+                highCoef = corrCoeffs.get(i);
+                index = i;
+            }
+        }
+        return index + 1;
     }
 }
