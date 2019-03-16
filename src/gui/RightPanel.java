@@ -60,4 +60,10 @@ public class RightPanel extends JPanel {
     public int getTempo() {
         return settingsPanel.getTempo();
     }
+    
+    // Passes note information to the visualizer.
+    // TODO: Set parameter
+    public void setNotes() {
+        visualizerPanel.setNotes();
+    }
 }

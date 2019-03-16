@@ -97,4 +97,9 @@ public class MusicGenerator {
     public int getTempo() {
         return 100;
     }
+    
+    // Returns the notes of the generation.
+    public void getNotes() {
+        // Stub
+    }
 }

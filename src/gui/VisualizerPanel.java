@@ -11,35 +11,36 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 @SuppressWarnings("serial")
 public class VisualizerPanel extends JPanel {
     
     // Components
-    private JLabel comingSoon;
+    private JTable visualizer;
+    private VisualizerModel model;
 
     // Constructor
     public VisualizerPanel() {
         
-        // Panel settings
+        // Setup
         setBackground(MainWindow.BACKGROUND);
         setBorder(MainWindow.BORDER);
-        
-        // Layout and components
         setLayout(new BorderLayout());
         
         // Creating components
-        comingSoon = new JLabel("Visualizer Coming Soon!");
-        comingSoon.setFont(new Font(Font.DIALOG, Font.PLAIN, 40));
-        comingSoon.setForeground(Color.WHITE);
-        comingSoon.setHorizontalAlignment(JLabel.CENTER);
+        model = new VisualizerModel();
+        visualizer = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(visualizer);
         
         // Adding components
-        add(comingSoon, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
+    }
+    
+    public void setNotes() {
+        
     }
 }
