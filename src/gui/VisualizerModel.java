@@ -6,7 +6,6 @@ import javax.swing.table.AbstractTableModel;
 public class VisualizerModel extends AbstractTableModel {
     
     private int cols = 16;
-    
     private String[] rowNames = {"C", "B", "Bb", "A", "Ab", "G", "F#", "F", "E", "Eb", "D", "C#", "C"};
     
     public String getColumnName(int c) {
@@ -34,6 +33,11 @@ public class VisualizerModel extends AbstractTableModel {
         // else data
         
         return null;
+    }
+    
+    public boolean isCellEditable(int row, int col) {
+        if (col == 0) return false;
+        else return true;
     }
     
     public void setNotes() {

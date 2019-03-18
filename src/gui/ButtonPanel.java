@@ -29,16 +29,21 @@ implements ActionListener {
     
     // Buttons
     public static final String GENERATE = "generate";
-    public static final String PLAY = "play";
-    public static final String STOP = "stop";
+    public static final String PLAY_STOP = "playstop";
+    public static final String PAUSE_RESUME = "pause";
     
+    // Listener to send events to
     private ButtonListener listener;
     
     // Components
     private JButton generate;
     private JSpinner noteLength;
-    private JButton play;
-    private JButton stop;
+    private JButton play_stop;
+    private JButton pause_resume;
+    
+    // Control
+    boolean playing = false;
+    boolean paused = false;
     
     // Constructor
     public ButtonPanel(ButtonListener listener) {
@@ -56,12 +61,13 @@ implements ActionListener {
         generate.addActionListener(this);
         generate.setActionCommand(GENERATE);
         noteLength = new JSpinner(new SpinnerNumberModel(100, 2, 99999, 1));
-        play = new JButton("Play");
-        play.addActionListener(this);
-        play.setActionCommand(PLAY);
-        stop = new JButton("Stop");
-        stop.addActionListener(this);
-        stop.setActionCommand(STOP);
+        play_stop = new JButton("Play");
+        play_stop.addActionListener(this);
+        play_stop.setActionCommand(PLAY_STOP);
+        pause_resume = new JButton("Pause");
+        pause_resume.setEnabled(false);
+        pause_resume.addActionListener(this);
+        pause_resume.setActionCommand(PAUSE_RESUME);
         
         // Adding components
         GridBagConstraints gc = new GridBagConstraints();
@@ -84,16 +90,42 @@ implements ActionListener {
         add(noteLength, gc);
         
         ////////// Row 2 //////////
-        // Play Button
+        // Play/Stop Button
         gc.gridy = 1;
         gc.gridx = 0;
         gc.weightx = 0;
         gc.anchor = GridBagConstraints.LINE_START;
-        add(play, gc);
+        add(play_stop, gc);
         
-        // Stop Button
+        // Pause Button
         gc.gridx = 1;
-        add(stop, gc);
+        add(pause_resume, gc);
+    }
+    
+    // Switches the function of the play_stop button
+    public void togglePlayStop() {
+        playing = !playing;
+        paused = false;
+        pause_resume.setText("Pause");
+        if (playing) {
+            play_stop.setText("Stop");
+            pause_resume.setEnabled(true);
+        }
+        else {
+            play_stop.setText("Play");
+            pause_resume.setEnabled(false);
+        }
+    }
+    
+    // Toggles the pause switch for the music.
+    public void togglePause() {
+        paused = !paused;
+        if (paused) {
+            pause_resume.setText("Resume");
+        }
+        else {
+            pause_resume.setText("Pause");
+        }
     }
     
     // Returns the note length from the spinner.

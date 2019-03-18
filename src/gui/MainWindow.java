@@ -60,6 +60,7 @@ implements MenuListener, UpdateListener, ButtonListener {
     private MusicGenerator mgen;
     private boolean sample = false;
     private boolean generated = false;
+    private boolean paused = false;
     
     // Constructor
     public MainWindow() {
@@ -96,8 +97,7 @@ implements MenuListener, UpdateListener, ButtonListener {
                 };
             }
         });
-        menuBar = new _MenuBar();
-        menuBar.addMenuListener(this);
+        menuBar = new _MenuBar(this);
         
         // Adding Panels and components
         add(splitPane, BorderLayout.CENTER);
@@ -133,23 +133,23 @@ implements MenuListener, UpdateListener, ButtonListener {
             if (file != null) {
                 if (mgen.importSample(file)) {
                     sample = true;
-                    leftPanel.addLog("- Sample loaded.");
+                    leftPanel.addLog("Sample loaded.");
                 }
                 else {
-                    leftPanel.addLog("- Failed to load sample.");
+                    leftPanel.addLog("Failed to load sample.");
                 }
             }
             break;
         case _MenuBar.EXPORT:
             if (!sample) {
-                leftPanel.addLog("- Unable to export music\nFirst import a MIDI sample and generate music.");
+                leftPanel.addLog("Unable to export music\nFirst import a MIDI sample and generate music.");
                 return;
             }
             file = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
             if (file != null) {
-                leftPanel.addLog("- Exporting MIDI...");
+                leftPanel.addLog("Exporting MIDI...");
                 mgen.exportMIDI(file);
-                leftPanel.addLog("- Finished");
+                leftPanel.addLog("Finished");
                 }
             break;
         case _MenuBar.EXIT:
@@ -183,43 +183,50 @@ implements MenuListener, UpdateListener, ButtonListener {
         
         // Checking if a sample has been imported.
         if (!sample) {
-            leftPanel.addLog("- Unable to complete action.\nFirst import a MIDI sample.");
+            leftPanel.addLog("Unable to complete action.\nFirst import a MIDI sample.");
             return;
         }
         
         switch (e.getID()) {
         // Generate
         case ButtonPanel.GENERATE:
-            leftPanel.addLog("- Generating Music...");
-            mgen.stopSong();
+            leftPanel.addLog("Generating Music...");
+            if(mgen.stopSong()) {
+                leftPanel.togglePlayStop();
+            }
             mgen.generateMusic(leftPanel.getNoteLength(), rightPanel.getTempo());
             generated = true;
-            leftPanel.addLog("- Finished.");
-            mgen.getNotes();        // Getting notes from the generation.
-            rightPanel.setNotes();  // Passing the notes to the visualizer.
+            rightPanel.setNotes(/*mgen.getNotes()*/);  // Passing the notes to the visualizer.
+            leftPanel.addLog("Finished.");
             break;
-        // Play
-        case ButtonPanel.PLAY:
+        // Play/Stop
+        case ButtonPanel.PLAY_STOP:
             if (!generated) {
-                leftPanel.addLog("- Unable to play music.\nNo music has been generated.");
+                leftPanel.addLog("Unable to play music.\nNo music has been generated.");
                 return;
             }
-// Need to implement isPlaying() method before this can be uncommented.
-//            if (mgen.isPlaying()) {
-//                leftPanel.addLog("- Already playing music.");
-//                return;
-//            }
-            mgen.playSong();
-            leftPanel.addLog("- Playing music...");
+            
+            // Toggling play/stop button
+            if (!mgen.isPlaying()) {
+                mgen.playSong();
+                leftPanel.addLog("Playing music...");
+            }
+            else {
+                mgen.stopSong();
+                leftPanel.addLog("Stopped music");
+            }
+            leftPanel.togglePlayStop();
             break;
-        // Stop
-        case ButtonPanel.STOP:
-            if (!generated || !mgen.isPlaying()) {
-                leftPanel.addLog("- No music is playing.");
-                return;
+        // Pause
+        case ButtonPanel.PAUSE_RESUME:
+            paused = !paused;
+            if (paused) {
+                leftPanel.addLog("Paused music");
             }
-            mgen.stopSong();
-            leftPanel.addLog("- Music stopped");
+            else {
+                leftPanel.addLog("Unpaused music");
+            }
+            leftPanel.togglePause();
             break;
         }
     }

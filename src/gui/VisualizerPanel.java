@@ -41,6 +41,6 @@ public class VisualizerPanel extends JPanel {
     }
     
     public void setNotes() {
-        
+        model.setNotes();
     }
 }

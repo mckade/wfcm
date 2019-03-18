@@ -22,6 +22,9 @@ public class MusicGenerator {
     private MarkovTable mTable;
     private WaveFCND wfc;
     private Score s;
+    
+    // Temp variable until proper
+    private boolean playing = false;
 
     public MusicGenerator()
     {
@@ -82,16 +85,28 @@ public class MusicGenerator {
     
     public void playSong()
     {
+        playing = true;
         MusicState.audioFile(MusicState.OUTPUT);
     }
     
-    public void stopSong()
+    public boolean stopSong()
     {
+        boolean tmp = playing;
+        playing = false;
         MusicState.stop();
+        return tmp;
+    }
+    
+    public void pauseSong() {
+        MusicState.pause();
+    }
+    
+    public void unpauseSong() {
+        MusicState.unpause();
     }
     
     public boolean isPlaying() {
-        return true;
+        return playing;
     }
     
     public int getTempo() {
