@@ -9,16 +9,19 @@
 
 package gui;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeListener;
 
 import coms.ButtonEvent;
 import coms.ButtonListener;
@@ -36,10 +39,10 @@ implements ActionListener {
     private ButtonListener listener;
     
     // Components
-    private JButton generate;
+    private _Button generate;
     private JSpinner noteLength;
-    private JButton play_stop;
-    private JButton pause_resume;
+    private _Button play_stop;
+    private _Button pause_resume;
     
     // Control
     boolean playing = false;
@@ -50,21 +53,28 @@ implements ActionListener {
         
         // Setup
         this.listener = listener;
-        setBackground(MainWindow.BACKGROUND);
+        setBackground(MainWindow.PANEL_BACKGROUND);
         setBorder(MainWindow.BORDER);
         
         // Layout and components
         setLayout(new GridBagLayout());
         
         // Creating components
-        generate = new JButton("Generate");
+        generate = new _Button("Generate");
         generate.addActionListener(this);
         generate.setActionCommand(GENERATE);
         noteLength = new JSpinner(new SpinnerNumberModel(100, 2, 99999, 1));
-        play_stop = new JButton("Play");
+        noteLength.getEditor().getComponent(0).setBackground(MainWindow.COMPONENT_BACKGROUND);
+        noteLength.getEditor().getComponent(0).setForeground(Color.WHITE);
+        noteLength.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0, 92, 75), 2),
+                BorderFactory.createLineBorder(new Color(8, 145, 119), 2)));
+        play_stop = new _Button("Play");
+        play_stop.setPreferredSize(generate.getPreferredSize());
         play_stop.addActionListener(this);
         play_stop.setActionCommand(PLAY_STOP);
-        pause_resume = new JButton("Pause");
+        pause_resume = new _Button("Pause");
+        pause_resume.setPreferredSize(generate.getPreferredSize());
         pause_resume.setEnabled(false);
         pause_resume.addActionListener(this);
         pause_resume.setActionCommand(PAUSE_RESUME);

@@ -37,7 +37,7 @@ public class LogPanel extends JPanel {
     public LogPanel() {
         
         // Setup
-        setBackground(MainWindow.BACKGROUND);
+        setBackground(MainWindow.PANEL_BACKGROUND);
         setBorder(MainWindow.BORDER);
         setLayout(new BorderLayout());
         

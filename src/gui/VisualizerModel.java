@@ -5,16 +5,16 @@ import javax.swing.table.AbstractTableModel;
 @SuppressWarnings("serial")
 public class VisualizerModel extends AbstractTableModel {
     
-    private int cols = 16;
-    private String[] rowNames = {"C", "B", "Bb", "A", "Ab", "G", "F#", "F", "E", "Eb", "D", "C#", "C"};
+    private int rows;
+    private int cols;
+    
+    public VisualizerModel(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+    }
     
     public String getColumnName(int c) {
-        switch(c) {
-            case 0:
-                return "Note";
-            default:
-                return Integer.toString(c);
-        }
+        return Integer.toString(c);
     }
 
     public int getColumnCount() {
@@ -22,22 +22,12 @@ public class VisualizerModel extends AbstractTableModel {
     }
 
     public int getRowCount() {
-        return rowNames.length;
+        return rows;
     }
 
     public Object getValueAt(int row, int col) {
-        if (col == 0) {
-            return rowNames[row];
-        }
-        
-        // else data
-        
+        // data
         return null;
-    }
-    
-    public boolean isCellEditable(int row, int col) {
-        if (col == 0) return false;
-        else return true;
     }
     
     public void setNotes() {

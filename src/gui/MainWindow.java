@@ -41,7 +41,8 @@ public class MainWindow extends JFrame
 implements MenuListener, UpdateListener, ButtonListener {
     
     // Default visual settings
-    public static final Color BACKGROUND = new Color(0, 6, 5);
+    public static final Color PANEL_BACKGROUND = new Color(0, 6, 5);
+    public static final Color COMPONENT_BACKGROUND = new Color(0, 40, 32);
     public static final Border BORDER = BorderFactory.createCompoundBorder(
             BorderFactory.createEmptyBorder(4,4,4,4),
             BorderFactory.createCompoundBorder(
@@ -75,7 +76,7 @@ implements MenuListener, UpdateListener, ButtonListener {
         setPreferredSize(dim);
         setSize(dim);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(BACKGROUND);
+        getContentPane().setBackground(PANEL_BACKGROUND);
         
         // Layout, panels, and components
         setLayout(new BorderLayout());
