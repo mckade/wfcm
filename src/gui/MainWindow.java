@@ -83,7 +83,7 @@ implements MenuListener, UpdateListener, ButtonListener {
         
         // Creating Panels and components
         leftPanel = new LeftPanel(this, this);
-        rightPanel = new RightPanel();
+        rightPanel = new RightPanel(mgen);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         splitPane.setUI(new BasicSplitPaneUI() {
@@ -196,6 +196,7 @@ implements MenuListener, UpdateListener, ButtonListener {
                 leftPanel.togglePlayStop();
             }
             mgen.generateMusic(leftPanel.getNoteLength(), rightPanel.getTempo());
+
             generated = true;
             rightPanel.setNotes(/*mgen.getNotes()*/);  // Passing the notes to the visualizer.
             leftPanel.addLog("Finished.");

@@ -9,8 +9,9 @@
 
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import model.MusicGenerator;
+
+import java.awt.*;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JLabel;
@@ -29,19 +30,27 @@ public class VisualizerPanel extends JPanel {
     
     // Components
     private JTable visualizer;
-    private VisualizerModel model;
+    //private VisualizerModel model;
+    private VisualizerGraphics visCanvas;
     private String[] rowHeaders = {"C", "B", "Bb", "A", "Ab", "G", "F#", "F", "E", "Eb", "D", "C#", "C"};
+    private MusicGenerator mg;
     
     // Constructor
-    public VisualizerPanel() {
+    public VisualizerPanel(MusicGenerator mg) {
         
         // Setup
+        this.mg = mg;
+        this.mg.setVis(this);
         setBackground(MainWindow.PANEL_BACKGROUND);
         setBorder(MainWindow.BORDER);
         setLayout(new BorderLayout());
         
         // Creating components
-        model = new VisualizerModel(rowHeaders.length, 16);
+        visCanvas = new VisualizerGraphics(mg.getNotes());
+        visCanvas.setSize(this.getWidth(), this.getHeight());
+        add(visCanvas);
+
+        /*model = new VisualizerModel(rowHeaders.length, 16);
         visualizer = new JTable(model);
         visualizer.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         TableColumnModel tcm = visualizer.getColumnModel();
@@ -69,10 +78,12 @@ public class VisualizerPanel extends JPanel {
         
         // Adding components
         add(scrollPane, BorderLayout.CENTER);
+        */
     }
     
     public void setNotes() {
-        model.setNotes();
+        //model.setNotes();
+        visCanvas.setNotes(mg.getNotes());
     }
 }
 
