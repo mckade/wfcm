@@ -20,7 +20,6 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -53,13 +52,12 @@ implements ActionListener {
     public static final String SETTINGS = "settings";
     
     // Holds listeners to send events to.
-    private ArrayList<MenuListener> listeners;
+    private MenuListener listener;
 
     // Constructor
-    public _MenuBar() {
-        
+    public _MenuBar(MenuListener listener) {
         // Setup
-        listeners = new ArrayList<MenuListener>();
+        this.listener = listener;
         
         // File menu
         JMenu file = new JMenu("File");
@@ -140,16 +138,9 @@ implements ActionListener {
         add(window);
     }
     
-    // Adds a listener to the list to send events to.
-    public void addMenuListener(MenuListener listener) {
-        listeners.add(listener);
-    }
-    
     // Sends an event to each listener.
     private void fireMenuItemClicked(Object source, String id) {
-        for (MenuListener listener : listeners) {
-            listener.menuItemClicked(new MenuEvent(source, id));
-        }
+        listener.menuItemClicked(new MenuEvent(source, id));
     }
     
     // Pushes action event on to menu event.

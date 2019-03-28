@@ -31,11 +31,13 @@ public class LogPanel extends JPanel {
     // Components
     private JLabel title;
     private JTextArea text;
+    private JPopupMenu menu;
+    private JMenuItem clear;
 
     public LogPanel() {
         
         // Setup
-        setBackground(MainWindow.BACKGROUND);
+        setBackground(MainWindow.PANEL_BACKGROUND);
         setBorder(MainWindow.BORDER);
         setLayout(new BorderLayout());
         
@@ -64,24 +66,27 @@ public class LogPanel extends JPanel {
     
     // Adds log to the log text area.
     public void addLog(String log) {
-        text.append(log + '\n');
+        text.append("- " + log + '\n');
     }
     
     // Sets up the mouse listener over the log.
     // This allows a right click to give a popup menu.
     // This menu then allows the user to clear the log.
     private void setUpMouselistener() {
+        // Creating pop up menu
+        menu = new JPopupMenu();
+        clear = new JMenuItem("Clear Log");
+        clear.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                text.setText("");
+            }
+        });
+        menu.add(clear);
+        
+        // Adding mouse listener
         text.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    JPopupMenu menu = new JPopupMenu();
-                    JMenuItem clear = new JMenuItem("Clear Log");
-                    clear.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            text.setText("");
-                        }
-                    });
-                    menu.add(clear);
                     menu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }

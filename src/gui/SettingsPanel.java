@@ -38,7 +38,7 @@ implements ChangeListener {
     public SettingsPanel() {
         
         // Panel settings
-        setBackground(MainWindow.BACKGROUND);
+        setBackground(MainWindow.PANEL_BACKGROUND);
         setBorder(MainWindow.BORDER);
         setLayout(new GridBagLayout());
         

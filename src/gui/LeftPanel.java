@@ -65,6 +65,16 @@ public class LeftPanel extends JPanel {
             fireUpdateEvent(this, UpdateType.invisible);
     }
     
+    // Switches the function of the play_stop button
+    public void togglePlayStop() {
+        buttonPanel.togglePlayStop();
+    }
+    
+    // Toggles the pause switch for the music.
+    public void togglePause() {
+        buttonPanel.togglePause();
+    }
+    
     // Get the note length from the button panel.
     public int getNoteLength() {
         return buttonPanel.getNoteLength();
