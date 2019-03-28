@@ -138,143 +138,145 @@ class MarkovTable {
      * pitch arrays of the key signature's notes.
      *
      * @param key - int 1 - 12 specifying the key signature to weight
-     *            the pitch table for
+     *            the pitch table for.
+     * @param mod - a user specified modifier telling the algorithm
+     *            how many additional key signature pitches should
+     *            be added.
      */
     // TODO: Modify so the pitch octave is random
-    // TODO: Modify so the duration is random (and valid)
-    private void ModKeySig(int key) {
+    private void ModKeySig(int key, int mod) {
 
         switch(key) {
             case 1: // C / Am
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.A4, 1.0});
-                    chords.add(new double[] {JMC.B4, 1.0});
-                    chords.add(new double[] {JMC.C4, 1.0});
-                    chords.add(new double[] {JMC.D4, 1.0});
-                    chords.add(new double[] {JMC.E4, 1.0});
-                    chords.add(new double[] {JMC.F4, 1.0});
-                    chords.add(new double[] {JMC.G4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.A4});
+                    chordPitches.add(new int[] {JMC.B4});
+                    chordPitches.add(new int[] {JMC.C4});
+                    chordPitches.add(new int[] {JMC.D4});
+                    chordPitches.add(new int[] {JMC.E4});
+                    chordPitches.add(new int[] {JMC.F4});
+                    chordPitches.add(new int[] {JMC.G4});
                 }
                 break;
-            case 2: // G / Em
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.A4, 1.0});
-                    chords.add(new double[] {JMC.B4, 1.0});
-                    chords.add(new double[] {JMC.C4, 1.0});
-                    chords.add(new double[] {JMC.D4, 1.0});
-                    chords.add(new double[] {JMC.E4, 1.0});
-                    chords.add(new double[] {JMC.FS4, 1.0});
-                    chords.add(new double[] {JMC.G4, 1.0});
+            case 2: // G / Emin
+                 for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.A4});
+                    chordPitches.add(new int[] {JMC.B4});
+                    chordPitches.add(new int[] {JMC.C4});
+                    chordPitches.add(new int[] {JMC.D4});
+                    chordPitches.add(new int[] {JMC.E4});
+                    chordPitches.add(new int[] {JMC.FS4});
+                    chordPitches.add(new int[] {JMC.G4});
                 }
                 break;
             case 3: // D / Bm
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.A4, 1.0});
-                    chords.add(new double[] {JMC.B4, 1.0});
-                    chords.add(new double[] {JMC.CS4, 1.0});
-                    chords.add(new double[] {JMC.D4, 1.0});
-                    chords.add(new double[] {JMC.E4, 1.0});
-                    chords.add(new double[] {JMC.FS4, 1.0});
-                    chords.add(new double[] {JMC.G4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.A4});
+                    chordPitches.add(new int[] {JMC.B4});
+                    chordPitches.add(new int[] {JMC.CS4});
+                    chordPitches.add(new int[] {JMC.D4});
+                    chordPitches.add(new int[] {JMC.E4});
+                    chordPitches.add(new int[] {JMC.FS4});
+                    chordPitches.add(new int[] {JMC.G4});
                 }
                 break;
             case 4: // A / F#m
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.A4, 1.0});
-                    chords.add(new double[] {JMC.B4, 1.0});
-                    chords.add(new double[] {JMC.CS4, 1.0});
-                    chords.add(new double[] {JMC.D4, 1.0});
-                    chords.add(new double[] {JMC.E4, 1.0});
-                    chords.add(new double[] {JMC.FS4, 1.0});
-                    chords.add(new double[] {JMC.GS4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.A4});
+                    chordPitches.add(new int[] {JMC.B4});
+                    chordPitches.add(new int[] {JMC.CS4});
+                    chordPitches.add(new int[] {JMC.D4});
+                    chordPitches.add(new int[] {JMC.E4});
+                    chordPitches.add(new int[] {JMC.FS4});
+                    chordPitches.add(new int[] {JMC.GS4});
                 }
                 break;
             case 5: // E / C#m
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.A4, 1.0});
-                    chords.add(new double[] {JMC.B4, 1.0});
-                    chords.add(new double[] {JMC.CS4, 1.0});
-                    chords.add(new double[] {JMC.DS4, 1.0});
-                    chords.add(new double[] {JMC.E4, 1.0});
-                    chords.add(new double[] {JMC.FS4, 1.0});
-                    chords.add(new double[] {JMC.GS4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.A4});
+                    chordPitches.add(new int[] {JMC.B4});
+                    chordPitches.add(new int[] {JMC.CS4});
+                    chordPitches.add(new int[] {JMC.DS4});
+                    chordPitches.add(new int[] {JMC.E4});
+                    chordPitches.add(new int[] {JMC.FS4});
+                    chordPitches.add(new int[] {JMC.GS4});
                 }
                 break;
             case 6: // B / G#m
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.AS4, 1.0});
-                    chords.add(new double[] {JMC.B4, 1.0});
-                    chords.add(new double[] {JMC.CS4, 1.0});
-                    chords.add(new double[] {JMC.DS4, 1.0});
-                    chords.add(new double[] {JMC.E4, 1.0});
-                    chords.add(new double[] {JMC.FS4, 1.0});
-                    chords.add(new double[] {JMC.GS4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.AS4});
+                    chordPitches.add(new int[] {JMC.B4});
+                    chordPitches.add(new int[] {JMC.CS4});
+                    chordPitches.add(new int[] {JMC.DS4});
+                    chordPitches.add(new int[] {JMC.E4});
+                    chordPitches.add(new int[] {JMC.FS4});
+                    chordPitches.add(new int[] {JMC.GS4});
                 }
                 break;
             case 7: // F# / Ebm
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.AS4, 1.0});
-                    chords.add(new double[] {JMC.B4, 1.0});
-                    chords.add(new double[] {JMC.CS4, 1.0});
-                    chords.add(new double[] {JMC.DS4, 1.0});
-                    chords.add(new double[] {JMC.ES4, 1.0});
-                    chords.add(new double[] {JMC.FS4, 1.0});
-                    chords.add(new double[] {JMC.GS4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.AS4});
+                    chordPitches.add(new int[] {JMC.B4});
+                    chordPitches.add(new int[] {JMC.CS4});
+                    chordPitches.add(new int[] {JMC.DS4});
+                    chordPitches.add(new int[] {JMC.ES4});
+                    chordPitches.add(new int[] {JMC.FS4});
+                    chordPitches.add(new int[] {JMC.GS4});
                 }
                 break;
             case 8: // C# / Bbm
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.AS4, 1.0});
-                    chords.add(new double[] {JMC.BS4, 1.0});
-                    chords.add(new double[] {JMC.CS4, 1.0});
-                    chords.add(new double[] {JMC.DS4, 1.0});
-                    chords.add(new double[] {JMC.ES4, 1.0});
-                    chords.add(new double[] {JMC.FS4, 1.0});
-                    chords.add(new double[] {JMC.GS4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.AS4});
+                    chordPitches.add(new int[] {JMC.BS4});
+                    chordPitches.add(new int[] {JMC.CS4});
+                    chordPitches.add(new int[] {JMC.DS4});
+                    chordPitches.add(new int[] {JMC.ES4});
+                    chordPitches.add(new int[] {JMC.FS4});
+                    chordPitches.add(new int[] {JMC.GS4});
                 }
                 break;
             case 9: // Ab / Fm
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.AF4, 1.0});
-                    chords.add(new double[] {JMC.BF4, 1.0});
-                    chords.add(new double[] {JMC.C4, 1.0});
-                    chords.add(new double[] {JMC.DF4, 1.0});
-                    chords.add(new double[] {JMC.EF4, 1.0});
-                    chords.add(new double[] {JMC.F4, 1.0});
-                    chords.add(new double[] {JMC.G4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.AF4});
+                    chordPitches.add(new int[] {JMC.BF4});
+                    chordPitches.add(new int[] {JMC.C4});
+                    chordPitches.add(new int[] {JMC.DF4});
+                    chordPitches.add(new int[] {JMC.EF4});
+                    chordPitches.add(new int[] {JMC.F4});
+                    chordPitches.add(new int[] {JMC.G4});
                 }
                 break;
             case 10: // Eb / Cm
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.AF4, 1.0});
-                    chords.add(new double[] {JMC.BF4, 1.0});
-                    chords.add(new double[] {JMC.C4, 1.0});
-                    chords.add(new double[] {JMC.D4, 1.0});
-                    chords.add(new double[] {JMC.EF4, 1.0});
-                    chords.add(new double[] {JMC.F4, 1.0});
-                    chords.add(new double[] {JMC.G4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.AF4});
+                    chordPitches.add(new int[] {JMC.BF4});
+                    chordPitches.add(new int[] {JMC.C4});
+                    chordPitches.add(new int[] {JMC.D4});
+                    chordPitches.add(new int[] {JMC.EF4});
+                    chordPitches.add(new int[] {JMC.F4});
+                    chordPitches.add(new int[] {JMC.G4});
                 }
                 break;
             case 11: // Bb / Gm
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.A4, 1.0});
-                    chords.add(new double[] {JMC.BF4, 1.0});
-                    chords.add(new double[] {JMC.C4, 1.0});
-                    chords.add(new double[] {JMC.D4, 1.0});
-                    chords.add(new double[] {JMC.EF4, 1.0});
-                    chords.add(new double[] {JMC.F4, 1.0});
-                    chords.add(new double[] {JMC.G4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.A4});
+                    chordPitches.add(new int[] {JMC.BF4});
+                    chordPitches.add(new int[] {JMC.C4});
+                    chordPitches.add(new int[] {JMC.D4});
+                    chordPitches.add(new int[] {JMC.EF4});
+                    chordPitches.add(new int[] {JMC.F4});
+                    chordPitches.add(new int[] {JMC.G4});
                 }
                 break;
             case 12: // F / Dm
-                for (int i = 0; i < 4; ++i) {
-                    chords.add(new double[] {JMC.A4, 1.0});
-                    chords.add(new double[] {JMC.BF4, 1.0});
-                    chords.add(new double[] {JMC.C4, 1.0});
-                    chords.add(new double[] {JMC.D4, 1.0});
-                    chords.add(new double[] {JMC.E4, 1.0});
-                    chords.add(new double[] {JMC.F4, 1.0});
-                    chords.add(new double[] {JMC.G4, 1.0});
+                for (int i = 0; i < mod; ++i) {
+                    chordPitches.add(new int[] {JMC.A4});
+                    chordPitches.add(new int[] {JMC.BF4});
+                    chordPitches.add(new int[] {JMC.C4});
+                    chordPitches.add(new int[] {JMC.D4});
+                    chordPitches.add(new int[] {JMC.E4});
+                    chordPitches.add(new int[] {JMC.F4});
+                    chordPitches.add(new int[] {JMC.G4});
                 }
                 break;
             default:
