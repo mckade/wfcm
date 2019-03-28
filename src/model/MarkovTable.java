@@ -10,6 +10,8 @@ package model;
  * Used by WaveFCND to generate music
  */
 
+import jm.JMC;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -131,43 +133,149 @@ class MarkovTable {
 
     /**
      *
-     * Modifies the pitch and duration probability tables.
-     * Slightly increases probability of notes in the key
-     * of the piece.
-     * If a note in the key signature does not appear in
-     * the piece, the duration probabilities for that note
-     * will be modified to be equal (and not 0).
+     * Increases the probability of notes in the piece's key
+     * signature being included in the output by adding extra
+     * pitch arrays of the key signature's notes.
      *
-     * @param key - int 1 - 24 specifying the key signature to weight
+     * @param key - int 1 - 12 specifying the key signature to weight
      *            the pitch table for
      */
-    // TODO: May be able to be simplified to less than 12 cases
-    private void weightForKeySig(int key) {
+    // TODO: Modify so the pitch octave is random
+    // TODO: Modify so the duration is random (and valid)
+    private void ModKeySig(int key) {
 
         switch(key) {
-            case 1: // CMaj (/ Amin)
+            case 1: // C / Am
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.A4, 1.0});
+                    chords.add(new double[] {JMC.B4, 1.0});
+                    chords.add(new double[] {JMC.C4, 1.0});
+                    chords.add(new double[] {JMC.D4, 1.0});
+                    chords.add(new double[] {JMC.E4, 1.0});
+                    chords.add(new double[] {JMC.F4, 1.0});
+                    chords.add(new double[] {JMC.G4, 1.0});
+                }
                 break;
-            case 2: // Cmin (/ D# (Eb))
+            case 2: // G / Em
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.A4, 1.0});
+                    chords.add(new double[] {JMC.B4, 1.0});
+                    chords.add(new double[] {JMC.C4, 1.0});
+                    chords.add(new double[] {JMC.D4, 1.0});
+                    chords.add(new double[] {JMC.E4, 1.0});
+                    chords.add(new double[] {JMC.FS4, 1.0});
+                    chords.add(new double[] {JMC.G4, 1.0});
+                }
                 break;
-            case 3: // C#Maj (/ A#min (Bbmin))
+            case 3: // D / Bm
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.A4, 1.0});
+                    chords.add(new double[] {JMC.B4, 1.0});
+                    chords.add(new double[] {JMC.CS4, 1.0});
+                    chords.add(new double[] {JMC.D4, 1.0});
+                    chords.add(new double[] {JMC.E4, 1.0});
+                    chords.add(new double[] {JMC.FS4, 1.0});
+                    chords.add(new double[] {JMC.G4, 1.0});
+                }
                 break;
-            case 4: // C#min (/ E)
+            case 4: // A / F#m
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.A4, 1.0});
+                    chords.add(new double[] {JMC.B4, 1.0});
+                    chords.add(new double[] {JMC.CS4, 1.0});
+                    chords.add(new double[] {JMC.D4, 1.0});
+                    chords.add(new double[] {JMC.E4, 1.0});
+                    chords.add(new double[] {JMC.FS4, 1.0});
+                    chords.add(new double[] {JMC.GS4, 1.0});
+                }
                 break;
-            case 5: // DMaj (/ Bm)
+            case 5: // E / C#m
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.A4, 1.0});
+                    chords.add(new double[] {JMC.B4, 1.0});
+                    chords.add(new double[] {JMC.CS4, 1.0});
+                    chords.add(new double[] {JMC.DS4, 1.0});
+                    chords.add(new double[] {JMC.E4, 1.0});
+                    chords.add(new double[] {JMC.FS4, 1.0});
+                    chords.add(new double[] {JMC.GS4, 1.0});
+                }
                 break;
-            case 6: // Dmin (/ F)
+            case 6: // B / G#m
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.AS4, 1.0});
+                    chords.add(new double[] {JMC.B4, 1.0});
+                    chords.add(new double[] {JMC.CS4, 1.0});
+                    chords.add(new double[] {JMC.DS4, 1.0});
+                    chords.add(new double[] {JMC.E4, 1.0});
+                    chords.add(new double[] {JMC.FS4, 1.0});
+                    chords.add(new double[] {JMC.GS4, 1.0});
+                }
                 break;
-            case 7: // D#Maj (/ Cm)
+            case 7: // F# / Ebm
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.AS4, 1.0});
+                    chords.add(new double[] {JMC.B4, 1.0});
+                    chords.add(new double[] {JMC.CS4, 1.0});
+                    chords.add(new double[] {JMC.DS4, 1.0});
+                    chords.add(new double[] {JMC.ES4, 1.0});
+                    chords.add(new double[] {JMC.FS4, 1.0});
+                    chords.add(new double[] {JMC.GS4, 1.0});
+                }
                 break;
-            case 8: // D#min (/ F#)
+            case 8: // C# / Bbm
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.AS4, 1.0});
+                    chords.add(new double[] {JMC.BS4, 1.0});
+                    chords.add(new double[] {JMC.CS4, 1.0});
+                    chords.add(new double[] {JMC.DS4, 1.0});
+                    chords.add(new double[] {JMC.ES4, 1.0});
+                    chords.add(new double[] {JMC.FS4, 1.0});
+                    chords.add(new double[] {JMC.GS4, 1.0});
+                }
                 break;
-            case 9: // EMaj (/ C#min)
+            case 9: // Ab / Fm
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.AF4, 1.0});
+                    chords.add(new double[] {JMC.BF4, 1.0});
+                    chords.add(new double[] {JMC.C4, 1.0});
+                    chords.add(new double[] {JMC.DF4, 1.0});
+                    chords.add(new double[] {JMC.EF4, 1.0});
+                    chords.add(new double[] {JMC.F4, 1.0});
+                    chords.add(new double[] {JMC.G4, 1.0});
+                }
                 break;
-            case 10: // Emin (/ G)
+            case 10: // Eb / Cm
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.AF4, 1.0});
+                    chords.add(new double[] {JMC.BF4, 1.0});
+                    chords.add(new double[] {JMC.C4, 1.0});
+                    chords.add(new double[] {JMC.D4, 1.0});
+                    chords.add(new double[] {JMC.EF4, 1.0});
+                    chords.add(new double[] {JMC.F4, 1.0});
+                    chords.add(new double[] {JMC.G4, 1.0});
+                }
                 break;
-            case 11: // FMaj (/ Dm)
+            case 11: // Bb / Gm
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.A4, 1.0});
+                    chords.add(new double[] {JMC.BF4, 1.0});
+                    chords.add(new double[] {JMC.C4, 1.0});
+                    chords.add(new double[] {JMC.D4, 1.0});
+                    chords.add(new double[] {JMC.EF4, 1.0});
+                    chords.add(new double[] {JMC.F4, 1.0});
+                    chords.add(new double[] {JMC.G4, 1.0});
+                }
                 break;
-            case 12: // Fmin (/ Ab)
+            case 12: // F / Dm
+                for (int i = 0; i < 4; ++i) {
+                    chords.add(new double[] {JMC.A4, 1.0});
+                    chords.add(new double[] {JMC.BF4, 1.0});
+                    chords.add(new double[] {JMC.C4, 1.0});
+                    chords.add(new double[] {JMC.D4, 1.0});
+                    chords.add(new double[] {JMC.E4, 1.0});
+                    chords.add(new double[] {JMC.F4, 1.0});
+                    chords.add(new double[] {JMC.G4, 1.0});
+                }
                 break;
             default:
                 System.out.println("Markov table: Invalid input in weightForKeySig method call.");

@@ -34,7 +34,7 @@ public class MidiReader {
 
     // Inner class used to encapsulate data obtained form parsing
     // Event object from SMF
-    // TODO: Store chord durations in first/last index of pitch arrays
+    // TODO: Create an array of total durations of all pitches in the piece (including those not found in the piece)
     public class MidiData {
 
         Vector<double[]> chords; // Last element is chord duration
@@ -75,28 +75,22 @@ public class MidiReader {
             Vector<Track> tracks = smf.getTrackList();
             Vector<Vector<Event>> events = new Vector<>();
 
-            // Don't really need this information
-            System.out.println("PPQN: " + smf.getPPQN()); // Pulses per Quarter Note
-            System.out.println("Number of tracks: " + tracks.size()); // Track 1 is header data
+            int resolution = smf.getPPQN(); // Pulses per Quarter Note. Needed to calculate note durations
 
             // Get EventList from each Track
             for (Track trk : tracks) { events.add(trk.getEvtList()); }
 
             // Loop through Tracks &
             // Get Event data
-            for (Vector<Event> vec : events) { parseEvents(vec, smf.getPPQN()); }
+            for (Vector<Event> vec : events) { parseEvents(vec, resolution); }
         }
     }
 
-    //TODO: Store chord durations in first/last index of pitch arrays
 
     // Cycles through each event in the event vector passed to it
     // Get's notes/chord data (pitch, etc.) and places it in
     // MidiReader's MidiData object
     public void parseEvents(Vector<Event> vec, int ppqn) {
-
-        // Needed to calculate durations
-        int resolution = ppqn; // Number of ticks in a quarter note
 
         // Needed for note tracking
         Note note;
@@ -148,7 +142,7 @@ public class MidiReader {
                     }
                     System.out.println("NoteOff event:");
 
-                    pitches.add(1.0 * off.getTime() / resolution);
+                    pitches.add(1.0 * off.getTime() / ppqn);
                     midiData.chords.add(vectorToPitchArr(pitches));
 
                     // Clear pitch vector for next chord.
@@ -194,7 +188,7 @@ public class MidiReader {
                         System.out.println("\nNoteOff event:");
                         on.print();
 
-                        pitches.add(1.0 * on.getTime() / resolution );
+                        pitches.add(1.0 * on.getTime() / ppqn);
 
                         midiData.chords.add(vectorToPitchArr(pitches));
 
@@ -336,6 +330,73 @@ public class MidiReader {
                 index = i;
             }
         }
-        return index + 1;
+
+        // Map index to a number 1 - 12 corresponding to a Key
+        // on the Circle of Fifths, 1 corresponding to C,
+        // 2 corresponding to G, etc.
+        switch (index + 1) {
+            // C
+            case 1:
+                return 1;
+            case 20:
+                return 1;
+            // G
+            case 10:
+                return 2;
+            case 15:
+                return 2;
+            // D
+            case 5:
+                return 3;
+            case 24:
+                return 3;
+            // A
+            case 14:
+                return 4;
+            case 19:
+                return 4;
+            // E
+            case 4:
+                return 5;
+            case 9:
+                return 5;
+            // B
+            case 18:
+                return 6;
+            case 23:
+                return 6;
+            // F#
+            case 8:
+                return 7;
+            case 13:
+                return 7;
+            // C#
+            case 3:
+                return 8;
+            case 22:
+                return 8;
+            // Ab
+            case 12:
+                return 9;
+            case 17:
+                return 9;
+            // Eb
+            case 2:
+                return 10;
+            case 7:
+                return 10;
+            // Bb
+            case 16:
+                return 11;
+            case 21:
+                return 11;
+            // F
+            case 6:
+                return 12;
+            case 11:
+                return 12;
+            default: // Shouldn't get here
+                return 0;
+        }
     }
 }
