@@ -2,23 +2,16 @@ package gui;
 
 import java.awt.*;
 
-public class VisualizerGraphics extends Canvas {
+import javax.swing.JPanel;
+
+@SuppressWarnings("serial")
+public class VisualizerGraphics extends JPanel {
+    
     private int rowHeight = 10;
     private Rectangle[] notes;
-
-    public VisualizerGraphics()
-    {
-        int size = 100;
-        notes = new Rectangle[size];
-        for(int x = 0; x < size; x++)
-        {
-            notes[x] = new Rectangle(x*rowHeight, rowHeight*x, 3*rowHeight, rowHeight);
-        }
-    }
-
-    public VisualizerGraphics(Rectangle[] notes)
-    {
-        this.notes = notes;
+    
+    public VisualizerGraphics() {
+        setBackground(MainWindow.PANEL_BACKGROUND);
     }
 
     public void setNotes(Rectangle[] notes)
@@ -28,19 +21,20 @@ public class VisualizerGraphics extends Canvas {
         repaint();
     }
 
-    public void paint(Graphics g)
-    {
-        for(int i = 0; i < notes.length; i++)
-        {
-            int x = notes[i].x;
-            int y = 800 - notes[i].y * rowHeight;
-            int w = notes[i].width;
-            int h = rowHeight;
-            g.setColor(Color.white);
-            g.fillRect(x, y, w, h);
-            g.setColor(Color.black);
-            g.drawRect(x, y, w, h);
-            System.out.println("Drawing: " + x +", "+ y +", "+ w +", "+ h);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        if (notes == null) return;
+        int x, y, w, h;
+        for(Rectangle note: notes) {
+            x = note.x;
+            y = 800 - note.y * rowHeight;
+            w = note.width;
+            h = rowHeight;
+            g2.setColor(Color.white);
+            g2.fillRect(x, y, w, h);
+            g2.setColor(Color.black);
+            g2.drawRect(x, y, w, h);
         }
     }
 }

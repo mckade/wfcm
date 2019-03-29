@@ -13,6 +13,7 @@ import model.MusicGenerator;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 
@@ -65,7 +66,7 @@ public class RightPanel extends JPanel {
     
     // Passes note information to the visualizer.
     // TODO: Set parameter
-    public void setNotes() {
-        visualizerPanel.setNotes();
+    public void setNotes(Rectangle[] notes) {
+        visualizerPanel.setNotes(notes);
     }
 }

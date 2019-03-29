@@ -7,15 +7,14 @@ package model;
  * Controller to use separate pieces to generate music.
  */
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.io.File;
 import java.util.Vector;
 
-import gui.VisualizerPanel;
 import jm.audio.Instrument;
+import jm.music.data.CPhrase;
 import jm.music.data.Note;
 import jm.music.data.Part;
-import jm.music.data.CPhrase;
 import jm.music.data.Score;
 import jm.util.Write;
 
@@ -25,7 +24,6 @@ public class MusicGenerator {
     private WaveFCND wfc;
     private Score s;
     private Rectangle[] noteData;
-    private VisualizerPanel vis;
     private double timeScale = 100;
 
     // Temp variable until proper
@@ -34,14 +32,8 @@ public class MusicGenerator {
     public MusicGenerator()
     {
         mTable = new MarkovTable();
-        noteData = new Rectangle[0];
     }
 
-    public void setVis(VisualizerPanel vis)
-    {
-        this.vis = vis;
-    }
-    
     // Saves the current generation table
     public void saveGenerationTable(File file) {
         // Does nothing atm
@@ -104,9 +96,6 @@ public class MusicGenerator {
         p.addCPhrase(phr);
         s.addPart(p);
         Write.midi(s, MusicState.OUTPUT);
-
-        // update the visualizer
-        vis.setNotes();
     }
     
     public void playSong()

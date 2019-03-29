@@ -9,46 +9,40 @@
 
 package gui;
 
-import model.MusicGenerator;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Rectangle;
 
-import java.awt.*;
-
-import javax.swing.AbstractListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
 import javax.swing.UIManager;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
+
+import model.MusicGenerator;
 
 @SuppressWarnings("serial")
 public class VisualizerPanel extends JPanel {
     
     // Components
-    private JTable visualizer;
-    //private VisualizerModel model;
     private VisualizerGraphics visCanvas;
-    private String[] rowHeaders = {"C", "B", "Bb", "A", "Ab", "G", "F#", "F", "E", "Eb", "D", "C#", "C"};
-    private MusicGenerator mg;
+    //private String[] rowHeaders = {"C", "B", "Bb", "A", "Ab", "G", "F#", "F", "E", "Eb", "D", "C#", "C"};
     
     // Constructor
     public VisualizerPanel(MusicGenerator mg) {
         
         // Setup
-        this.mg = mg;
-        this.mg.setVis(this);
         setBackground(MainWindow.PANEL_BACKGROUND);
         setBorder(MainWindow.BORDER);
         setLayout(new BorderLayout());
         
         // Creating components
-        visCanvas = new VisualizerGraphics(mg.getNotes());
-        visCanvas.setSize(this.getWidth(), this.getHeight());
-        add(visCanvas);
+        visCanvas = new VisualizerGraphics();
+        JScrollPane scrollPane = new JScrollPane(visCanvas);
+        add(visCanvas, BorderLayout.CENTER);
 
         /*model = new VisualizerModel(rowHeaders.length, 16);
         visualizer = new JTable(model);
@@ -81,9 +75,8 @@ public class VisualizerPanel extends JPanel {
         */
     }
     
-    public void setNotes() {
-        //model.setNotes();
-        visCanvas.setNotes(mg.getNotes());
+    public void setNotes(Rectangle[] notes) {
+        visCanvas.setNotes(notes);
     }
 }
 

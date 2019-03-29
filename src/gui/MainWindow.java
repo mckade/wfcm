@@ -198,7 +198,7 @@ implements MenuListener, UpdateListener, ButtonListener {
             mgen.generateMusic(leftPanel.getNoteLength(), rightPanel.getTempo());
 
             generated = true;
-            rightPanel.setNotes(/*mgen.getNotes()*/);  // Passing the notes to the visualizer.
+            rightPanel.setNotes(mgen.getNotes());  // Passing the notes to the visualizer.
             leftPanel.addLog("Finished.");
             break;
         // Play/Stop
