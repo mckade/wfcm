@@ -16,11 +16,16 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import coms.UpdateEvent;
+import coms.UpdateListener;
+
 @SuppressWarnings("serial")
-public class VisualizerPanel extends JPanel {
+public class VisualizerPanel extends JPanel
+implements UpdateListener {
     
     // Components
     private VisualizerGraphics visualizer;
+    private JScrollPane scrollPane;
     
     // Constructor
     public VisualizerPanel() {
@@ -31,14 +36,20 @@ public class VisualizerPanel extends JPanel {
         setLayout(new BorderLayout());
         
         // Creating components
-        visualizer = new VisualizerGraphics(15);
-        JScrollPane scrollPane = new JScrollPane(visualizer);
+        visualizer = new VisualizerGraphics(this);
+        scrollPane = new JScrollPane(visualizer);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(8);
         add(scrollPane, BorderLayout.CENTER);
     }
     
     public void setNotes(Rectangle[] notes) {
         visualizer.setNotes(notes);
+    }
+
+    public void updateEvent(UpdateEvent e) {
+        scrollPane.invalidate();
+        scrollPane.validate();
     }
 }

@@ -11,5 +11,6 @@ package coms;
 
 public enum UpdateType {
     visible,
-    invisible
+    invisible,
+    scrollBar
 }

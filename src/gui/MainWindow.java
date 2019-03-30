@@ -134,6 +134,7 @@ implements MenuListener, UpdateListener, ButtonListener {
             if (file != null) {
                 if (mgen.importSample(file)) {
                     sample = true;
+                    rightPanel.setNotes(mgen.getNotes());
                     leftPanel.addLog("Sample loaded.");
                 }
                 else {
@@ -177,6 +178,7 @@ implements MenuListener, UpdateListener, ButtonListener {
         case invisible:
             splitPane.setDividerSize(0);
             break;
+        default: // Nothing
         }
     }
 
