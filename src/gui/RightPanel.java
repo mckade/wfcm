@@ -43,7 +43,7 @@ public class RightPanel extends JPanel {
         setLayout(new BorderLayout());
         
         // Creating panels
-        visualizerPanel = new VisualizerPanel(mg);
+        visualizerPanel = new VisualizerPanel();
         settingsPanel = new SettingsPanel();
         
         // Adding panels

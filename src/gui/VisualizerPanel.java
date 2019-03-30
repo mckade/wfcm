@@ -10,29 +10,20 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Rectangle;
 
-import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListCellRenderer;
-import javax.swing.UIManager;
-import javax.swing.table.JTableHeader;
-
-import model.MusicGenerator;
 
 @SuppressWarnings("serial")
 public class VisualizerPanel extends JPanel {
     
     // Components
-    private VisualizerGraphics visCanvas;
-    //private String[] rowHeaders = {"C", "B", "Bb", "A", "Ab", "G", "F#", "F", "E", "Eb", "D", "C#", "C"};
+    private VisualizerGraphics visualizer;
     
     // Constructor
-    public VisualizerPanel(MusicGenerator mg) {
+    public VisualizerPanel() {
         
         // Setup
         setBackground(MainWindow.PANEL_BACKGROUND);
@@ -40,64 +31,14 @@ public class VisualizerPanel extends JPanel {
         setLayout(new BorderLayout());
         
         // Creating components
-        visCanvas = new VisualizerGraphics();
-        JScrollPane scrollPane = new JScrollPane(visCanvas);
-        add(visCanvas, BorderLayout.CENTER);
-
-        /*model = new VisualizerModel(rowHeaders.length, 16);
-        visualizer = new JTable(model);
-        visualizer.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        TableColumnModel tcm = visualizer.getColumnModel();
-        for (int i = 0; i < visualizer.getColumnCount(); i++) {
-            tcm.getColumn(i).setMinWidth(50);
-            tcm.getColumn(i).setPreferredWidth(50);
-        }
-        
-        // Row Headers
-        ListModel<Object> lm = new AbstractListModel<Object>() {
-            public Object getElementAt(int index) {
-                return rowHeaders[index];
-            }
-            public int getSize() {
-                return rowHeaders.length;
-            }
-        };
-        JList<Object> rowHeader = new JList<Object>(lm);
-        rowHeader.setFixedCellWidth(50);
-        rowHeader.setFixedCellHeight(visualizer.getRowHeight());
-        rowHeader.setCellRenderer(new RowRenderer(visualizer));
-        
+        visualizer = new VisualizerGraphics(15);
         JScrollPane scrollPane = new JScrollPane(visualizer);
-        scrollPane.setRowHeaderView(rowHeader);
-        
-        // Adding components
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         add(scrollPane, BorderLayout.CENTER);
-        */
     }
     
     public void setNotes(Rectangle[] notes) {
-        visCanvas.setNotes(notes);
-    }
-}
-
-// Sets up how a row should look.
-@SuppressWarnings("serial")
-class RowRenderer extends JLabel
-implements ListCellRenderer<Object> {
-
-    public RowRenderer(JTable table) {
-        JTableHeader header = table.getTableHeader();
-        setOpaque(true);
-        setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-        setHorizontalAlignment(CENTER);
-        setForeground(header.getForeground());
-        setBackground(header.getBackground());
-        setFont(header.getFont());
-    }
-    
-    public Component getListCellRendererComponent(JList<?> list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus) {
-        setText((value == null) ? "" : value.toString());
-        return this;
+        visualizer.setNotes(notes);
     }
 }
