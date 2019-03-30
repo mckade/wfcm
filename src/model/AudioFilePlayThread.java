@@ -16,7 +16,6 @@ import javax.sound.sampled.DataLine.Info;
 class AudioFilePlayThread extends Thread {
     byte[] tempBuffer = new byte[1024];
     private AudioInputStream audioInputStream;
-    MusicGenerator mg;
 
     public AudioFilePlayThread(AudioInputStream strm)
     {
@@ -44,6 +43,7 @@ class AudioFilePlayThread extends Thread {
             source.close();
             source.close();
             this.audioInputStream.close();
+            MusicState.songFinished();
         } catch (Exception var5) {
             System.out.println("jMusic AudioFilePlayThread error");
             var5.printStackTrace();

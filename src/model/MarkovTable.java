@@ -12,8 +12,10 @@ package model;
 
 import jm.JMC;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 class MarkovTable {
 
@@ -23,6 +25,8 @@ class MarkovTable {
     private Vector<int[]> chordPitches;
     private double[][] chordTable; // chord transition probabilities
     private double[][] chordLengthTable; // chord duration transition probabilities
+    private Rectangle[] sample;
+    private double timeScale = 100.0;
 
     // chord holds a static reference to the unique pitch arrays in the sample
     // mapped to an integer (the index used in probability arrays)
@@ -36,7 +40,16 @@ class MarkovTable {
     {
         midiReader = new MidiReader();
     }
-    
+
+    public double getTimeScale() {
+        return timeScale;
+    }
+
+    public Rectangle[] getSample()
+    {
+        return sample;
+    }
+
     // Loads midi file
     boolean loadMidiFile(String filename)
     {
@@ -55,17 +68,26 @@ class MarkovTable {
         int chordLengthKey = 0;
         chord = new HashMap<>();
         chordLength = new HashMap<>();
+        Vector<Rectangle> rects = new Vector<>();
 
         // scan the sample and update the pitch and length maps
         System.out.println("Creating chord and chord length maps");
         chordPitches = new Vector<>();
+        double time = 0.0;
         for (double[] chrd : chords) {
 
             // Make a copy of chord pitch array without the duration at the end
             int[] newChrd = new int[chrd.length - 1];
             for (int i = 0; i < chrd.length - 1; ++i) {
                 newChrd[i] = (int)chrd[i];
+                rects.add(new Rectangle(
+                        (int)(time*timeScale), // x = noteStartTime * scale
+                        (int)chrd[i], // y = pitch
+                        (int)(chrd[chrd.length - 1]*timeScale), // width = duration * scale
+                        1)); //height -- updated in VisualizerGraphics, so this value doesn't matter
             }
+
+            time += chrd[chrd.length - 1];
 
             // Add new chord to chordPitches as int[]
             chordPitches.add(newChrd);
@@ -73,14 +95,13 @@ class MarkovTable {
             if (chord.putIfAbsent(newChrd, chordKey) == null)
                 chordKey++;
 
-            // TODO: Store chord durations in last index of pitch arrays
             if (chordLength.putIfAbsent(chrd[chrd.length - 1], chordLengthKey) == null)
                 chordLengthKey++;
-
         }
 
         chordTable = new double[chord.size()][chord.size()];
         chordLengthTable = new double[chordLength.size()][chordLength.size()];
+        sample = rects.toArray(new Rectangle[rects.size()]);
 
         generateTable(chordPitches);
 

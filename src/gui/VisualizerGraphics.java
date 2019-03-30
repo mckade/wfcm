@@ -43,14 +43,17 @@ public class VisualizerGraphics extends JComponent {
 
     public void setNotes(Rectangle[] notes) {
         this.notes = notes;
+        //System.out.println("Added " + notes.length + " notes");
         int maxX = 0;
         for (Rectangle note: notes) {
             if (note.x + note.width > maxX) {
                 maxX = note.x + note.width;
             }
+            //System.out.println("Rect: " + note.x + ", " + note.y + ", " + note.width + ", " + note.height);
         }
         dim.width = maxX;
         listener.updateEvent(new UpdateEvent(this, UpdateType.scrollBar));
+        repaint();
     }
 
     public void paintComponent(Graphics g) {

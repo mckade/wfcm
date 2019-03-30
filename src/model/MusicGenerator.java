@@ -9,6 +9,10 @@ package model;
 
 import java.awt.Rectangle;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Vector;
 
 import jm.audio.Instrument;
@@ -24,7 +28,6 @@ public class MusicGenerator {
     private WaveFCND wfc;
     private Score s;
     private Rectangle[] noteData;
-    private double timeScale = 100;
 
     // Temp variable until proper
     private boolean playing = false;
@@ -53,6 +56,13 @@ public class MusicGenerator {
         pt[1] = new PTable(mTable.getLengthTable());
         wfc = new WaveFCND(pt);
 
+        // copy the sample file to out.MID so it can be played
+        try {
+            Files.copy(file.toPath(), new File(MusicState.OUTPUT).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return test;
     }
     
@@ -77,7 +87,8 @@ public class MusicGenerator {
             // save note info in noteTable
             for(Note n : chord)
             {
-                nd.add(new Rectangle((int)(time*timeScale), n.getPitch(), (int)(n.getDuration()*timeScale), 1));
+                nd.add(new Rectangle((int)(time*mTable.getTimeScale()), n.getPitch(),
+                        (int)(n.getDuration()*mTable.getTimeScale()), 1));
             }
 
             time += chord[0].getDuration();
@@ -131,5 +142,10 @@ public class MusicGenerator {
     // Returns the notes of the generation.
     public Rectangle[] getNotes() {
         return noteData;
+    }
+
+    // Returns the notes of the generation.
+    public Rectangle[] getSampleNotes() {
+        return mTable.getSample();
     }
 }

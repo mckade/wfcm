@@ -35,6 +35,13 @@ public class MusicState
         stop = true;
     }
 
+    // called when the thread currently playing is finished
+    public static void songFinished()
+    {
+        stop = true;
+        // TODO: switch the stop button to play
+    }
+
     //TODO: fix pause/unpause
     public static void pause()
     {

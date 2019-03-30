@@ -134,8 +134,9 @@ implements MenuListener, UpdateListener, ButtonListener {
             if (file != null) {
                 if (mgen.importSample(file)) {
                     sample = true;
-                    rightPanel.setNotes(mgen.getNotes());
+                    rightPanel.setNotes(mgen.getSampleNotes());
                     leftPanel.addLog("Sample loaded.");
+                    generated = true;
                 }
                 else {
                     leftPanel.addLog("Failed to load sample.");
