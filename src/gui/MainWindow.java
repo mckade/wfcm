@@ -245,6 +245,7 @@ implements UpdateListener, ButtonListener {
             else {
                 mgen.stopSong();
                 leftPanel.addLog("Stopped music");
+                paused = false;
             }
             leftPanel.togglePlayStop();
             break;
@@ -253,9 +254,11 @@ implements UpdateListener, ButtonListener {
             paused = !paused;
             if (paused) {
                 leftPanel.addLog("Paused music");
+                mgen.pauseSong();
             }
             else {
                 leftPanel.addLog("Unpaused music");
+                mgen.unpauseSong();
             }
             leftPanel.togglePauseResume();
             break;
