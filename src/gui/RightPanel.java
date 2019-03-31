@@ -31,7 +31,7 @@ public class RightPanel extends JPanel {
     private boolean settingsVis = true;
     
     // Constructor
-    public RightPanel(MusicGenerator mg) {
+    public RightPanel() {
         
         // Setup
         Dimension dim = new Dimension(MINWIDTH, 200);
@@ -59,6 +59,8 @@ public class RightPanel extends JPanel {
     public void setTempo(int tempo) {
         settingsPanel.setTempo(tempo);
     }
+
+    public void setInstStrings(String[] s) {settingsPanel.setInstStrings(s);}
     
     public int getTempo() {
         return settingsPanel.getTempo();

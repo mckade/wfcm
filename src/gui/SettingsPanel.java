@@ -16,11 +16,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -33,6 +29,8 @@ implements ChangeListener {
     JLabel tempo_label;
     JSpinner tempo_spinner;
     JSlider tempo_slider;
+
+    JComboBox instList;
     
     // Constructor
     public SettingsPanel() {
@@ -92,15 +90,20 @@ implements ChangeListener {
         gc.weightx = 1;
         gc.insets = new Insets(0,0,0,0);
         add(tempo_spinner, gc);
-        
     }
     
     // Sets the tempo manually within 30-230
     public void setTempo(int tempo) {
+        System.out.println(tempo);
         if (tempo < 30 || tempo > 230)
             return;
         tempo_slider.setValue(tempo);
         tempo_spinner.setValue(tempo);
+    }
+
+    public void setInstStrings(String[] i)
+    {
+        //TODO: add strings in i to a combo box
     }
     
     public int getTempo() {

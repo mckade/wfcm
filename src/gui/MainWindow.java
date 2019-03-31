@@ -83,7 +83,8 @@ implements MenuListener, UpdateListener, ButtonListener {
         
         // Creating Panels and components
         leftPanel = new LeftPanel(this, this);
-        rightPanel = new RightPanel(mgen);
+        rightPanel = new RightPanel();
+        rightPanel.setInstStrings(mgen.getInstStrings());
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         splitPane.setUI(new BasicSplitPaneUI() {
@@ -137,6 +138,7 @@ implements MenuListener, UpdateListener, ButtonListener {
                     rightPanel.setNotes(mgen.getSampleNotes());
                     leftPanel.addLog("Sample loaded.");
                     generated = true;
+                    rightPanel.setTempo((int)mgen.getTempo());
                 }
                 else {
                     leftPanel.addLog("Failed to load sample.");

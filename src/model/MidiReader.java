@@ -27,6 +27,7 @@ public class MidiReader {
 
     // Holds MIDI data which will be grabbed by MarkovTable
     MidiData midiData = null;
+    double tempo;
 
     // Constructor
     public MidiReader() {
@@ -63,6 +64,8 @@ public class MidiReader {
         // Read Score from midi file
         Score from_midi = new Score("midi_input");
         Read.midi(from_midi, filename/*.getCanonicalPath()*/);
+        //TODO: fix temp -- I think this is stuck at a default value of 60
+        tempo = from_midi.getTempo();
 
         if (from_midi.size() != 0) {
 
@@ -211,6 +214,15 @@ public class MidiReader {
         } else {
             System.out.println("No MIDI data has been read yet.");
             return null;
+        }
+    }
+
+    public double getTempo() {
+        if (this.midiData != null) {
+            return tempo;
+        } else {
+            System.out.println("No MIDI data has been read yet.");
+            return -1;
         }
     }
 

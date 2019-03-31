@@ -45,6 +45,11 @@ class MarkovTable {
         return timeScale;
     }
 
+    public double getTempo()
+    {
+        return midiReader.getTempo();
+    }
+
     public Rectangle[] getSample()
     {
         return sample;
