@@ -67,9 +67,6 @@ public class LeftPanel extends JPanel {
     // Toggles the pause/resume button between views.
     public void togglePauseResume() {buttonPanel.togglePauseResume();}
     
-    // Returns the note count from the spinner.
-    public int getNoteLength() {return buttonPanel.getNoteLength();}
-    
     // Add a log to the log panel.
     public void addLog(String log) {logPanel.addLog(log);}
     

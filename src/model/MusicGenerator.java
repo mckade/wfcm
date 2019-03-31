@@ -16,9 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import coms.UpdateEvent;
+import coms.SettingsListener;
 import coms.UpdateListener;
-import coms.UpdateType;
 import jm.audio.Instrument;
 import jm.music.data.CPhrase;
 import jm.music.data.Note;
@@ -26,25 +25,33 @@ import jm.music.data.Part;
 import jm.music.data.Score;
 import jm.util.Write;
 
-public class MusicGenerator {
+public class MusicGenerator
+implements SettingsListener {
 
+    // Music Generation
     private MarkovTable mTable;
     private WaveFCND wfc;
     private Score s;
     private Rectangle[] noteData;
 
-    private Map<String, Integer> inst;
-
+    // Music state
     private MusicState ms;
+    
+    // Available instruments.
+    private Map<String, Integer> inst;
+    
+    // Settings/Modifiers
+    int noteLength = 100;
+    int tempo = 100;
+    String instrument;
 
     // Temp variable until proper
     private boolean playing = false;
 
-    public MusicGenerator()
-    {
+    public MusicGenerator(UpdateListener listener) {
         mTable = new MarkovTable();
         addInsts();
-        ms = new MusicState();
+        ms = new MusicState(listener);
     }
 
     // Saves the current generation table
@@ -82,14 +89,14 @@ public class MusicGenerator {
     }
     
     // Generates music given a note length
-    public void generateMusic(int length, int tempo)
+    public void generateMusic()
     {
         ms.unpause();
 
         // use wfc and mTable
         s = new Score("Procedural", tempo);
         Part p = new Part("Piano", Instrument.PIANO, 0);
-        Vector<Note[]> notes = wfc.getNotes(length);
+        Vector<Note[]> notes = wfc.getNotes(noteLength);
         Vector<Rectangle> nd = new Vector<>();
 
         CPhrase phr = new CPhrase();
@@ -145,10 +152,6 @@ public class MusicGenerator {
     
     public boolean isPlaying() {
         return playing;
-    }
-    
-    public double getTempo() {
-        return mTable.getTempo();
     }
     
     // Returns the notes of the generation.
@@ -282,8 +285,14 @@ public class MusicGenerator {
         inst.put("HELICOPTER", 125);
     }
 
-    public String[] getInstStrings()
-    {
+    // Settings
+    public void setNoteCount(int noteCount) {this.noteLength = noteCount;}
+    public int getNoteCount() {return noteLength;}
+    public void setTempo(int tempo) {this.tempo = tempo;}
+    public int getTempo() {return tempo;}
+    public void setInstrument(String instrument) {this.instrument = instrument;}
+    public String getInstrument() {return instrument;}
+    public String[] getInstrumentList() {
         return inst.keySet().toArray(new String[inst.keySet().size()]);
     }
 }

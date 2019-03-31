@@ -7,6 +7,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import coms.UpdateListener;
+
 public class MusicState
 {
     private boolean stop = false;
@@ -15,11 +17,19 @@ public class MusicState
     private AudioFilePlayThread audio;
     private long playTime = 0;
 
+    // Listener to send events to
+    UpdateListener listener;
     /*
     audioFile is used to playback MIDI files.
     NOTE: taken from the jMusic library (http://www.explodingart.com/jmusic)
     and extended to fit our needs
      */
+
+    public MusicState(UpdateListener listener) {
+        this.listener = listener;
+    }
+
+
     public void audioFile(String var0) {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(var0));
@@ -56,6 +66,9 @@ public class MusicState
     {
         stop = true;
         pause = false;
+        // TODO: mess with this so gui isn't weird.
+        // NOTE: Gets called everytime the music is stopped.
+        //listener.updateEvent(new UpdateEvent(this, UpdateType.music));
     }
 
     public void pause()

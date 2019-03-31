@@ -77,7 +77,7 @@ implements UpdateListener, ButtonListener {
         // Setup
         super("Proc Music");
         Dimension dim = new Dimension(1024, 768);
-        mgen = new MusicGenerator();
+        mgen = new MusicGenerator(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(dim);
         setSize(dim);
@@ -87,8 +87,7 @@ implements UpdateListener, ButtonListener {
         
         // Creating Panels and components
         leftPanel = new LeftPanel(this, this);
-        rightPanel = new RightPanel();
-        rightPanel.setInstStrings(mgen.getInstStrings());
+        rightPanel = new RightPanel(mgen);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         splitPane.setUI(new BasicSplitPaneUI() {
@@ -155,7 +154,6 @@ implements UpdateListener, ButtonListener {
                     sample = true;
                     playable = true;
                     rightPanel.setNotes(mgen.getSampleNotes());
-                    rightPanel.setTempo((int)mgen.getTempo());
                     leftPanel.addLog("Sample loaded.");
                 }
                 else {
@@ -225,8 +223,9 @@ implements UpdateListener, ButtonListener {
             leftPanel.addLog("Generating Music...");
             if(mgen.stopSong()) {
                 leftPanel.togglePlayStop();
+                paused = false;
             }
-            mgen.generateMusic(leftPanel.getNoteLength(), rightPanel.getTempo());
+            mgen.generateMusic();
             rightPanel.setNotes(mgen.getNotes());  // Passing the notes to the visualizer.
             leftPanel.addLog("Finished.");
             break;
