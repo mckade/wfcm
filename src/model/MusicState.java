@@ -1,10 +1,11 @@
 package model;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
 
 public class MusicState
 {
@@ -13,6 +14,7 @@ public class MusicState
     public static String OUTPUT = "out.MID";
     private AudioFilePlayThread audio;
     private long playTime = 0;
+
     /*
     audioFile is used to playback MIDI files.
     NOTE: taken from the jMusic library (http://www.explodingart.com/jmusic)
@@ -53,6 +55,7 @@ public class MusicState
     public void songFinished()
     {
         stop = true;
+        pause = false;
     }
 
     public void pause()

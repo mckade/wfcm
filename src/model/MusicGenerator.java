@@ -84,6 +84,8 @@ public class MusicGenerator {
     // Generates music given a note length
     public void generateMusic(int length, int tempo)
     {
+        ms.unpause();
+
         // use wfc and mTable
         s = new Score("Procedural", tempo);
         Part p = new Part("Piano", Instrument.PIANO, 0);
