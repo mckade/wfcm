@@ -225,6 +225,7 @@ implements UpdateListener, ButtonListener {
             leftPanel.addLog("Generating Music...");
             if(mgen.stopSong()) {
                 leftPanel.togglePlayStop();
+                paused = false;
             }
             mgen.generateMusic(leftPanel.getNoteLength(), rightPanel.getTempo());
             rightPanel.setNotes(mgen.getNotes());  // Passing the notes to the visualizer.
