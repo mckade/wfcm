@@ -9,8 +9,6 @@
 
 package gui;
 
-import model.MusicGenerator;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -32,14 +30,8 @@ public class RightPanel extends JPanel {
     
     // Constructor
     public RightPanel() {
-        
         // Setup
-        Dimension dim = new Dimension(MINWIDTH, 200);
-        
-        // Panel settings
-        setMinimumSize(dim);
-        
-        // Layout and panels
+        setMinimumSize(new Dimension(MINWIDTH, 200));
         setLayout(new BorderLayout());
         
         // Creating panels
@@ -56,19 +48,15 @@ public class RightPanel extends JPanel {
         settingsPanel.setVisible(settingsVis = !settingsVis);
     }
     
-    public void setTempo(int tempo) {
-        settingsPanel.setTempo(tempo);
-    }
-
+    // Sets the tempo manually within 30-230
+    public void setTempo(int tempo) {settingsPanel.setTempo(tempo);}
+    
+    // Returns the tempo.
+    public int getTempo() {return settingsPanel.getTempo();}
+    
+    // Sets the instruments available for use.
     public void setInstStrings(String[] s) {settingsPanel.setInstStrings(s);}
     
-    public int getTempo() {
-        return settingsPanel.getTempo();
-    }
-    
     // Passes note information to the visualizer.
-    // TODO: Set parameter
-    public void setNotes(Rectangle[] notes) {
-        visualizerPanel.setNotes(notes);
-    }
+    public void setNotes(Rectangle[] notes) {visualizerPanel.setNotes(notes);}
 }

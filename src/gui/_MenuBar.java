@@ -4,15 +4,15 @@
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
  * 
  * Menu bar of the main window.
- * Does multiple functions.
  * - File
- *  - Close: Not yet implemented.
+ *  - New: Creates new visualizer table to work with. (NYI)
+ *  - Open: Opens an existing visualizer table. (NYI)
+ *  - Close: Closes the current visualizer table. (NYI)
  *  - Save: Saves the current generation as a midi file.
  *  - SaveAs: Saves the current generation as a midi file with a new name.
  *  - Exit: Exits the program.
  * - Window
- *  - Buttons: Toggles the buttons display.
- *  - Log: Toggles the log display.
+ *  - Left Panel: Toggles the left panel display.
  *  - Settings: Toggles the settings display.
  */
 
@@ -29,8 +29,8 @@ import javax.swing.KeyStroke;
 
 import com.sun.glass.events.KeyEvent;
 
-import coms.MenuEvent;
-import coms.MenuListener;
+import coms.ButtonEvent;
+import coms.ButtonListener;
 
 @SuppressWarnings("serial")
 public class _MenuBar extends JMenuBar
@@ -51,11 +51,11 @@ implements ActionListener {
     public static final String LEFTPANEL = "leftpanel";
     public static final String SETTINGS = "settings";
     
-    // Holds listeners to send events to.
-    private MenuListener listener;
+    // Listeners to send events to.
+    private ButtonListener listener;
 
     // Constructor
-    public _MenuBar(MenuListener listener) {
+    public _MenuBar(ButtonListener listener) {
         // Setup
         this.listener = listener;
         
@@ -99,7 +99,7 @@ implements ActionListener {
         exit.addActionListener(this);
         exit.setActionCommand(EXIT);
         
-        // Adding menu items to file
+        // Adding file menu items to file menu.
         file.add(_new);
         file.add(open);
         file.addSeparator();
@@ -113,11 +113,11 @@ implements ActionListener {
         file.addSeparator();
         file.add(exit);      
         
-        // Window menu
+        // Window menu.
         JMenu window = new JMenu("Window");
         window.setMnemonic(KeyEvent.VK_W);
         
-        // Window menu items
+        // Window menu items.
         JCheckBoxMenuItem leftPanel = new JCheckBoxMenuItem("Left Panel");
         leftPanel.setSelected(true);
         leftPanel.setMnemonic(KeyEvent.VK_L);
@@ -129,21 +129,22 @@ implements ActionListener {
         settings.addActionListener(this);
         settings.setActionCommand(SETTINGS);
         
-        // Adding menu items to window
+        // Adding window menu items to window menu.
         window.add(leftPanel);
         window.add(settings);
         
-        // Adding menus to menu bar
+        // Adding menus to menu bar.
         add(file);
         add(window);
     }
     
-    // Sends an event to each listener.
+    // Sends an event to the listener that a menu item was clicked.
+    // Passes on the menu item id.
     private void fireMenuItemClicked(Object source, String id) {
-        listener.menuItemClicked(new MenuEvent(source, id));
+        listener.menuItemClicked(new ButtonEvent(source, id));
     }
     
-    // Pushes action event on to menu event.
+    // Fires a menu item clicked event.
     public void actionPerformed(ActionEvent e) {
         fireMenuItemClicked(e.getSource(), e.getActionCommand());
     }
