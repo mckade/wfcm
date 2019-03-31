@@ -15,6 +15,8 @@ import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 
+import coms.SettingsListener;
+
 @SuppressWarnings("serial")
 public class RightPanel extends JPanel {
     
@@ -29,14 +31,14 @@ public class RightPanel extends JPanel {
     private boolean settingsVis = true;
     
     // Constructor
-    public RightPanel() {
+    public RightPanel(SettingsListener listener) {
         // Setup
         setMinimumSize(new Dimension(MINWIDTH, 200));
         setLayout(new BorderLayout());
         
         // Creating panels
         visualizerPanel = new VisualizerPanel();
-        settingsPanel = new SettingsPanel();
+        settingsPanel = new SettingsPanel(listener);
         
         // Adding panels
         add(visualizerPanel, BorderLayout.CENTER);
@@ -47,15 +49,6 @@ public class RightPanel extends JPanel {
     public void toggleSettingsPanel() {
         settingsPanel.setVisible(settingsVis = !settingsVis);
     }
-    
-    // Sets the tempo manually within 30-230
-    public void setTempo(int tempo) {settingsPanel.setTempo(tempo);}
-    
-    // Returns the tempo.
-    public int getTempo() {return settingsPanel.getTempo();}
-    
-    // Sets the instruments available for use.
-    public void setInstStrings(String[] s) {settingsPanel.setInstStrings(s);}
     
     // Passes note information to the visualizer.
     public void setNotes(Rectangle[] notes) {visualizerPanel.setNotes(notes);}

@@ -12,17 +12,13 @@
 
 package gui;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 import coms.ButtonEvent;
 import coms.ButtonListener;
@@ -33,6 +29,7 @@ implements ActionListener {
     
     // Button ids
     public static final String GENERATE = "generate";
+    public static final String RECYCLE = "recycle";
     public static final String PLAY_STOP = "playstop";
     public static final String PAUSE_RESUME = "pause";
     
@@ -41,7 +38,7 @@ implements ActionListener {
     
     // Components
     private _Button generate;
-    private JSpinner noteLength;
+    private _Button recycle;
     private _Button play_stop;
     private _Button pause_resume;
     
@@ -62,12 +59,10 @@ implements ActionListener {
         generate = new _Button("Generate");
         generate.addActionListener(this);
         generate.setActionCommand(GENERATE);
-        noteLength = new JSpinner(new SpinnerNumberModel(100, 2, 99999, 1));
-        noteLength.getEditor().getComponent(0).setBackground(MainWindow.COMPONENT_BACKGROUND);
-        noteLength.getEditor().getComponent(0).setForeground(Color.WHITE);
-        noteLength.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(MainWindow.BORDER_OUTER, 2),
-                BorderFactory.createLineBorder(MainWindow.BORDER_INNER, 2)));
+        recycle = new _Button("Recycle");
+        recycle.setPreferredSize(generate.getPreferredSize());
+        recycle.addActionListener(this);
+        recycle.setActionCommand(RECYCLE);
         play_stop = new _Button("Play");
         play_stop.setPreferredSize(generate.getPreferredSize());
         play_stop.addActionListener(this);
@@ -92,11 +87,11 @@ implements ActionListener {
         gc.insets = new Insets(5,5,5,5);
         add(generate, gc);
         
-        // Generate note length
+        // Recycle Button
         gc.gridx = 1;
         gc.weightx = 1;
         gc.anchor = GridBagConstraints.LINE_START;
-        add(noteLength, gc);
+        add(recycle, gc);
         
         ////////// Row 2 //////////
         // Play/Stop Button
@@ -133,11 +128,6 @@ implements ActionListener {
             pause_resume.setText("Resume");
         else
             pause_resume.setText("Pause");
-    }
-    
-    // Returns the note count from the spinner.
-    public int getNoteLength() {
-        return (int)noteLength.getValue();
     }
     
     // Sends an event to the listener that a button was clicked.
