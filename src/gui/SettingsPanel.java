@@ -94,7 +94,7 @@ implements ChangeListener {
     
     // Sets the tempo manually within 30-230
     public void setTempo(int tempo) {
-        System.out.println(tempo);
+        // System.out.println(tempo);
         if (tempo < 30 || tempo > 230)
             return;
         tempo_slider.setValue(tempo);

@@ -112,17 +112,17 @@ public class MidiReader {
                 case 18: // KeySig event
 
                     KeySig keySig = (KeySig) ev;
-                    System.out.println("KeySig event:");
-                    System.out.println("Key Signature: " + keySig.getKeySig()); // int -7 - 7. -7 means 7 flats. 7 means sharps
-                    System.out.println("Key Quality: " + keySig.getKeyQuality()); // 0 for Major, 1 for minor
-                    System.out.println("Time?: " + keySig.getTime());
+                    //System.out.println("KeySig event:");
+                    //System.out.println("Key Signature: " + keySig.getKeySig()); // int -7 - 7. -7 means 7 flats. 7 means sharps
+                    //System.out.println("Key Quality: " + keySig.getKeyQuality()); // 0 for Major, 1 for minor
+                    //System.out.println("Time?: " + keySig.getTime());
                     break;
                 case 17: // TimeSig event
 
                     TimeSig timeSig = (TimeSig) ev;
-                    System.out.println("TimeSig event:");
-                    System.out.println("1/32 per beat: " + timeSig.getThirtySecondNotesPerBeat());
-                    System.out.println("Metronome pulse: " + timeSig.getMetronomePulse());
+                    //System.out.println("TimeSig event:");
+                    //System.out.println("1/32 per beat: " + timeSig.getThirtySecondNotesPerBeat());
+                    //System.out.println("Metronome pulse: " + timeSig.getMetronomePulse());
                     break;
                 case 4: // NoteOff event
 
@@ -143,7 +143,7 @@ public class MidiReader {
                         }
                         break;
                     }
-                    System.out.println("NoteOff event:");
+                    //System.out.println("NoteOff event:");
 
                     pitches.add(1.0 * off.getTime() / ppqn);
                     midiData.chords.add(vectorToPitchArr(pitches));
@@ -163,8 +163,8 @@ public class MidiReader {
                     // Some MIDI files encode NoteOffs as NoteOns with velocity=0
                     if (on.getVelocity() != 0) {
 
-                        System.out.println("\nNoteOn event:");
-                        on.print();
+                        //System.out.println("\nNoteOn event:");
+                        //on.print();
 
                         // Add pitch value to vector
                         pitches.add((double)Short.toUnsignedInt(on.getPitch()));
@@ -188,8 +188,8 @@ public class MidiReader {
                             break;
                         }
 
-                        System.out.println("\nNoteOff event:");
-                        on.print();
+                        //System.out.println("\nNoteOff event:");
+                        //on.print();
 
                         pitches.add(1.0 * on.getTime() / ppqn);
 
