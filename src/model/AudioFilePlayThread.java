@@ -16,10 +16,12 @@ import javax.sound.sampled.DataLine.Info;
 class AudioFilePlayThread extends Thread {
     byte[] tempBuffer = new byte[1024];
     private AudioInputStream audioInputStream;
+    private MusicState ms;
 
-    public AudioFilePlayThread(AudioInputStream strm)
+    public AudioFilePlayThread(AudioInputStream strm, MusicState ms)
     {
         this.audioInputStream = strm;
+        this.ms = ms;
     }
 
     public void run() {
@@ -30,11 +32,16 @@ class AudioFilePlayThread extends Thread {
             source.open(format);
             source.start();
 
-            int index = 0;
-            while(!MusicState.stop &&
+            long prev = System.currentTimeMillis();
+            int index;
+            while(!ms.isStopped() &&
                     (index = this.audioInputStream.read(this.tempBuffer, 0, this.tempBuffer.length)) != -1) {
                 if (index > 0) {
                     source.write(this.tempBuffer, 0, index);
+                    while(ms.isPaused()){sleep(100); prev = System.currentTimeMillis();}
+                    long cur = System.currentTimeMillis();
+                    ms.updateTime(cur - prev);
+                    prev = cur;
                 }
             }
 
@@ -43,11 +50,10 @@ class AudioFilePlayThread extends Thread {
             source.close();
             source.close();
             this.audioInputStream.close();
-            MusicState.songFinished();
+            ms.songFinished();
         } catch (Exception var5) {
             System.out.println("jMusic AudioFilePlayThread error");
             var5.printStackTrace();
         }
-
     }
 }

@@ -8,18 +8,20 @@ import java.io.IOException;
 
 public class MusicState
 {
-    public static boolean stop = false;
+    private boolean stop = false;
+    private boolean pause = false;
     public static String OUTPUT = "out.MID";
-    public static Thread audio;
+    private AudioFilePlayThread audio;
+    private long playTime = 0;
     /*
     audioFile is used to playback MIDI files.
     NOTE: taken from the jMusic library (http://www.explodingart.com/jmusic)
     and extended to fit our needs
      */
-    public static void audioFile(String var0) {
+    public void audioFile(String var0) {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(var0));
-            audio = new AudioFilePlayThread(audioInputStream);
+            audio = new AudioFilePlayThread(audioInputStream, this);
             stop = false;
             audio.start();
             System.out.println("Playing audio file " + var0);
@@ -30,34 +32,44 @@ public class MusicState
         }
     }
 
-    public static void stop()
+    public void stop()
     {
         stop = true;
+        playTime = 0;
+        pause = false;
+    }
+
+    public boolean isStopped()
+    {
+        return stop;
+    }
+
+    public boolean isPaused()
+    {
+        return pause;
     }
 
     // called when the thread currently playing is finished
-    public static void songFinished()
+    public void songFinished()
     {
         stop = true;
-        // TODO: switch the stop button to play
     }
 
-    //TODO: fix pause/unpause
-    public static void pause()
+    public void pause()
     {
-        try
-        {
-            audio.wait();
-        }
-        catch (Exception e)
-        {
-            System.err.println("Thread could not wait:" + e.getMessage());
-        }
-
+        pause = true;
     }
 
-    public static void unpause()
+    public void unpause()
     {
+        pause = false;
+    }
 
+    public void updateTime(long inc)
+    {
+        if(pause)
+            return;
+
+        playTime += inc;
     }
 }

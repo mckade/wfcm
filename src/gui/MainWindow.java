@@ -229,9 +229,11 @@ implements MenuListener, UpdateListener, ButtonListener {
             paused = !paused;
             if (paused) {
                 leftPanel.addLog("Paused music");
+                mgen.pauseSong();
             }
             else {
                 leftPanel.addLog("Unpaused music");
+                mgen.unpauseSong();
             }
             leftPanel.togglePause();
             break;

@@ -33,6 +33,8 @@ public class MusicGenerator {
 
     private Map<String, Integer> inst;
 
+    private MusicState ms;
+
     // Temp variable until proper
     private boolean playing = false;
 
@@ -40,6 +42,7 @@ public class MusicGenerator {
     {
         mTable = new MarkovTable();
         addInsts();
+        ms = new MusicState();
     }
 
     // Saves the current generation table
@@ -117,23 +120,23 @@ public class MusicGenerator {
     public void playSong()
     {
         playing = true;
-        MusicState.audioFile(MusicState.OUTPUT);
+        ms.audioFile(MusicState.OUTPUT);
     }
     
     public boolean stopSong()
     {
         boolean tmp = playing;
         playing = false;
-        MusicState.stop();
+        ms.stop();
         return tmp;
     }
     
     public void pauseSong() {
-        MusicState.pause();
+        ms.pause();
     }
     
     public void unpauseSong() {
-        MusicState.unpause();
+        ms.unpause();
     }
     
     public boolean isPlaying() {
