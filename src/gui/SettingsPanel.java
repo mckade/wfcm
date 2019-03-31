@@ -3,9 +3,10 @@
  * @project Procedural Music
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
  * 
- * Settings panel to hold all possible settings
- * to change or influence music generation.
- * Not yet implemented.
+ * Holds settings and modifiers to change how music is generated.
+ * - Note count
+ * - Tempo
+ * - Instrument
  */
 
 package gui;
@@ -34,17 +35,18 @@ implements ChangeListener {
     
     // Constructor
     public SettingsPanel() {
-        
-        // Panel settings
+        // Setup
         setBackground(MainWindow.PANEL_BACKGROUND);
-        setBorder(MainWindow.BORDER);
+        setBorder(MainWindow.PANEL_BORDER);
         setLayout(new GridBagLayout());
         
         // Creating components
+        // Label
         settings = new JLabel("Settings and Modifiers", JLabel.CENTER);
         settings.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
         settings.setForeground(Color.WHITE);
         
+        // Tempo
         tempo_label = new JLabel("Tempo");
         tempo_label.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
         tempo_label.setForeground(Color.WHITE);
@@ -52,6 +54,8 @@ implements ChangeListener {
         tempo_spinner.addChangeListener(this);
         tempo_slider = new JSlider(30, 230, 100);
         tempo_slider.addChangeListener(this);
+        
+        // Instrument
         
         // Adding components
         GridBagConstraints gc = new GridBagConstraints();
@@ -64,7 +68,7 @@ implements ChangeListener {
         gc.weighty = 0;
         gc.fill = GridBagConstraints.NONE;
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
-        gc.insets = new Insets(5,5,5,5);
+        gc.insets = new Insets(0,5,0,0);
         add(settings, gc);
         
         ////////// Row 2 //////////
@@ -94,21 +98,18 @@ implements ChangeListener {
     
     // Sets the tempo manually within 30-230
     public void setTempo(int tempo) {
-        // System.out.println(tempo);
         if (tempo < 30 || tempo > 230)
             return;
         tempo_slider.setValue(tempo);
         tempo_spinner.setValue(tempo);
     }
 
-    public void setInstStrings(String[] i)
-    {
-        //TODO: add strings in i to a combo box
+    // Sets the instruments available for use.
+    public void setInstStrings(String[] inst) {
     }
     
-    public int getTempo() {
-        return (int)tempo_spinner.getValue();
-    }
+    // Returns the tempo.
+    public int getTempo() {return (int)tempo_spinner.getValue();}
 
     // If a tempo component changes, extends to the others.
     public void stateChanged(ChangeEvent e) {

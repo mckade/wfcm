@@ -29,10 +29,9 @@ implements UpdateListener {
     
     // Constructor
     public VisualizerPanel() {
-        
         // Setup
         setBackground(MainWindow.PANEL_BACKGROUND);
-        setBorder(MainWindow.BORDER);
+        setBorder(MainWindow.PANEL_BORDER);
         setLayout(new BorderLayout());
         
         // Creating components
@@ -41,6 +40,8 @@ implements UpdateListener {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(8);
+        
+        // Adding components
         add(scrollPane, BorderLayout.CENTER);
     }
     

@@ -3,8 +3,7 @@
  * @project Procedural Music
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
  * 
- * Update id's to know what type of action to take
- * Goes along with an UpdateEvent
+ * Update types to know what type of update action to take.
  */
 
 package coms;
@@ -12,5 +11,6 @@ package coms;
 public enum UpdateType {
     visible,
     invisible,
-    scrollBar
+    scrollBar,
+    music
 }

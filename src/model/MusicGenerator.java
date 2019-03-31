@@ -10,13 +10,15 @@ package model;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import coms.UpdateEvent;
+import coms.UpdateListener;
+import coms.UpdateType;
 import jm.audio.Instrument;
 import jm.music.data.CPhrase;
 import jm.music.data.Note;
@@ -46,12 +48,12 @@ public class MusicGenerator {
     }
 
     // Saves the current generation table
-    public void saveGenerationTable(File file) {
+    public void saveVisualizerTable(File file) {
         // Does nothing atm
     }
     
     // Opens an existing generation table
-    public boolean openGenerationTable(File file) {
+    public boolean openVisualizerTable(File file) {
         return false;
         // Does nothing atm
     }

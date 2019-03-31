@@ -3,8 +3,8 @@
  * @project Procedural Music
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
  * 
- * An update event holding various info on want needs updated.
- * - Left/Right pane divider needs reset
+ * An update event holding the update type.
+ * Depending on the update type different actions will take place.
  */
 
 package coms;
