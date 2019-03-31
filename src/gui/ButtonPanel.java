@@ -5,9 +5,9 @@
  * 
  * Holds the basic music generation functions.
  * - Generate: Generates the music
+ * - Recycle: Uses the current visualizer table as a sample, and generates music.
  * - Play/Stop: Plays & stops the music.
  * - Pause/Resume: Pauses & resumes the music.
- * - Recycle: Uses the current visualizer table as a sample, and generates music.
  */
 
 package gui;

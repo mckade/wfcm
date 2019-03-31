@@ -154,6 +154,7 @@ implements UpdateListener, ButtonListener {
                     sample = true;
                     playable = true;
                     rightPanel.setNotes(mgen.getSampleNotes());
+                    rightPanel.updateSettings();
                     leftPanel.addLog("Sample loaded.");
                 }
                 else {

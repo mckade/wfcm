@@ -20,7 +20,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,7 +43,7 @@ implements ChangeListener, ActionListener {
     JLabel noteCount_label;
     JSpinner noteCount_spinner;
     JLabel instrument_label;
-    JComboBox instrument_comboBox;
+    JComboBox<String> instrument_comboBox;
     
     // Listener to send events to
     SettingsListener listener;
@@ -79,7 +78,7 @@ implements ChangeListener, ActionListener {
         tempo_label = new JLabel("Tempo");
         tempo_label.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
         tempo_label.setForeground(Color.WHITE);
-        tempo_spinner = new JSpinner(new SpinnerNumberModel(listener.getTempo(), 30, 230, 1));
+        tempo_spinner = new JSpinner(new SpinnerNumberModel(100, 30, 230, 1));
         tempo_spinner.addChangeListener(this);
         tempo_slider = new JSlider(30, 230, 100);
         tempo_slider.addChangeListener(this);
@@ -88,11 +87,13 @@ implements ChangeListener, ActionListener {
         instrument_label = new JLabel("Instrument:");
         instrument_label.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
         instrument_label.setForeground(Color.WHITE);
-        String[] tmp = listener.getInstrumentList();
-        Arrays.sort(tmp);
-        instrument_comboBox = new JComboBox<String>(tmp);
-        instrument_comboBox.setSelectedItem(listener.getInstrument());
+        String[] list = listener.getInstrumentList();
+        Arrays.sort(list);
+        instrument_comboBox = new JComboBox<String>(list);
         instrument_comboBox.addActionListener(this);
+        
+        // Getting default setting values
+        updateSettings();
         
         // Adding components
         GridBagConstraints gc = new GridBagConstraints();
@@ -151,19 +152,15 @@ implements ChangeListener, ActionListener {
         gc.weightx = 1;
         gc.insets = new Insets(0,0,0,0);
         add(tempo_spinner, gc);
-        
-        // Setting values
-        setTempo(listener.getTempo());
     }
     
-    // Sets the tempo manually within 30-230
-    private void setTempo(int tempo) {
-        if (tempo < 30 || tempo > 230)
-            return;
-        tempo_slider.setValue(tempo);
-        tempo_spinner.setValue(tempo);
+    // Updates the gui setting values.
+    public void updateSettings() {
+        noteCount_spinner.setValue(listener.getNoteCount());
+        tempo_slider.setValue(listener.getNoteCount());
+        instrument_comboBox.setSelectedItem((String)listener.getInstrument());
     }
-
+    
     // Changes the settings and pushes them to music generator.
     // If tempo changes, both slider and spinner change appropriately.
     public void stateChanged(ChangeEvent e) {
