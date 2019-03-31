@@ -52,4 +52,7 @@ public class RightPanel extends JPanel {
     
     // Passes note information to the visualizer.
     public void setNotes(Rectangle[] notes) {visualizerPanel.setNotes(notes);}
+
+    // Updates the gui setting values.
+    public void updateSettings() {settingsPanel.updateSettings();}
 }
