@@ -157,7 +157,7 @@ implements ChangeListener, ActionListener {
     // Updates the gui setting values.
     public void updateSettings() {
         noteCount_spinner.setValue(listener.getNoteCount());
-        tempo_slider.setValue(listener.getNoteCount());
+        tempo_slider.setValue(listener.getTempo());
         instrument_comboBox.setSelectedItem((String)listener.getInstrument());
     }
     
