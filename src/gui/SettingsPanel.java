@@ -18,6 +18,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.Arrays;
 
 import javax.swing.JComboBox;
@@ -44,6 +47,9 @@ implements ChangeListener, ActionListener {
     JSpinner noteCount_spinner;
     JLabel instrument_label;
     JComboBox<String> instrument_comboBox;
+    
+    // Control
+    Object changed;
     
     // Listener to send events to
     SettingsListener listener;
@@ -74,6 +80,7 @@ implements ChangeListener, ActionListener {
 //                BorderFactory.createLineBorder(MainWindow.BORDER_INNER, 2)));
 //        
         noteCount_spinner.addChangeListener(this);
+        
         // Tempo
         tempo_label = new JLabel("Tempo");
         tempo_label.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
@@ -82,6 +89,12 @@ implements ChangeListener, ActionListener {
         tempo_spinner.addChangeListener(this);
         tempo_slider = new JSlider(30, 230, 100);
         tempo_slider.addChangeListener(this);
+        tempo_slider.addMouseListener(new MouseAdapter() {
+            public void mouseReleased(MouseEvent e) {
+                if (listener.getTempo() != tempo_slider.getValue())
+                    listener.setTempo(tempo_slider.getValue());
+            }
+        });
         
         // Instrument
         instrument_label = new JLabel("Instrument:");
@@ -168,13 +181,14 @@ implements ChangeListener, ActionListener {
         if (e.getSource() == noteCount_spinner)
             listener.setNoteCount((int)noteCount_spinner.getValue());
         // Tempo
-        else if (e.getSource() == tempo_spinner) {
-            tempo_slider.setValue((int)tempo_spinner.getValue());
-            listener.setTempo(tempo_slider.getValue());
-        }
-        else if (e.getSource() == tempo_slider) {
-            tempo_spinner.setValue(tempo_slider.getValue());
-            listener.setTempo(tempo_slider.getValue());
+        else if ((int)tempo_spinner.getValue() != tempo_slider.getValue()) {
+            if (e.getSource() == tempo_spinner) {
+                tempo_slider.setValue((int)tempo_spinner.getValue());
+                listener.setTempo(tempo_slider.getValue());
+            }
+            else if (e.getSource() == tempo_slider) {
+                tempo_spinner.setValue(tempo_slider.getValue());
+            }
         }
     }
     
