@@ -16,7 +16,7 @@ class AudioFilePlayThread extends Thread {
     private MusicState ms;
     private Sequencer sequencer = null;
     private long tickPos = 0;
-    private long delay = 30;
+    private long delay = 256;
     private Timer timer = new Timer();
 
     AudioFilePlayThread(MusicState ms)

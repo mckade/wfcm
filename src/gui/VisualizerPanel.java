@@ -25,6 +25,7 @@ implements UpdateListener {
     private VisualizerGraphics visualizer;
     private JScrollPane scrollPane;
     private JScrollBar hbar;
+    private double scrollLimit = 0.8;
     
     // Constructor
     public VisualizerPanel() {
@@ -55,8 +56,15 @@ implements UpdateListener {
         if(hbar.getValueIsAdjusting())
             return;
 
-        double window = scrollPane.getViewportBorderBounds().width / 2.0;
-        hbar.setValue((int)(percentage * hbar.getMaximum() - window));
+        double windowWidth = scrollPane.getViewportBorderBounds().width;
+
+        // represents the updated position of the currently playing note
+        double curLeftEdge = percentage * hbar.getMaximum();
+        double rightBounds = scrollLimit * windowWidth + hbar.getValue();
+        // check if the left edge has passed the scroll limit point of the window
+        // if it has, move scroll to the right bounds
+        if(curLeftEdge > rightBounds)
+            hbar.setValue((int)rightBounds);
     }
 
     public void updateEvent(UpdateEvent e) {
