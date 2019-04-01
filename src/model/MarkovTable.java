@@ -42,21 +42,21 @@ class MarkovTable {
         midiReader = new MidiReader();
     }
 
-    public double getTimeScale() {
+    double getTimeScale() {
         return timeScale;
     }
 
-    public double getTempo()
+    double getTempo()
     {
         return midiReader.getTempo();
     }
 
-    public Rectangle[] getSample()
+    Rectangle[] getSample()
     {
         return sample;
     }
 
-    public Score getScore() {return midiReader.getMidiScore();}
+    Score getScore() {return midiReader.getMidiScore();}
 
     // Loads midi file
     boolean loadMidiFile(String filename)
@@ -109,7 +109,7 @@ class MarkovTable {
 
         chordTable = new double[chord.size()][chord.size()];
         chordLengthTable = new double[chordLength.size()][chordLength.size()];
-        sample = rects.toArray(new Rectangle[rects.size()]);
+        sample = rects.toArray(new Rectangle[0]);
 
         generateTable(chordPitches);
 
@@ -125,9 +125,8 @@ class MarkovTable {
 
         // TODO link the modifier lists to UI so users can select
         // different generation parameters. For now, just using
-        // dist-1 and dist-4 NoteTransition (see NoteTransition.java for details)
+        // dist-1 NoteTransition (see NoteTransition.java for details)
         // and dist-1 NoteDuration (see NoteDuration.java for details)
-        //pitchMods.add(new NoteTransition(1, notes, pitch.size()));
         pitchMods.add(new ChordTransition(1, chordsWithoutDuration, chord.size()));
         lengthMods.add(new ChordDuration(1, chords, chordLength.size()));
 

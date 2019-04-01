@@ -100,7 +100,7 @@ implements SettingsListener {
 
         // use wfc and mTable
         s = new Score("Procedural", tempo);
-        Part p = new Part("Piano", inst.get(instrument), 0);
+        Part p = new Part("Part", inst.get(instrument), 0);
         Vector<Note[]> notes = wfc.getNotes(noteLength);
         Vector<Rectangle> nd = new Vector<>();
 
@@ -127,12 +127,12 @@ implements SettingsListener {
         }
 
         noteData = nd.toArray(new Rectangle[nd.size()]);
-        //phr.addNoteList(notes, false);
         p.addCPhrase(phr);
         s.addPart(p);
         Write.midi(s, MusicState.OUTPUT);
     }
 
+    // Update the midi instrument and tempo
     private void updateMidi()
     {
         if(s == null)
@@ -141,7 +141,49 @@ implements SettingsListener {
         s.getPart(0).setInstrument(inst.get(instrument));
         Write.midi(s, MusicState.OUTPUT);
     }
-    
+
+    // update the midi notes, instrument, and tempo
+    public void updateMidi(Rectangle[] rects)
+    {
+        s = rectsToScore(rects);
+        s.setTempo(tempo);
+        s.getPart(0).setInstrument(inst.get(instrument));
+        Write.midi(s, MusicState.OUTPUT);
+    }
+
+    // Covert an array of rectangles to a score
+    private Score rectsToScore(Rectangle[] rects)
+    {
+        CPhrase phr = new CPhrase();
+        Part part = new Part("Part", inst.get(instrument), 0);
+        Score score = new Score("Procedural", tempo);
+
+
+        Vector<Integer> pitches = new Vector<>();
+        int startTime = 0;
+        int i = 0;
+        while(i < rects.length)
+        {
+            // accumulate all pitches in the chord
+            while(rects[i].x == startTime && i < rects.length)
+            {
+                pitches.add(rects[i].x);
+                i++;
+            }
+
+            Integer[] p = pitches.toArray(new Integer[0]);
+            int[] pp = new int[p.length];
+            for(int k = 0; k < p.length; k++) {pp[k] = p[k];}
+            phr.addChord(pp, rects[i-1].width, dynamic);
+
+            startTime = rects[i].x;
+        }
+
+        part.addCPhrase(phr);
+        score.addPart(part);
+        return score;
+    }
+
     public void playSong()
     {
         playing = true;
