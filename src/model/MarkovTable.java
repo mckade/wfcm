@@ -11,6 +11,7 @@ package model;
  */
 
 import jm.JMC;
+import jm.music.data.Score;
 
 import java.awt.*;
 import java.io.IOException;
@@ -54,6 +55,8 @@ class MarkovTable {
     {
         return sample;
     }
+
+    public Score getScore() {return midiReader.getMidiScore();}
 
     // Loads midi file
     boolean loadMidiFile(String filename)
