@@ -51,6 +51,7 @@ public class LogPanel extends JPanel {
         text = new JTextArea();
         text.setEditable(false);
         text.setLineWrap(true);
+        text.setWrapStyleWord(true);
         text.setFont(new Font(Font.DIALOG, Font.PLAIN, 14));
         text.setBackground(this.getBackground());
         text.setForeground(Color.WHITE);
