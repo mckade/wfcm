@@ -3,7 +3,9 @@ package model;
 import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.MetaMessage;
 
+import coms.UpdateEvent;
 import coms.UpdateListener;
+import coms.UpdateType;
 
 /*
  * MusicState acts as an interface between the midi player
@@ -65,6 +67,15 @@ public class MusicState implements MetaEventListener
         audio.unpause();
     }
 
+    // Send an event to update the visualizer scroll bar.
+    // This makes the scroll window keep the played note in frame
+    void scroll(double percentage)
+    {
+        UpdateEvent e = new UpdateEvent(this, UpdateType.scrollBar);
+        e.setScroll(percentage);
+        listener.updateEvent(e);
+    }
+
     // Listen for Meta Events from the midi player
     @Override
     public void meta(MetaMessage meta)
@@ -73,6 +84,7 @@ public class MusicState implements MetaEventListener
         {
             // just received a stop message
             songFinished();
+            audio.stopMusic();
         }
     }
 }

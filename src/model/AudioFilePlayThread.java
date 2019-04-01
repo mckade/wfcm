@@ -5,6 +5,8 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
 import java.io.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /*
  * AudioFilePlayThread uses a Sequencer to play the midi data
@@ -14,6 +16,8 @@ class AudioFilePlayThread extends Thread {
     private MusicState ms;
     private Sequencer sequencer = null;
     private long tickPos = 0;
+    private long delay = 30;
+    private Timer timer = new Timer();
 
     AudioFilePlayThread(MusicState ms)
     {
@@ -36,6 +40,7 @@ class AudioFilePlayThread extends Thread {
         // Make the MusicState object listen for Meta Events, i.e., "stopped playing"
         sequencer.addMetaEventListener(ms);
         sequencer.start();
+        keepPlaybackProgress();
     }
 
     // Make the sequencer stop playing
@@ -43,6 +48,7 @@ class AudioFilePlayThread extends Thread {
     {
         sequencer.stop();
         tickPos = 0;
+        timer.cancel();
     }
 
     // Pause the sequencer
@@ -50,6 +56,7 @@ class AudioFilePlayThread extends Thread {
     {
         tickPos = sequencer.getTickPosition();
         sequencer.stop();
+        timer.cancel();
     }
 
     // unpause the sequencer
@@ -57,6 +64,7 @@ class AudioFilePlayThread extends Thread {
     {
         sequencer.setTickPosition(tickPos);
         sequencer.start();
+        keepPlaybackProgress();
     }
 
     // Make the sequencer skip to Tick t
@@ -78,5 +86,18 @@ class AudioFilePlayThread extends Thread {
             return;
 
         skip((long)(percentage * sequencer.getTickLength()));
+    }
+
+    void keepPlaybackProgress()
+    {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                ms.scroll(1.0 * sequencer.getTickPosition() / sequencer.getTickLength());
+            }
+        };
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(task, 0, delay);
     }
 }

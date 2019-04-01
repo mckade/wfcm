@@ -12,9 +12,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Rectangle;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import coms.UpdateEvent;
 import coms.UpdateListener;
@@ -26,6 +24,7 @@ implements UpdateListener {
     // Components
     private VisualizerGraphics visualizer;
     private JScrollPane scrollPane;
+    private JScrollBar hbar;
     
     // Constructor
     public VisualizerPanel() {
@@ -43,10 +42,21 @@ implements UpdateListener {
         
         // Adding components
         add(scrollPane, BorderLayout.CENTER);
+
+        hbar = scrollPane.getHorizontalScrollBar();
     }
     
     public void setNotes(Rectangle[] notes) {
         visualizer.setNotes(notes);
+    }
+
+    public void setScroll(double percentage)
+    {
+        if(hbar.getValueIsAdjusting())
+            return;
+
+        double window = scrollPane.getViewportBorderBounds().width / 2.0;
+        hbar.setValue((int)(percentage * hbar.getMaximum() - window));
     }
 
     public void updateEvent(UpdateEvent e) {

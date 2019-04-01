@@ -21,7 +21,7 @@ import coms.SettingsListener;
 public class RightPanel extends JPanel {
     
     // Minimum width of the panel.
-    public static final int MINWIDTH = 600;
+    static final int MINWIDTH = 600;
     
     // Panels
     private VisualizerPanel visualizerPanel;
@@ -31,7 +31,7 @@ public class RightPanel extends JPanel {
     private boolean settingsVis = true;
     
     // Constructor
-    public RightPanel(SettingsListener listener) {
+    RightPanel(SettingsListener listener) {
         // Setup
         setMinimumSize(new Dimension(MINWIDTH, 200));
         setLayout(new BorderLayout());
@@ -46,7 +46,7 @@ public class RightPanel extends JPanel {
     }
     
     // Toggles the visibility of the settings panel.
-    public void toggleSettingsPanel() {
+    void toggleSettingsPanel() {
         settingsPanel.setVisible(settingsVis = !settingsVis);
     }
     
@@ -54,5 +54,10 @@ public class RightPanel extends JPanel {
     public void setNotes(Rectangle[] notes) {visualizerPanel.setNotes(notes);}
 
     // Updates the gui setting values.
-    public void updateSettings() {settingsPanel.updateSettings();}
+    void updateSettings() {settingsPanel.updateSettings();}
+
+    void updateScroll(double percentage)
+    {
+        visualizerPanel.setScroll(percentage);
+    }
 }

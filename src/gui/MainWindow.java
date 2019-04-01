@@ -206,6 +206,8 @@ implements UpdateListener, ButtonListener {
             leftPanel.togglePlayStop();
             paused = false;
             break;
+        case scrollBar:
+            rightPanel.updateScroll(e.getScroll());
         default:
         }
     }
