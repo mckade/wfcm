@@ -46,9 +46,7 @@ public class MusicState implements MetaEventListener
     // Notified when the thread currently playing the midi is finished
     private void songFinished()
     {
-        // TODO: mess with this so gui isn't weird.
-        // NOTE: Gets called every time the music is stopped.
-        //listener.updateEvent(new UpdateEvent(this, UpdateType.music));
+        listener.updateEvent(new UpdateEvent(this, UpdateType.music));
     }
 
     // Pause the midi player

@@ -18,7 +18,6 @@ import java.util.Vector;
 
 import coms.SettingsListener;
 import coms.UpdateListener;
-import jm.audio.Instrument;
 import jm.music.data.CPhrase;
 import jm.music.data.Note;
 import jm.music.data.Part;
@@ -46,7 +45,7 @@ implements SettingsListener {
     String instrument = "PIANO";
     int dynamic;
 
-    // Temp variable until proper
+    // Control
     private boolean playing = false;
 
     public MusicGenerator(UpdateListener listener) {

@@ -204,6 +204,7 @@ implements UpdateListener, ButtonListener {
             break;
         case music:
             leftPanel.togglePlayStop();
+            mgen.stopSong();
             paused = false;
             break;
         case scrollBar:
