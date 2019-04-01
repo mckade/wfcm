@@ -1,17 +1,17 @@
 /**
  * @filename MainWindow.java
  * @project Procedural Music
- * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
- * 
+ * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer
+ *
  * The main window of the graphical user interface.
  * Holds two halves of the gui.
  * - The left consisting of the buttons and log.
  * - The right consisting of the visualizer and settings.
- * 
+ *
  * Handles varies events between components.
  * - Menu bar items
  * - Split pane updates
- * 
+ *
  * Holds default visuals for the gui.
  */
 

@@ -145,7 +145,7 @@ implements SettingsListener {
     public void playSong()
     {
         playing = true;
-        ms.audioFile(MusicState.OUTPUT);
+        ms.play();
     }
     
     public boolean stopSong()

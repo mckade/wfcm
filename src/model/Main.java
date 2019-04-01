@@ -8,12 +8,6 @@ package model;
  * Starts the program interface. 
  */
 
-//import jm.music.data.*;
-//import jm.util.*;
-
-//import static jm.constants.Durations.MINIM;
-//import static jm.constants.Pitches.C4;
-
 import javax.swing.SwingUtilities;
 
 import gui.MainWindow;
