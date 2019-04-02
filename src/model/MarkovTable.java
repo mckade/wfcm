@@ -107,6 +107,10 @@ class MarkovTable {
                 chordLengthKey++;
         }
 
+        // Modify chordPitches to include 'mod' number of extra pitches in the appropriate key signature
+        // 'mod' will be user defined eventually
+        // ModKeySig(midiReader.EstimateKeySignature(), 4);
+
         chordTable = new double[chord.size()][chord.size()];
         chordLengthTable = new double[chordLength.size()][chordLength.size()];
         sample = rects.toArray(new Rectangle[0]);
@@ -308,7 +312,7 @@ class MarkovTable {
                 }
                 break;
             default:
-                System.out.println("Markov table: Invalid input in weightForKeySig method call.");
+                System.out.println("Markov table: Invalid input in ModKeySig method call.");
                 break;
         }
     }
