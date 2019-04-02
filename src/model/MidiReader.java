@@ -62,6 +62,12 @@ public class MidiReader {
                 }
             }
 
+            // Insert placeholders for pitch classes absent in the piece
+            for (int i = 0; i < 12; ++i) {
+                List<double[]> placeholder = new ArrayList<>();
+                organizedChords.putIfAbsent(i, placeholder);
+            }
+
             // Sum the total duration of each pitch class
             for (int i = 0; i < 12; ++i) {
                 List<double[]> pitchClass = organizedChords.get(i);
@@ -121,6 +127,12 @@ public class MidiReader {
             // Loop through Tracks &
             // Get Event data
             for (Vector<Event> vec : events) { parseEvents(vec, resolution); }
+
+            // Testing pitch class duration summation
+            double[] chordDurations = midiData.getTotalDurations();
+            for (double total : chordDurations) {
+                System.out.println(total);
+            }
         }
     }
 
@@ -458,5 +470,9 @@ public class MidiReader {
             default: // Shouldn't get here
                 return 0;
         }
+    }
+
+    public int EstimateKeySignature() {
+        return krumhanslSchmuckler(midiData.getTotalDurations());
     }
 }
