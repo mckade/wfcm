@@ -19,7 +19,7 @@ import jm.music.tools.PhraseAnalysis;
 import jm.util.Read;
 
 import java.io.*;
-import java.util.Vector;
+import java.util.*;
 
 import static java.lang.Math.sqrt;
 
@@ -50,6 +50,41 @@ public class MidiReader {
         }
 
         public Vector<double[]> getChords() { return this.chords; }
+
+        // Adding up total durations of all Notes in piece
+        public double[] getTotalDurations() {
+            double[] durations = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            Map<Integer, List<double[]>> organizedChords = new HashMap<Integer, List<double[]>>();
+
+            // Place chords into MultiMap so it's easier to sum each pitch
+            for (double[] chord : this.chords) {
+                if (chord.length < 3) {
+                    putMultiMap(organizedChords, (int)chord[0] % 12, chord);
+                }
+            }
+
+            // Sum the total duration of each pitch class
+            for (int i = 0; i < 12; ++i) {
+                List<double[]> pitchClass = organizedChords.get(i);
+                for (double[] chord : pitchClass) {
+                    durations[i] += chord[1];
+                }
+            }
+
+            return durations;
+        }
+
+        // Function based off of this implementation of a MultiMap at:
+        // https://www.leveluplunch.com/java/examples/guava-multimap-example/
+        public void putMultiMap(Map<Integer, List<double[]>> orgChords, int key, double[] chord) {
+            List<double[]> chordList = orgChords.get(key);
+            if(chordList == null) {
+                chordList = new ArrayList<>();
+                orgChords.put(key, chordList);
+            }
+            chordList.add(chord);
+            orgChords.put(key, chordList);
+        }
     }
 
     // Given a filename it will attempt to read a midi file.
@@ -115,19 +150,32 @@ public class MidiReader {
             // We're mostly interested in the NoteOn/NoteOff events for chords.
             switch (eventID) {
                 case 18: // KeySig event
-
+                    /*
                     KeySig keySig = (KeySig) ev;
-                    //System.out.println("KeySig event:");
-                    //System.out.println("Key Signature: " + keySig.getKeySig()); // int -7 - 7. -7 means 7 flats. 7 means sharps
-                    //System.out.println("Key Quality: " + keySig.getKeyQuality()); // 0 for Major, 1 for minor
-                    //System.out.println("Time?: " + keySig.getTime());
+                    System.out.println("KeySig event:");
+                    System.out.println("Key Signature: " + keySig.getKeySig()); // int -7 - 7. -7 means 7 flats. 7 means sharps
+                    System.out.println("Key Quality: " + keySig.getKeyQuality()); // 0 for Major, 1 for minor
+                    System.out.println("Time?: " + keySig.getTime());
+                    */
                     break;
                 case 17: // TimeSig event
 
+                    /*
                     TimeSig timeSig = (TimeSig) ev;
-                    //System.out.println("TimeSig event:");
-                    //System.out.println("1/32 per beat: " + timeSig.getThirtySecondNotesPerBeat());
-                    //System.out.println("Metronome pulse: " + timeSig.getMetronomePulse());
+                    System.out.println("TimeSig event:");
+                    System.out.println("1/32 per beat: " + timeSig.getThirtySecondNotesPerBeat());
+                    System.out.println("Metronome pulse: " + timeSig.getMetronomePulse());
+                    System.out.println("Time Signaure: " + timeSig.getNumerator() + "/" + timeSig.getDenominator());
+                    */
+                    break;
+                case 16: // Tempo Event
+
+                    /*
+                    TempoEvent temp = (TempoEvent) ev;
+                    System.out.println("Tempo: " + temp.getTempo());
+                    tempo = temp.getTempo();
+                    */
+
                     break;
                 case 4: // NoteOff event
 
