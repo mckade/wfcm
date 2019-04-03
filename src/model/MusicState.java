@@ -1,63 +1,88 @@
 package model;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
+import javax.sound.midi.MetaEventListener;
+import javax.sound.midi.MetaMessage;
 
-public class MusicState
+import coms.UpdateEvent;
+import coms.UpdateListener;
+import coms.UpdateType;
+
+/*
+ * MusicState acts as an interface between the midi player
+ * and the GUI.
+ */
+public class MusicState implements MetaEventListener
 {
-    public static boolean stop = false;
-    public static String OUTPUT = "out.MID";
-    public static Thread audio;
-    /*
-    audioFile is used to playback MIDI files.
-    NOTE: taken from the jMusic library (http://www.explodingart.com/jmusic)
-    and extended to fit our needs
-     */
-    public static void audioFile(String var0) {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(var0));
-            audio = new AudioFilePlayThread(audioInputStream);
-            stop = false;
-            audio.start();
-            System.out.println("Playing audio file " + var0);
-        } catch (IOException var2) {
-            System.err.println("Play audioFile error: in playAudioFile(): " + var2.getMessage());
-        } catch (UnsupportedAudioFileException var3) {
-            System.err.println("Unsupported Audio File error: in Play.audioFile():" + var3.getMessage());
-        }
+    // default output file
+    static String OUTPUT = "out.MID";
+    // midi player thread
+    private AudioFilePlayThread audio;
+
+    // Listener to send events to
+    private UpdateListener listener;
+
+    MusicState(UpdateListener listener) {
+        this.listener = listener;
     }
 
-    public static void stop()
-    {
-        stop = true;
+    // Play the MIDI file located at OUTPUT
+    void play() {
+        if(audio != null)
+            return;
+
+        audio = new AudioFilePlayThread(this);
+        audio.start();
     }
 
-    // called when the thread currently playing is finished
-    public static void songFinished()
+    // Stop the midi player
+    void stop()
     {
-        stop = true;
-        // TODO: switch the stop button to play
+        if(audio == null)
+            return;
+        audio.stopMusic();
+        audio = null;
     }
 
-    //TODO: fix pause/unpause
-    public static void pause()
+    // Notified when the thread currently playing the midi is finished
+    private void songFinished()
     {
-        try
+        listener.updateEvent(new UpdateEvent(this, UpdateType.music));
+    }
+
+    // Pause the midi player
+    void pause()
+    {
+        if(audio == null)
+            return;
+        audio.pause();
+    }
+
+    // unpause the midi player
+    void unpause()
+    {
+        if(audio == null)
+            return;
+        audio.unpause();
+    }
+
+    // Send an event to update the visualizer scroll bar.
+    // This makes the scroll window keep the played note in frame
+    void scroll(double percentage)
+    {
+        UpdateEvent e = new UpdateEvent(this, UpdateType.scrollBar);
+        e.setScroll(percentage);
+        listener.updateEvent(e);
+    }
+
+    // Listen for Meta Events from the midi player
+    @Override
+    public void meta(MetaMessage meta)
+    {
+        if(meta.getType() == 47)
         {
-            audio.wait();
+            // just received a stop message
+            songFinished();
+            audio.stopMusic();
         }
-        catch (Exception e)
-        {
-            System.err.println("Thread could not wait:" + e.getMessage());
-        }
-
-    }
-
-    public static void unpause()
-    {
-
     }
 }

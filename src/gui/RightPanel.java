@@ -9,19 +9,19 @@
 
 package gui;
 
-import model.MusicGenerator;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 
+import coms.SettingsListener;
+
 @SuppressWarnings("serial")
 public class RightPanel extends JPanel {
     
     // Minimum width of the panel.
-    public static final int MINWIDTH = 600;
+    static final int MINWIDTH = 600;
     
     // Panels
     private VisualizerPanel visualizerPanel;
@@ -31,20 +31,14 @@ public class RightPanel extends JPanel {
     private boolean settingsVis = true;
     
     // Constructor
-    public RightPanel() {
-        
+    RightPanel(SettingsListener listener) {
         // Setup
-        Dimension dim = new Dimension(MINWIDTH, 200);
-        
-        // Panel settings
-        setMinimumSize(dim);
-        
-        // Layout and panels
+        setMinimumSize(new Dimension(MINWIDTH, 200));
         setLayout(new BorderLayout());
         
         // Creating panels
         visualizerPanel = new VisualizerPanel();
-        settingsPanel = new SettingsPanel();
+        settingsPanel = new SettingsPanel(listener);
         
         // Adding panels
         add(visualizerPanel, BorderLayout.CENTER);
@@ -52,23 +46,18 @@ public class RightPanel extends JPanel {
     }
     
     // Toggles the visibility of the settings panel.
-    public void toggleSettingsPanel() {
+    void toggleSettingsPanel() {
         settingsPanel.setVisible(settingsVis = !settingsVis);
     }
     
-    public void setTempo(int tempo) {
-        settingsPanel.setTempo(tempo);
-    }
-
-    public void setInstStrings(String[] s) {settingsPanel.setInstStrings(s);}
-    
-    public int getTempo() {
-        return settingsPanel.getTempo();
-    }
-    
     // Passes note information to the visualizer.
-    // TODO: Set parameter
-    public void setNotes(Rectangle[] notes) {
-        visualizerPanel.setNotes(notes);
+    public void setNotes(Rectangle[] notes) {visualizerPanel.setNotes(notes);}
+
+    // Updates the gui setting values.
+    void updateSettings() {settingsPanel.updateSettings();}
+
+    void updateScroll(double percentage)
+    {
+        visualizerPanel.setScroll(percentage);
     }
 }

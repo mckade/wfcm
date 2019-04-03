@@ -3,8 +3,8 @@
  * @project Procedural Music
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
  * 
- * Extends the basic JButton to add a little more functionality,
- * for it's looks for when it's interacting with the user.
+ * Extends the basic JButton to add a little more functionality.
+ * Changes how the button looks when interacted with by the user.
  */
 
 package gui;
@@ -22,24 +22,23 @@ import javax.swing.border.Border;
 public class _Button extends JButton
 implements MouseListener {
     
-    // Border looks
+    // Border visuals
     public static final Border DEFAULT = BorderFactory.createCompoundBorder(
             BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(new Color(0, 92, 75), 2),
-                    BorderFactory.createLineBorder(new Color(14, 184, 152), 2)),
+                    BorderFactory.createLineBorder(MainWindow.BORDER_OUTER, 2),
+                    BorderFactory.createLineBorder(MainWindow.COMPONENT_BORDER_INNER, 2)),
             BorderFactory.createEmptyBorder(5, 5, 5, 5));
     public static final Border HOVERED = BorderFactory.createCompoundBorder(
             BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(new Color(80, 55, 110), 2),
-                    BorderFactory.createLineBorder(new Color(14, 184, 152), 2)),
+                    BorderFactory.createLineBorder(MainWindow.BORDER_HOVERED, 2),
+                    BorderFactory.createLineBorder(MainWindow.COMPONENT_BORDER_INNER, 2)),
             BorderFactory.createEmptyBorder(5, 5, 5, 5));
     public static final Border CLICKED = BorderFactory.createCompoundBorder(
             BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(new Color(80, 55, 110), 2),
-                    BorderFactory.createLineBorder(new Color(180, 76, 180), 2)),
+                    BorderFactory.createLineBorder(MainWindow.BORDER_HOVERED, 2),
+                    BorderFactory.createLineBorder(MainWindow.BORDER_CLICKED, 2)),
             BorderFactory.createEmptyBorder(5, 5, 5, 5));
     
-    // Constructor
     public _Button(String text) {
         // Setup
         super(text);
@@ -58,17 +57,15 @@ implements MouseListener {
     // Changes the look of the button
     public void mouseClicked(MouseEvent e) {} // Does nothing
     public void mouseEntered(MouseEvent e) {
-        if (isEnabled()) {
+        if (isEnabled())
             setBorder(HOVERED);
-        }
     }
     public void mouseExited(MouseEvent e) {
         setBorder(DEFAULT);
     }
     public void mousePressed(MouseEvent e) {
-        if (isEnabled()) {
+        if (isEnabled())
             setBorder(CLICKED);
-        }
     }
     public void mouseReleased(MouseEvent e) {
         setBorder(DEFAULT);

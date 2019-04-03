@@ -4,10 +4,8 @@
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
  * 
  * The left half of the main window.
- * Consists of the buttons and log.
- * 
- * Can toggle the visibility of both the
- * buttons and log panels
+ * Consists of the basic buttons and log.
+ * Can toggle visibility of this panel.
  */
 
 package gui;
@@ -28,7 +26,7 @@ public class LeftPanel extends JPanel {
     // Minimum width of the panel.
     public static final int MINWIDTH = 250;
     
-    // Holds listeners to send events to.
+    // Listener to send events to.
     private UpdateListener listener;
     
     // Panels
@@ -40,11 +38,9 @@ public class LeftPanel extends JPanel {
 
     // Constructor
     public LeftPanel(UpdateListener ulistener, ButtonListener blistener) {
-        
         // Setup
         listener = ulistener;
-        Dimension dim = new Dimension(MINWIDTH, MINWIDTH);
-        setMinimumSize(dim);
+        setMinimumSize(new Dimension(MINWIDTH, 0));
         setLayout(new BorderLayout());
         
         // Creating panels
@@ -65,27 +61,16 @@ public class LeftPanel extends JPanel {
             fireUpdateEvent(this, UpdateType.invisible);
     }
     
-    // Switches the function of the play_stop button
-    public void togglePlayStop() {
-        buttonPanel.togglePlayStop();
-    }
+    // Toggles the play/stop button between views.
+    public void togglePlayStop() {buttonPanel.togglePlayStop();}
     
-    // Toggles the pause switch for the music.
-    public void togglePause() {
-        buttonPanel.togglePause();
-    }
-    
-    // Get the note length from the button panel.
-    public int getNoteLength() {
-        return buttonPanel.getNoteLength();
-    }
+    // Toggles the pause/resume button between views.
+    public void togglePauseResume() {buttonPanel.togglePauseResume();}
     
     // Add a log to the log panel.
-    public void addLog(String log) {
-        logPanel.addLog(log);
-    }
+    public void addLog(String log) {logPanel.addLog(log);}
     
-    // Sends out an event to update the divider position
+    // Fires an update event.
     private void fireUpdateEvent(Object source, UpdateType updateType) {
         listener.updateEvent(new UpdateEvent(source, updateType));
     }

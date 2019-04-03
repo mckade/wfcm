@@ -136,11 +136,15 @@ public class Superposition
      */
     private double[] getProbabilities()
     {
-        double [] prevp = new double[sp.length]; // holds probabilities of what the prev note is given this sp
-        double [] nextp = new double[sp.length]; // holds probabilities of what the current note is given next sp
+        // holds probabilities of how the prev note can transition given this sp
+        // i.e., what are the transition probabilities into this sp
+        double [] prevp = new double[sp.length];
+        // holds probabilities of how this note can transition given next sp
+        // i.e., what are the transition probabilities out of this sp
+        double [] nextp = new double[sp.length];
         double [] cur = new double[sp.length];
 
-        double nextsum = 0.0;
+        double prevsum = 0.0;
         double cursum = 0.0;
 
         // aggregate prev and next probabilities
@@ -157,32 +161,34 @@ public class Superposition
             }
         }
 
-        if(prev != null)
+        if(next != null)
         {
-            // Given the probability of the previous sp, calculate the probability
+            // Given the probability of the next sp, calculate the probability
             // of this one. That is, what is the chance I am sp[i]?
-            // This is done by weighting the previous sp's transitions from r with the
-            // probability the previous note is r. Then, multiply by sp[c] to eliminate
+            // This is done by weighting this sp's transitions from r with the
+            // probability this note is r. Then, multiply by sp[c] to eliminate
             // impossibilities.
             for(int r = 0; r < sp.length; r++)
             {
+                if(sp[r] == 0)
+                    continue;
                 for(int c = 0; c < sp.length; c++)
                 {
-                    cur[c] += sp[c] * prevp[r] * prob.get(r,c);
+                    cur[r] += nextp[c] * prob.get(r,c);
                 }
             }
         }
 
-        // normalize cur and next probabilities
+        // normalize prev and next probabilities
         for(int i = 0; i < sp.length; i++)
         {
             if(prev != null)
             {
-                cursum += cur[i];
+                prevsum += prevp[i];
             }
             if(next != null)
             {
-                nextsum += sp[i] * nextp[i];
+                cursum += cur[i];
             }
         }
 
@@ -190,31 +196,31 @@ public class Superposition
         {
             if(prev != null)
             {
-                cur[i] /= cursum;
+                prevp[i] /= prevsum;
             }
 
             if(next != null)
             {
-                nextp[i] *= sp[i] / nextsum;
+                cur[i] /= cursum;
             }
         }
 
         // average cur and next
         if(prev == null)
-            return nextp;
-        else if(next == null)
             return cur;
+        else if(next == null)
+            return prevp;
 
         for(int i = 0; i < sp.length; i++)
         {
-            nextp[i] = (cur[i] + nextp[i]) / 2.0;
+            cur[i] = (cur[i] + prevp[i]) / 2.0;
         }
 
-        return nextp;
+        return cur;
     }
 
     /*
-     * This function returns the probabilities of how this row can
+     * This function returns the probabilities of how this row, r, can
      * transition given a mask
      * The mask is an array of 0s and 1s denoting the notes in the next superposition,
      * i.e., the notes that are still possible to go to
@@ -280,7 +286,6 @@ public class Superposition
     private void propagateRight(int[] p)
     {
         boolean changed = false;
-        int[] spc = sp.clone();
 
         for(int i = 0; i < sp.length; i++)
         {

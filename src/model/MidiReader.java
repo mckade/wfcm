@@ -28,6 +28,7 @@ public class MidiReader {
     // Holds MIDI data which will be grabbed by MarkovTable
     MidiData midiData = null;
     double tempo;
+    Score midiScore;
 
     // Constructor
     public MidiReader() {
@@ -105,8 +106,8 @@ public class MidiReader {
         // Read Score from midi file
         Score from_midi = new Score("midi_input");
         Read.midi(from_midi, filename/*.getCanonicalPath()*/);
-        //TODO: fix temp -- I think this is stuck at a default value of 60
         tempo = from_midi.getTempo();
+        midiScore = from_midi;
 
         if (from_midi.size() != 0) {
 
@@ -136,6 +137,10 @@ public class MidiReader {
         }
     }
 
+    public Score getMidiScore()
+    {
+        return midiScore;
+    }
 
     // Cycles through each event in the event vector passed to it
     // Get's notes/chord data (pitch, etc.) and places it in
@@ -203,7 +208,7 @@ public class MidiReader {
                         }
                         break;
                     }
-                    System.out.println("NoteOff event:");
+                    //System.out.println("NoteOff event:");
 
                     pitches.add(1.0 * off.getTime() / ppqn);
                     midiData.chords.add(vectorToPitchArr(pitches));
@@ -223,8 +228,8 @@ public class MidiReader {
                     // Some MIDI files encode NoteOffs as NoteOns with velocity=0
                     if (on.getVelocity() != 0) {
 
-                        System.out.println("\nNoteOn event:");
-                        on.print();
+                        //System.out.println("\nNoteOn event:");
+                        //on.print();
 
                         // Add pitch value to vector
                         pitches.add((double)Short.toUnsignedInt(on.getPitch()));
@@ -248,8 +253,8 @@ public class MidiReader {
                             break;
                         }
 
-                        System.out.println("\nNoteOff event:");
-                        on.print();
+                        //System.out.println("\nNoteOff event:");
+                        //on.print();
 
                         pitches.add(1.0 * on.getTime() / ppqn);
 

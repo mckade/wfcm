@@ -12,9 +12,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Rectangle;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import coms.UpdateEvent;
 import coms.UpdateListener;
@@ -26,13 +24,14 @@ implements UpdateListener {
     // Components
     private VisualizerGraphics visualizer;
     private JScrollPane scrollPane;
+    private JScrollBar hbar;
+    private double scrollLimit = 0.8;
     
     // Constructor
     public VisualizerPanel() {
-        
         // Setup
         setBackground(MainWindow.PANEL_BACKGROUND);
-        setBorder(MainWindow.BORDER);
+        setBorder(MainWindow.PANEL_BORDER);
         setLayout(new BorderLayout());
         
         // Creating components
@@ -41,11 +40,31 @@ implements UpdateListener {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(8);
+        
+        // Adding components
         add(scrollPane, BorderLayout.CENTER);
+
+        hbar = scrollPane.getHorizontalScrollBar();
     }
     
     public void setNotes(Rectangle[] notes) {
         visualizer.setNotes(notes);
+    }
+
+    public void setScroll(double percentage)
+    {
+        if(hbar.getValueIsAdjusting())
+            return;
+
+        double windowWidth = scrollPane.getViewportBorderBounds().width;
+
+        // represents the updated position of the currently playing note
+        double curLeftEdge = percentage * hbar.getMaximum();
+        double rightBounds = scrollLimit * windowWidth + hbar.getValue();
+        // check if the left edge has passed the scroll limit point of the window
+        // if it has, move scroll to the right bounds
+        if(curLeftEdge > rightBounds)
+            hbar.setValue((int)rightBounds);
     }
 
     public void updateEvent(UpdateEvent e) {

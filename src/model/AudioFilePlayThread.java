@@ -1,53 +1,103 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-// NOTE: taken from the jMusic library (http://www.explodingart.com/jmusic)
-// and extended to fit our needs
-//
-
 package model;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.DataLine.Info;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Sequencer;
+import java.io.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
+/*
+ * AudioFilePlayThread uses a Sequencer to play the midi data
+ * located in the MusicState.OUTPUT file.
+ */
 class AudioFilePlayThread extends Thread {
-    byte[] tempBuffer = new byte[1024];
-    private AudioInputStream audioInputStream;
+    private MusicState ms;
+    private Sequencer sequencer = null;
+    private long tickPos = 0;
+    private long delay = 256;
+    private Timer timer = new Timer();
 
-    public AudioFilePlayThread(AudioInputStream strm)
+    AudioFilePlayThread(MusicState ms)
     {
-        this.audioInputStream = strm;
+        this.ms = ms;
     }
 
-    public void run() {
+    public void run()
+    {
+        // When this thread is started, set up the sequencer
+        sequencer = null;
         try {
-            AudioFormat format = this.audioInputStream.getFormat();
-            Info info = new Info(SourceDataLine.class, format);
-            SourceDataLine source = (SourceDataLine)AudioSystem.getLine(info);
-            source.open(format);
-            source.start();
-
-            int index = 0;
-            while(!MusicState.stop &&
-                    (index = this.audioInputStream.read(this.tempBuffer, 0, this.tempBuffer.length)) != -1) {
-                if (index > 0) {
-                    source.write(this.tempBuffer, 0, index);
-                }
-            }
-
-            source.drain();
-            source.stop();
-            source.close();
-            source.close();
-            this.audioInputStream.close();
-            MusicState.songFinished();
-        } catch (Exception var5) {
-            System.out.println("jMusic AudioFilePlayThread error");
-            var5.printStackTrace();
+            sequencer = MidiSystem.getSequencer();
+            sequencer.open();
+            InputStream is = new BufferedInputStream(new FileInputStream(new File(MusicState.OUTPUT)));
+            sequencer.setSequence(is);
+        } catch (MidiUnavailableException | InvalidMidiDataException | IOException e) {
+            e.printStackTrace();
         }
 
+        // Make the MusicState object listen for Meta Events, i.e., "stopped playing"
+        sequencer.addMetaEventListener(ms);
+        sequencer.start();
+        keepPlaybackProgress();
+    }
+
+    // Make the sequencer stop playing
+    void stopMusic()
+    {
+        sequencer.stop();
+        tickPos = 0;
+        timer.cancel();
+    }
+
+    // Pause the sequencer
+    void pause()
+    {
+        tickPos = sequencer.getTickPosition();
+        sequencer.stop();
+        timer.cancel();
+    }
+
+    // unpause the sequencer
+    void unpause()
+    {
+        sequencer.setTickPosition(tickPos);
+        sequencer.start();
+        keepPlaybackProgress();
+    }
+
+    // Make the sequencer skip to Tick t
+    void skip(long t)
+    {
+        if(t >= 0 && t < sequencer.getTickLength())
+        {
+            sequencer.setTickPosition(tickPos);
+        }
+    }
+
+    // Make the sequencer skip to 'percentage' of the way through the MIDI.
+    // E.g., skip(0.50) skips to half way through the MIDI.
+    // If the sequencer is playing, it will remain playing.
+    // If paused, the sequencer will remain paused.
+    void skip(double percentage)
+    {
+        if(percentage < 0 || percentage >= 1)
+            return;
+
+        skip((long)(percentage * sequencer.getTickLength()));
+    }
+
+    void keepPlaybackProgress()
+    {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                ms.scroll(1.0 * sequencer.getTickPosition() / sequencer.getTickLength());
+            }
+        };
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(task, 0, delay);
     }
 }

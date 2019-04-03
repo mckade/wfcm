@@ -58,6 +58,8 @@ class WaveFCND
             {
                 rtn.collapse();
 
+                //dumpSP(heads[0]);
+
                 rtn = lowestSE(heads[i]);
                 if(rtn == null && failed)
                 {
@@ -153,16 +155,11 @@ class WaveFCND
 
     private Superposition lowestSE(Superposition head)
     {
-        /*
-         * TODO: Currently this is calculating Shannon Entropy assuming
-         * all notes have an equal output probability. This should probably
-         * be changed to take the current list of notes into account.
-         * */
         int size = head.getPTableSize();
         double logval = (-1.0/size * Math.log(1.0f/size)/Math.log(2));
         double tmp;
         double min = size*logval + 1; // bigger than the possible max
-        Superposition low = head;
+        Vector<Superposition> lowvals = new Vector<>();
 
         Superposition cur = head;
         while(cur != null)
@@ -174,7 +171,8 @@ class WaveFCND
             if(tmp < min && tmp != logval)
             {
                 min = tmp;
-                low = cur;
+                lowvals.clear();
+                lowvals.add(cur);
                 if(min < logval)
                 {
                     // wfc failed
@@ -182,12 +180,21 @@ class WaveFCND
                     return null;
                 }
             }
+            else if(tmp == min)
+            {
+                lowvals.add(cur);
+            }
 
             cur = cur.getNext();
         }
 
         if(min != size*logval + 1)
-            return low;
+        {
+            int rand = (int)(Math.random() * lowvals.size());
+            //System.out.println("index: " + rand + " out of " + lowvals.size());
+            //System.out.println("Entropy: " + min);
+            return lowvals.get(rand);
+        }
         else
             return null;
     }

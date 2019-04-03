@@ -3,8 +3,8 @@
  * @project Procedural Music
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
  * 
- * Log panel that records all relevant events
- * of the music generation process.
+ * Log panel that records all relevant events of the music generation process.
+ * Provides feedback to the user.
  */
 
 package gui;
@@ -34,28 +34,30 @@ public class LogPanel extends JPanel {
     private JPopupMenu menu;
     private JMenuItem clear;
 
+    // Constructor
     public LogPanel() {
-        
         // Setup
         setBackground(MainWindow.PANEL_BACKGROUND);
-        setBorder(MainWindow.BORDER);
+        setBorder(MainWindow.PANEL_BORDER);
         setLayout(new BorderLayout());
         
-        // Creating Log Label
+        // Creating components
+        // Label
         title = new JLabel("Log", JLabel.CENTER);
         title.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
         title.setForeground(Color.WHITE);
         
-        // Creating Log Text Area
+        // Text
         text = new JTextArea();
         text.setEditable(false);
         text.setLineWrap(true);
+        text.setWrapStyleWord(true);
         text.setFont(new Font(Font.DIALOG, Font.PLAIN, 14));
         text.setBackground(this.getBackground());
         text.setForeground(Color.WHITE);
         setUpMouselistener();
         
-        // Creating text area scroll pane
+        // Creating text scroll pane
         JScrollPane scrollPane = new JScrollPane(text);
         scrollPane.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, new Color(0, 92, 75)));
         
@@ -64,7 +66,7 @@ public class LogPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);      
     }
     
-    // Adds log to the log text area.
+    // Adds a log
     public void addLog(String log) {
         text.append("- " + log + '\n');
     }

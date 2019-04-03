@@ -9,5 +9,5 @@
 package coms;
 
 public interface UpdateListener {
-    public void updateEvent(UpdateEvent e);
+    void updateEvent(UpdateEvent e);
 }
