@@ -357,7 +357,7 @@ public class MidiReader {
         double durDiffSumSq = 0;
 
         //
-        for (int i = 0; i < 12; ++i) {
+        for (int i = 0; i < 24; ++i) {
             profileDiffSumSq = 0;
             durDiffSumSq = 0;
 

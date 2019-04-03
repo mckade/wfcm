@@ -106,7 +106,7 @@ class MarkovTable {
 
         // Modify chordPitches to include 'mod' number of extra pitches in the appropriate key signature
         // 'mod' will be user defined eventually
-        // ModKeySig(midiReader.EstimateKeySignature(), 4);
+        ModKeySig(midiReader.EstimateKeySignature(), 4);
 
         chordTable = new double[chord.size()][chord.size()];
         chordLengthTable = new double[chordLength.size()][chordLength.size()];
@@ -176,137 +176,140 @@ class MarkovTable {
     // TODO: Modify so the pitch octave is random
     private void ModKeySig(int key, int mod) {
 
+        Random rand = new Random();
+        rand.setSeed(rand.nextLong());
+
         switch(key) {
             case 1: // C / Am
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.A4});
-                    chordPitches.add(new int[] {JMC.B4});
-                    chordPitches.add(new int[] {JMC.C4});
-                    chordPitches.add(new int[] {JMC.D4});
-                    chordPitches.add(new int[] {JMC.E4});
-                    chordPitches.add(new int[] {JMC.F4});
-                    chordPitches.add(new int[] {JMC.G4});
+                    chords.insertElementAt(new double[] {JMC.A4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.B4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.C4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.D4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.E4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.F4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.G4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 2: // G / Emin
                  for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.A4});
-                    chordPitches.add(new int[] {JMC.B4});
-                    chordPitches.add(new int[] {JMC.C4});
-                    chordPitches.add(new int[] {JMC.D4});
-                    chordPitches.add(new int[] {JMC.E4});
-                    chordPitches.add(new int[] {JMC.FS4});
-                    chordPitches.add(new int[] {JMC.G4});
+                    chords.insertElementAt(new double[] {JMC.A4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.B4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.C4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.D4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.E4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.FS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.G4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 3: // D / Bm
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.A4});
-                    chordPitches.add(new int[] {JMC.B4});
-                    chordPitches.add(new int[] {JMC.CS4});
-                    chordPitches.add(new int[] {JMC.D4});
-                    chordPitches.add(new int[] {JMC.E4});
-                    chordPitches.add(new int[] {JMC.FS4});
-                    chordPitches.add(new int[] {JMC.G4});
+                    chords.insertElementAt(new double[] {JMC.A4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.B4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.CS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.D4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.E4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.FS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.G4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 4: // A / F#m
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.A4});
-                    chordPitches.add(new int[] {JMC.B4});
-                    chordPitches.add(new int[] {JMC.CS4});
-                    chordPitches.add(new int[] {JMC.D4});
-                    chordPitches.add(new int[] {JMC.E4});
-                    chordPitches.add(new int[] {JMC.FS4});
-                    chordPitches.add(new int[] {JMC.GS4});
+                    chords.insertElementAt(new double[] {JMC.A4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.B4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.CS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.D4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.E4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.FS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.GS4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 5: // E / C#m
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.A4});
-                    chordPitches.add(new int[] {JMC.B4});
-                    chordPitches.add(new int[] {JMC.CS4});
-                    chordPitches.add(new int[] {JMC.DS4});
-                    chordPitches.add(new int[] {JMC.E4});
-                    chordPitches.add(new int[] {JMC.FS4});
-                    chordPitches.add(new int[] {JMC.GS4});
+                    chords.insertElementAt(new double[] {JMC.A4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.B4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.CS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.DS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.E4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.FS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.GS4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 6: // B / G#m
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.AS4});
-                    chordPitches.add(new int[] {JMC.B4});
-                    chordPitches.add(new int[] {JMC.CS4});
-                    chordPitches.add(new int[] {JMC.DS4});
-                    chordPitches.add(new int[] {JMC.E4});
-                    chordPitches.add(new int[] {JMC.FS4});
-                    chordPitches.add(new int[] {JMC.GS4});
+                    chords.insertElementAt(new double[] {JMC.AS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.B4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.CS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.DS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.E4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.FS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.GS4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 7: // F# / Ebm
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.AS4});
-                    chordPitches.add(new int[] {JMC.B4});
-                    chordPitches.add(new int[] {JMC.CS4});
-                    chordPitches.add(new int[] {JMC.DS4});
-                    chordPitches.add(new int[] {JMC.ES4});
-                    chordPitches.add(new int[] {JMC.FS4});
-                    chordPitches.add(new int[] {JMC.GS4});
+                    chords.insertElementAt(new double[] {JMC.AS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.B4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.CS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.DS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.ES4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.FS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.GS4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 8: // C# / Bbm
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.AS4});
-                    chordPitches.add(new int[] {JMC.BS4});
-                    chordPitches.add(new int[] {JMC.CS4});
-                    chordPitches.add(new int[] {JMC.DS4});
-                    chordPitches.add(new int[] {JMC.ES4});
-                    chordPitches.add(new int[] {JMC.FS4});
-                    chordPitches.add(new int[] {JMC.GS4});
+                    chords.insertElementAt(new double[] {JMC.AS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.BS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.CS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.DS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.ES4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.FS4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.GS4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 9: // Ab / Fm
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.AF4});
-                    chordPitches.add(new int[] {JMC.BF4});
-                    chordPitches.add(new int[] {JMC.C4});
-                    chordPitches.add(new int[] {JMC.DF4});
-                    chordPitches.add(new int[] {JMC.EF4});
-                    chordPitches.add(new int[] {JMC.F4});
-                    chordPitches.add(new int[] {JMC.G4});
+                    chords.insertElementAt(new double[] {JMC.AF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.BF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.C4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.DF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.EF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.F4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.G4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 10: // Eb / Cm
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.AF4});
-                    chordPitches.add(new int[] {JMC.BF4});
-                    chordPitches.add(new int[] {JMC.C4});
-                    chordPitches.add(new int[] {JMC.D4});
-                    chordPitches.add(new int[] {JMC.EF4});
-                    chordPitches.add(new int[] {JMC.F4});
-                    chordPitches.add(new int[] {JMC.G4});
+                    chords.insertElementAt(new double[] {JMC.AF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.BF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.C4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.D4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.EF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.F4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.G4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 11: // Bb / Gm
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.A4});
-                    chordPitches.add(new int[] {JMC.BF4});
-                    chordPitches.add(new int[] {JMC.C4});
-                    chordPitches.add(new int[] {JMC.D4});
-                    chordPitches.add(new int[] {JMC.EF4});
-                    chordPitches.add(new int[] {JMC.F4});
-                    chordPitches.add(new int[] {JMC.G4});
+                    chords.insertElementAt(new double[] {JMC.A4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.BF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.C4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.D4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.EF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.F4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.G4}, rand.nextInt(chords.size()));
                 }
                 break;
             case 12: // F / Dm
                 for (int i = 0; i < mod; ++i) {
-                    chordPitches.add(new int[] {JMC.A4});
-                    chordPitches.add(new int[] {JMC.BF4});
-                    chordPitches.add(new int[] {JMC.C4});
-                    chordPitches.add(new int[] {JMC.D4});
-                    chordPitches.add(new int[] {JMC.E4});
-                    chordPitches.add(new int[] {JMC.F4});
-                    chordPitches.add(new int[] {JMC.G4});
+                    chords.insertElementAt(new double[] {JMC.A4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.BF4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.C4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.D4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.E4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.F4}, rand.nextInt(chords.size()));
+                    chords.insertElementAt(new double[] {JMC.G4}, rand.nextInt(chords.size()));
                 }
                 break;
             default:
