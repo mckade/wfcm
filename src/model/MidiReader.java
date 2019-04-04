@@ -229,7 +229,7 @@ public class MidiReader {
                     if (on.getVelocity() != 0) {
 
                         //System.out.println("\nNoteOn event:");
-                        //on.print();
+                        on.print();
 
                         // Add pitch value to vector
                         pitches.add((double)Short.toUnsignedInt(on.getPitch()));
@@ -313,8 +313,8 @@ public class MidiReader {
      *     found at this URL: http://rnhart.net/articles/key-finding
      * @param pitchDurations - an array containing the the
      *                       total durations of each note in the piece.
-     * @return An int 1 - 24 corresponding to a specific key.
-     *          e.g. 1 -> CMaj, 2 -> Cmin, 3 -> C#Maj, etc.
+     * @return An int 1 - 12 corresponding to a specific key.
+     *          e.g. 1 -> CMaj, 2 -> GMaj, 3 -> DMaj, etc.
      */
 
     public int krumhanslSchmuckler(double[] pitchDurations) {
