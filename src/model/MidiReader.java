@@ -1,5 +1,5 @@
 package model;
-/**
+/*
  * @filename MidiReader.java
  * @project Procedural Music
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
@@ -8,34 +8,46 @@ package model;
  * Returns the read data to be processed.
  */
 
-import static java.lang.Math.sqrt;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import jm.midi.MidiParser;
 import jm.midi.SMF;
 import jm.midi.Track;
+import jm.midi.event.*;
 import jm.midi.event.Event;
-import jm.midi.event.NoteOff;
-import jm.midi.event.NoteOn;
-import jm.music.data.Note;
-import jm.music.data.Score;
+import jm.music.data.*;
 import jm.util.Read;
 
-public class MidiReader {
+import java.util.*;
+import java.util.List;
+
+import static java.lang.Math.sqrt;
+
+class DRectangle {
+    double x;
+    double y;
+    double width;
+
+    DRectangle(double x, double y, double width)
+    {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+    }
+
+    void print()
+    {
+        System.out.println("{ x:"+x+", y:"+y+", width:"+width+" }");
+    }
+}
+
+class MidiReader {
 
     // Holds MIDI data which will be grabbed by MarkovTable
-    MidiData midiData = null;
-    double tempo;
-    Score midiScore;
+    private MidiData midiData = null;
+    private double tempo;
+    private Score midiScore;
 
     // Constructor
-    public MidiReader() {
+    MidiReader() {
     }
 
     // Inner class used to encapsulate data obtained form parsing
@@ -45,7 +57,7 @@ public class MidiReader {
 
         Vector<double[]> chords; // Last element is chord duration
 
-        public MidiData() {
+        MidiData() {
             this.chords = new Vector<>();
         }
 
@@ -53,10 +65,10 @@ public class MidiReader {
             this.chords = c;
         }
 
-        public Vector<double[]> getChords() { return this.chords; }
+        Vector<double[]> getChords() { return this.chords; }
 
         // Adding up total durations of all Notes in piece
-        public double[] getTotalDurations() {
+        double[] getTotalDurations() {
             double[] durations = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             Map<Integer, List<double[]>> organizedChords = new HashMap<Integer, List<double[]>>();
 
@@ -86,7 +98,7 @@ public class MidiReader {
 
         // Function based off of this implementation of a MultiMap at:
         // https://www.leveluplunch.com/java/examples/guava-multimap-example/
-        public void putMultiMap(Map<Integer, List<double[]>> orgChords, int key, double[] chord) {
+        private void putMultiMap(Map<Integer, List<double[]>> orgChords, int key, double[] chord) {
             List<double[]> chordList = orgChords.get(key);
             if(chordList == null) {
                 chordList = new ArrayList<>();
@@ -100,9 +112,7 @@ public class MidiReader {
     // Given a filename it will attempt to read a midi file.
     // Returns the midi data for processing.
     // Currently returns a Vector of Notes (in the order they appear in input)
-    public void readMidi(String/*File*/ filename) throws IOException {
-
-        Note[] notes = null;
+    void readMidi(String/*File*/ filename) {
 
         midiData = new MidiData();
 
@@ -112,16 +122,9 @@ public class MidiReader {
         Read.midi(from_midi, filename/*.getCanonicalPath()*/);
         tempo = from_midi.getTempo();
         midiScore = from_midi;
+        midiData.chords = parseScore(from_midi);
 
-        for(Note n : from_midi.getPart(0).getPhrase(0).getNoteArray())
-        {
-             System.out.println("Note: " + n.getPitch());
-            // SMF does not seem to like negative values
-            if(n.getPitch() < 0)
-                n.setPitch(0);
-        }
-
-        if (from_midi.size() != 0) {
+        /*if (from_midi.size() != 0) {
 
             // Convert Score into raw SMF data (Standard MIDI File)
             SMF smf = new SMF();
@@ -146,10 +149,157 @@ public class MidiReader {
             for (double total : chordDurations) {
                 System.out.println(total);
             }
-        }
+        }*/
     }
 
-    public Score getMidiScore()
+    /*
+     * parseScore takes in a score and returns a vector of chord arrays.
+     * A chord array consists of n pitches followed by a duration.
+     *
+     * parseScore will also quantize the score to accomplish this
+     */
+    private Vector<double[]> parseScore(Score s)
+    {
+        // we are going to first load the midi data into rectangles
+        Vector<Vector<DRectangle>> rects = new Vector<>();
+        Vector<Part> parts = s.getPartList();
+        System.out.println("Number of parts: " + parts.size());
+        // we are only working with 1 part
+        Part p = parts.elementAt(0);
+        System.out.println("Number of phrases: " + p.getSize());
+        Vector<Phrase> phrases = p.getPhraseList();
+
+        // constant used to snap notes to a grid -- 1 / 4 snaps to quarter
+        double quantize = 1.0 / 128;
+        double min = -1;
+        for(Phrase phr : phrases)
+        {
+            double shortest = phr.getShortestRhythmValue();
+            if(min == -1 || shortest < min)
+                min = shortest;
+        }
+
+        // auto adjust quantize so it snaps to the lowest rhythm value
+        // TODO: this will need to be modified to allow for triplets
+        for(int i = 0; i < 7; i++)
+        {
+            if(min < quantize || Math.abs(min - quantize) < Math.abs(min - 2*quantize))
+                break;
+
+            quantize *= 2;
+        }
+
+        System.out.println("quantize: " + quantize);
+        int notenum = 0;
+
+        for(Phrase phr : phrases)
+        {
+            Vector<DRectangle> r = new Vector<>();
+            for(int i = 0; i < phr.size(); i++)
+            {
+                // quantize the note duration and start time, i.e., snap to a scale of (1 / quantize)
+                double dur = phr.getNote(i).getDuration() / quantize;
+                double stime = phr.getNoteStartTime(i) / quantize;
+
+                int first = (int)dur;
+                if(dur - first < dur - (first + 1))
+                    dur = first * quantize;
+                else
+                    dur = (first + 1) * quantize;
+
+                first = (int)stime;
+                if(stime == 0)
+                    stime = 0;
+                else if(stime - first < stime - (first + 1))
+                    stime = first * quantize;
+                else
+                    stime = (first + 1) * quantize;
+
+                r.add(new DRectangle(
+                        stime, // x = noteStartTime
+                        phr.getNote(i).getPitch(), // y = pitch
+                        dur // width = duration
+                ));
+            }
+            rects.add(r);
+            notenum += r.size();
+        }
+
+        // sort the rects by x value
+        DRectangle[] drects = new DRectangle[notenum];
+        // what index are we at on the ith rect vector
+        int[] indices = new int[rects.size()];
+        int cur = 0;
+
+        while(true)
+        {
+            double m = -1;
+            int lowestInd = 0;
+            for(int i = 0; i < rects.size(); i++)
+            {
+                if(indices[i] >= rects.elementAt(i).size())
+                    continue;
+                if(rects.elementAt(i).elementAt(indices[i]).x < m || m == -1)
+                {
+                    m = rects.elementAt(i).elementAt(indices[i]).x;
+                    lowestInd = i;
+                }
+            }
+
+            if(m == -1)
+                break;
+            // set the next element in the array to the next smallest drectangle
+            // we found this value at rects[lowestInd] at indices[lowestInd]
+            drects[cur] = rects.elementAt(lowestInd).elementAt(indices[lowestInd]);
+            indices[lowestInd]++;
+            cur++;
+        }
+
+        // Create the chord arrays where the last note is the duration
+        // and the rest are the pitches
+        Vector<double[]> result = new Vector<>();
+        Vector<Double> chord = new Vector<>();
+        double start = 0.0;
+        for(DRectangle d : drects)
+        {
+            // ignore extra rests
+            if(chord.size() > 0 && d.y < 0)
+                continue;
+            if(d.x != start)
+            {
+                double[] c = new double[chord.size() + 1];
+                for(int i = 0; i < chord.size(); i++) {c[i] = chord.get(i);}
+                // TODO: does not handle note overlap
+                c[chord.size()] = d.x - start;
+                System.out.println("time: " + (d.x - start));
+                result.add(c);
+                chord.clear();
+            }
+
+            start = d.x;
+            chord.add(d.y);
+            System.out.println("Added: " + d.y +" at time " + d.x);
+        }
+
+        double[] c = new double[chord.size() + 1];
+        for(int i = 0; i < chord.size(); i++) {c[i] = chord.get(i);}
+        // TODO: does not handle note overlap
+        c[chord.size()] = drects[drects.length - 1].width;
+        result.add(c);
+
+        for(double[] dbs : result)
+        {
+            for(int i = 0; i < dbs.length; i++)
+            {
+                System.out.print(dbs[i] + ", ");
+            }
+            System.out.println();
+        }
+
+        return result;
+    }
+
+    Score getMidiScore()
     {
         return midiScore;
     }
@@ -157,7 +307,7 @@ public class MidiReader {
     // Cycles through each event in the event vector passed to it
     // Get's notes/chord data (pitch, etc.) and places it in
     // MidiReader's MidiData object
-    public void parseEvents(Vector<Event> vec, int ppqn) {
+    private void parseEvents(Vector<Event> vec, int ppqn) {
 
         // Needed for note tracking
         int onCount = 0;
@@ -210,7 +360,7 @@ public class MidiReader {
                         // this is a rest
                         if(!addRest)
                         {
-                            System.out.println("Rest");
+                            //System.out.println("Rest");
                             midiData.chords.add(new double[]{-2147483648, 1.0 * off.getTime() / ppqn});
                         }
                         addRest = !addRest;
@@ -266,7 +416,7 @@ public class MidiReader {
                             // this is a rest
                             if(!addRest)
                             {
-                                System.out.println("Rest: " + 1.0 * on.getTime() / ppqn);
+                                //System.out.println("Rest: " + 1.0 * on.getTime() / ppqn);
                                 midiData.chords.add(new double[]{-2147483648, 1.0 * on.getTime() / ppqn});
                             }
                             addRest = !addRest;
@@ -289,7 +439,7 @@ public class MidiReader {
                             break;
                         }
 
-                        System.out.println("Note: " + 1.0 * on.getTime() / ppqn);
+                        //System.out.println("Note: " + 1.0 * on.getTime() / ppqn);
                         pitches.add(1.0 * on.getTime() / ppqn);
                         midiData.chords.add(vectorToPitchArr(pitches));
 
@@ -306,7 +456,7 @@ public class MidiReader {
         }
     }
 
-    public Vector<double[]> getChords() {
+    Vector<double[]> getChords() {
         if (this.midiData != null) {
             return this.midiData.getChords();
         } else {
@@ -315,7 +465,7 @@ public class MidiReader {
         }
     }
 
-    public double getTempo() {
+    double getTempo() {
         if (this.midiData != null) {
             return tempo;
         } else {
@@ -327,7 +477,7 @@ public class MidiReader {
     // CPhrase.addChord only takes int[] or Note[]
     // So this method takes a Vector<Integer> of pitchs and converts to an
     // int[]
-    public double[] vectorToPitchArr(Vector<Double> pitches) {
+    private double[] vectorToPitchArr(Vector<Double> pitches) {
 
         double[] ptchs = new double[pitches.size()];
 
@@ -350,7 +500,7 @@ public class MidiReader {
      *          e.g. 1 -> CMaj, 2 -> GMaj, 3 -> DMaj, etc.
      */
 
-    public int krumhanslSchmuckler(double[] pitchDurations) {
+    private int krumhanslSchmuckler(double[] pitchDurations) {
 
         // The algorithm calculates correlation coefficient(s) between
         // the Major/Minor profiles (x-coordinates) defined below and
@@ -390,9 +540,9 @@ public class MidiReader {
         }
 
         double numerator = 0;
-        double denominator = 0;
-        double profileDiffSumSq = 0;
-        double durDiffSumSq = 0;
+        double denominator;
+        double profileDiffSumSq;
+        double durDiffSumSq;
 
         //
         for (int i = 0; i < 24; ++i) {
@@ -426,8 +576,7 @@ public class MidiReader {
 
             // Rotate pitchDurations left
             double temp = pitchDurations[0];
-            for (int j = 1; j < 12; ++j)
-                pitchDurations[j - 1] = pitchDurations[j];
+            System.arraycopy(pitchDurations, 1, pitchDurations, 0, 11);
             pitchDurations[11] = temp;
         }
 
@@ -510,7 +659,7 @@ public class MidiReader {
         }
     }
 
-    public int EstimateKeySignature() {
+    int EstimateKeySignature() {
         return krumhanslSchmuckler(midiData.getTotalDurations());
     }
 }
