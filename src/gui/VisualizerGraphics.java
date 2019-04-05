@@ -13,7 +13,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 
@@ -24,22 +25,24 @@ import coms.UpdateType;
 @SuppressWarnings("serial")
 public class VisualizerGraphics extends JComponent {
     
-    // Block size for eighth note.
-    private static final int EIGHTH = 50;
-    
     // Notes
     private String[] noteHeaders;   // note headers
     private Rectangle[] notes;      // literal
     
     // Table
     private int rowHeight = 15;
+    private int rowWidth = 50;
     private Dimension dim;
     private int playLine = 0;
+    private double scale = 1;   // Scale of visualizer grid.
+    private int timeSignature = 4;
+    
+    // Control
+    private boolean measure = true; // Whether or not to draw the measures
+    private boolean beat = false;   // Whether or not to draw the beats.
     
     // Listener to send events to
     private UpdateListener listener;
-    
-    BufferedImage buffer;
     
     // Constructor
     public VisualizerGraphics(UpdateListener listener) {
@@ -63,7 +66,6 @@ public class VisualizerGraphics extends JComponent {
     // Setting the notes to draw on the table.
     public void setNotes(Rectangle[] notes) {
         this.notes = notes;
-        buffer = null;  // Removing current buffer, since screen size changes.
         
         // Getting the x dimension of the table.
         // This is so we are able to scroll through all the notes.
@@ -86,17 +88,24 @@ public class VisualizerGraphics extends JComponent {
         playLine = (int) (percentage * dim.width);
         repaint();
     }
+    
+    // Sets the scale of the visualizer.
+    // Ranges from 10% to 100% (.1-1)
+    public void setScale(double percentage) {
+        if (percentage >= .1 && percentage <= 1) {
+            scale = percentage;
+        }
+    }
+    
+    // Sets the time signature of the visualizer.
+    public void setTimeSignature(int timeSignature) {
+        this.timeSignature = timeSignature;
+    }
 
     // Painting the component
     // Table and notes
     public void paintComponent(Graphics g) {
-        
-        // Creating buffer if it hasn't been created.
-        if (buffer == null) {
-            buffer = new BufferedImage(getWidth()+dim.width, getHeight(), BufferedImage.TYPE_INT_RGB);
-        }
-        
-        Graphics2D g2 = (Graphics2D) buffer.getGraphics();
+        Graphics2D g2 = (Graphics2D) g;
         int x, y, w, h;
         
         // Absolute Position
@@ -107,20 +116,24 @@ public class VisualizerGraphics extends JComponent {
         g2.setColor(MainWindow.PANEL_BACKGROUND);
         g2.fillRect(x, y, getWidth(), getHeight());
         
-        // Drawing table grid lines
-        w = getWidth() + EIGHTH*8;
-        for (int i = 0; i < w; i += EIGHTH) {
-            if (i % (EIGHTH*8) == 0) {
-                // Measure
-                g2.setColor(MainWindow.DIVIDER);
-                g2.drawLine(x, y, x, getHeight());
+        // Drawing measure and beat grid lines if enabled.
+        if (measure || beat) {
+            for (int i = rowWidth; i < getWidth()+rowWidth; i += rowWidth) {
+                x += rowWidth*2;
+                if (measure && i % (rowWidth*timeSignature) == 0) {
+                    // Measure
+                    g2.setColor(MainWindow.DIVIDER.brighter());
+                    g2.drawLine(x, y, x, getHeight());
+                    x+=1;
+                    g2.drawLine(x, y, x, getHeight());
+                }
+                else if (!beat) {
+                    // Beat
+                    g2.setColor(MainWindow.DIVIDER.darker());
+                    g2.drawLine(x, y, x, getHeight());
+                }
+                x = i;
             }
-            else {
-                // Eight when we want
-                //g2.setColor(MainWindow.COMPONENT_BACKGROUND);
-                //g2.drawLine(x, y, x, getHeight());
-            }
-            x = i;
         }
         
         // Drawing notes if set.
@@ -128,7 +141,7 @@ public class VisualizerGraphics extends JComponent {
         // by a magic constant to be in the correct row.
         if (notes != null) {
             for(Rectangle note: notes) {
-                x = note.x + EIGHTH + 1;
+                x = note.x + rowWidth + 1;
                 y = -note.y * (rowHeight + 1) + 1536;
                 w = note.width;
                 h = rowHeight - 1;
@@ -147,8 +160,8 @@ public class VisualizerGraphics extends JComponent {
         // Ensures the note headers are always showing.
         for (int i = 0; i < 88; i++) {
             g2.setColor(MainWindow.COMPONENT_BACKGROUND);
-            g2.fillRect(x, y, EIGHTH, rowHeight);
-            g2.drawLine(x+EIGHTH, y-1, x + getWidth(), y-1);
+            g2.fillRect(x, y, rowWidth, rowHeight);
+            g2.drawLine(x+rowWidth, y-1, x + getWidth(), y-1);
             g2.setColor(MainWindow.COMPONENT_BORDER_INNER);
             g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
             y += rowHeight + 1;
@@ -157,8 +170,6 @@ public class VisualizerGraphics extends JComponent {
         // Drawing play line.
         y = 0;
         g2.setColor(MainWindow.BORDER_CLICKED);
-        g2.drawLine(playLine+EIGHTH, y, playLine+EIGHTH, getHeight());
-        
-        g.drawImage(buffer, 0, 0, null);
+        g2.drawLine(playLine+rowWidth, y, playLine+rowWidth, getHeight());
     }
 }
