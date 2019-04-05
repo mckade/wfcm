@@ -56,6 +56,7 @@ public class RightPanel extends JPanel {
     // Updates the gui setting values.
     void updateSettings() {settingsPanel.updateSettings();}
 
+    // Scrolls the window to keep up with the playing music
     void updateScroll(double percentage)
     {
         visualizerPanel.setScroll(percentage);

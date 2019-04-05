@@ -68,6 +68,14 @@ public class MidiReader {
         tempo = from_midi.getTempo();
         midiScore = from_midi;
 
+        for(Note n : from_midi.getPart(0).getPhrase(0).getNoteArray())
+        {
+             System.out.println("Note: " + n.getPitch());
+            // SMF does not seem to like negative values
+            if(n.getPitch() < 0)
+                n.setPitch(0);
+        }
+
         if (from_midi.size() != 0) {
 
             // Convert Score into raw SMF data (Standard MIDI File)
@@ -101,9 +109,9 @@ public class MidiReader {
     public void parseEvents(Vector<Event> vec, int ppqn) {
 
         // Needed for note tracking
-        Note note;
         int onCount = 0;
         boolean offsExpected = false;
+        boolean addRest = true;
 
         // Needed for chord tracking
         Vector<Double> pitches = new Vector<>();
@@ -132,6 +140,18 @@ public class MidiReader {
                 case 4: // NoteOff event
 
                     NoteOff off = (NoteOff) ev;
+
+                    if(off.getPitch() == 0)
+                    {
+                        // this is a rest
+                        if(!addRest)
+                        {
+                            System.out.println("Rest");
+                            midiData.chords.add(new double[]{-2147483648, 1.0 * off.getTime() / ppqn});
+                        }
+                        addRest = !addRest;
+                    }
+
                     // Disregard extra NoteOff events from chords
                     if(pitches.size() == 0)
                     {
@@ -170,12 +190,24 @@ public class MidiReader {
 
                         //System.out.println("\nNoteOn event:");
                         //on.print();
-
+                        //System.out.print("On: " + on.getPitch());
                         // Add pitch value to vector
                         pitches.add((double)Short.toUnsignedInt(on.getPitch()));
                         if(!offsExpected)
                             onCount++;
                     } else {
+                        //on.print();
+                        if(on.getPitch() == 0)
+                        {
+                            // this is a rest
+                            if(!addRest)
+                            {
+                                System.out.println("Rest: " + 1.0 * on.getTime() / ppqn);
+                                midiData.chords.add(new double[]{-2147483648, 1.0 * on.getTime() / ppqn});
+                            }
+                            addRest = !addRest;
+                            break;
+                        }
                         // Disregard extra NoteOff events from chords
                         if(pitches.size() == 0)
                         {
@@ -193,11 +225,8 @@ public class MidiReader {
                             break;
                         }
 
-                        //System.out.println("\nNoteOff event:");
-                        //on.print();
-
+                        System.out.println("Note: " + 1.0 * on.getTime() / ppqn);
                         pitches.add(1.0 * on.getTime() / ppqn);
-
                         midiData.chords.add(vectorToPitchArr(pitches));
 
                         // Clear pitch vector for next chord.
