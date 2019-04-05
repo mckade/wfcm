@@ -37,7 +37,7 @@ public class RightPanel extends JPanel {
         setLayout(new BorderLayout());
         
         // Creating panels
-        visualizerPanel = new VisualizerPanel();
+        visualizerPanel = new VisualizerPanel(listener);
         settingsPanel = new SettingsPanel(listener);
         
         // Adding panels
@@ -58,6 +58,7 @@ public class RightPanel extends JPanel {
     // Updates the gui setting values.
     void updateSettings() {
         settingsPanel.updateSettings();
+        visualizerPanel.updateSettings();
     }
 
     // Scrolls the window to keep up with the playing music

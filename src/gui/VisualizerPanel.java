@@ -12,8 +12,12 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Rectangle;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 
+import coms.SettingsListener;
 import coms.UpdateEvent;
 import coms.UpdateListener;
 
@@ -27,12 +31,16 @@ implements UpdateListener {
     private JScrollBar hbar;
     private double scrollLimit = 0.8;
     
+    // Listener to send events to
+    SettingsListener listener;
+    
     // Control
     private boolean follow = true;
     
     // Constructor
-    public VisualizerPanel() {
+    public VisualizerPanel(SettingsListener listener) {
         // Setup
+        this.listener = listener;
         setBackground(MainWindow.PANEL_BACKGROUND);
         setBorder(MainWindow.PANEL_BORDER);
         setLayout(new BorderLayout());
@@ -45,8 +53,14 @@ implements UpdateListener {
         scrollPane.getHorizontalScrollBar().setUnitIncrement(8);
         hbar = scrollPane.getHorizontalScrollBar();
         
+        updateSettings();
+        
         // Adding components
         add(scrollPane, BorderLayout.CENTER);
+    }
+    
+    public void updateSettings() {
+        visualizer.setTimeSignature(listener.getTimeSignature());
     }
     
     // Sets the note that the visualizer will draw.
