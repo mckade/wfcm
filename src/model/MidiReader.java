@@ -89,7 +89,7 @@ class MidiReader {
             for (int i = 0; i < 12; ++i) {
                 List<double[]> pitchClass = organizedChords.get(i);
                 for (double[] chord : pitchClass) {
-                    durations[i] += chord[1];
+                    durations[i] += chord[chord.length - 1];
                 }
             }
 
@@ -123,33 +123,6 @@ class MidiReader {
         tempo = from_midi.getTempo();
         midiScore = from_midi;
         midiData.chords = parseScore(from_midi);
-
-        /*if (from_midi.size() != 0) {
-
-            // Convert Score into raw SMF data (Standard MIDI File)
-            SMF smf = new SMF();
-            MidiParser.scoreToSMF(from_midi, smf);
-
-            // Get Tracks from SMF. Track 1 should be header data.
-            // Might need to check instanceof ?
-            Vector<Track> tracks = smf.getTrackList();
-            Vector<Vector<Event>> events = new Vector<>();
-
-            int resolution = smf.getPPQN(); // Pulses per Quarter Note. Needed to calculate note durations
-
-            // Get EventList from each Track
-            for (Track trk : tracks) { events.add(trk.getEvtList()); }
-
-            // Loop through Tracks &
-            // Get Event data
-            for (Vector<Event> vec : events) { parseEvents(vec, resolution); }
-
-            // Testing pitch class duration summation
-            double[] chordDurations = midiData.getTotalDurations();
-            for (double total : chordDurations) {
-                System.out.println(total);
-            }
-        }*/
     }
 
     /*
@@ -302,158 +275,6 @@ class MidiReader {
     Score getMidiScore()
     {
         return midiScore;
-    }
-
-    // Cycles through each event in the event vector passed to it
-    // Get's notes/chord data (pitch, etc.) and places it in
-    // MidiReader's MidiData object
-    private void parseEvents(Vector<Event> vec, int ppqn) {
-
-        // Needed for note tracking
-        int onCount = 0;
-        boolean offsExpected = false;
-        boolean addRest = true;
-
-        // Needed for chord tracking
-        Vector<Double> pitches = new Vector<>();
-
-        for (Event ev : vec) { // Loop through Events
-
-            short eventID = ev.getID(); // ID determines type of event
-
-            // We're mostly interested in the NoteOn/NoteOff events for chords.
-            switch (eventID) {
-                case 18: // KeySig event
-                    /*
-                    KeySig keySig = (KeySig) ev;
-                    System.out.println("KeySig event:");
-                    System.out.println("Key Signature: " + keySig.getKeySig()); // int -7 - 7. -7 means 7 flats. 7 means sharps
-                    System.out.println("Key Quality: " + keySig.getKeyQuality()); // 0 for Major, 1 for minor
-                    System.out.println("Time?: " + keySig.getTime());
-                    */
-                    break;
-                case 17: // TimeSig event
-
-                    /*
-                    TimeSig timeSig = (TimeSig) ev;
-                    System.out.println("TimeSig event:");
-                    System.out.println("1/32 per beat: " + timeSig.getThirtySecondNotesPerBeat());
-                    System.out.println("Metronome pulse: " + timeSig.getMetronomePulse());
-                    System.out.println("Time Signaure: " + timeSig.getNumerator() + "/" + timeSig.getDenominator());
-                    */
-                    break;
-                case 16: // Tempo Event
-
-                    /*
-                    TempoEvent temp = (TempoEvent) ev;
-                    System.out.println("Tempo: " + temp.getTempo());
-                    tempo = temp.getTempo();
-                    */
-
-                    break;
-                case 4: // NoteOff event
-
-                    NoteOff off = (NoteOff) ev;
-
-                    if(off.getPitch() == 0)
-                    {
-                        // this is a rest
-                        if(!addRest)
-                        {
-                            //System.out.println("Rest");
-                            midiData.chords.add(new double[]{-2147483648, 1.0 * off.getTime() / ppqn});
-                        }
-                        addRest = !addRest;
-                    }
-
-                    // Disregard extra NoteOff events from chords
-                    if(pitches.size() == 0)
-                    {
-                        break;
-                    }
-
-                    if(offsExpected)
-                    {
-                        onCount--;
-                        if(onCount == 0)
-                        {
-                            onCount = pitches.size();
-                            offsExpected = false;
-                        }
-                        break;
-                    }
-                    //System.out.println("NoteOff event:");
-
-                    pitches.add(1.0 * off.getTime() / ppqn);
-                    midiData.chords.add(vectorToPitchArr(pitches));
-
-                    // Clear pitch vector for next chord.
-                    pitches.clear();
-                    onCount--;
-                    if(onCount > 0)
-                    {
-                        offsExpected = true;
-                    }
-                    break;
-                case 5: // NoteOn event
-
-                    NoteOn on = (NoteOn) ev;
-
-                    // Some MIDI files encode NoteOffs as NoteOns with velocity=0
-                    if (on.getVelocity() != 0) {
-
-                        //System.out.println("\nNoteOn event:");
-                        //on.print();
-                        //System.out.print("On: " + on.getPitch());
-                        // Add pitch value to vector
-                        pitches.add((double)Short.toUnsignedInt(on.getPitch()));
-                        if(!offsExpected)
-                            onCount++;
-                    } else {
-                        //on.print();
-                        if(on.getPitch() == 0)
-                        {
-                            // this is a rest
-                            if(!addRest)
-                            {
-                                //System.out.println("Rest: " + 1.0 * on.getTime() / ppqn);
-                                midiData.chords.add(new double[]{-2147483648, 1.0 * on.getTime() / ppqn});
-                            }
-                            addRest = !addRest;
-                            break;
-                        }
-                        // Disregard extra NoteOff events from chords
-                        if(pitches.size() == 0)
-                        {
-                            break;
-                        }
-
-                        if(offsExpected)
-                        {
-                            onCount--;
-                            if(onCount == 0)
-                            {
-                                onCount = pitches.size();
-                                offsExpected = false;
-                            }
-                            break;
-                        }
-
-                        //System.out.println("Note: " + 1.0 * on.getTime() / ppqn);
-                        pitches.add(1.0 * on.getTime() / ppqn);
-                        midiData.chords.add(vectorToPitchArr(pitches));
-
-                        // Clear pitch vector for next chord.
-                        pitches.clear();
-                        onCount--;
-                        if(onCount > 0)
-                        {
-                            offsExpected = true;
-                        }
-                    }
-                    break;
-            }
-        }
     }
 
     Vector<double[]> getChords() {
@@ -659,7 +480,7 @@ class MidiReader {
         }
     }
 
-    int EstimateKeySignature() {
+    int estimateKeySignature() {
         return krumhanslSchmuckler(midiData.getTotalDurations());
     }
 }
