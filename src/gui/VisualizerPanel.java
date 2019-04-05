@@ -46,7 +46,7 @@ implements UpdateListener {
         setLayout(new BorderLayout());
         
         // Creating components
-        visualizer = new VisualizerGraphics(this);
+        visualizer = new VisualizerGraphics(this, listener);
         scrollPane = new JScrollPane(visualizer);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
