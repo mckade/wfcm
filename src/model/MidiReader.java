@@ -195,22 +195,31 @@ class MidiReader {
         for(Phrase phr : phrases)
         {
             Vector<DRectangle> r = new Vector<>();
-            double time = 0;
             for(int i = 0; i < phr.size(); i++)
             {
-                // quantize the note duration, i.e., snap it to a scale of (1 / quantize)
+                // quantize the note duration and start time, i.e., snap to a scale of (1 / quantize)
                 double dur = phr.getNote(i).getDuration() / quantize;
+                double stime = phr.getNoteStartTime(i) / quantize;
+
                 int first = (int)dur;
                 if(dur - first < dur - (first + 1))
                     dur = first * quantize;
                 else
                     dur = (first + 1) * quantize;
+
+                first = (int)stime;
+                if(stime == 0)
+                    stime = 0;
+                else if(stime - first < stime - (first + 1))
+                    stime = first * quantize;
+                else
+                    stime = (first + 1) * quantize;
+
                 r.add(new DRectangle(
-                        time, // x = noteStartTime * scale
+                        stime, // x = noteStartTime
                         phr.getNote(i).getPitch(), // y = pitch
                         dur // width = duration
                 ));
-                time += dur;
             }
             rects.add(r);
             notenum += r.size();
@@ -253,12 +262,16 @@ class MidiReader {
         double start = 0.0;
         for(DRectangle d : drects)
         {
+            // ignore extra rests
+            if(chord.size() > 0 && d.y < 0)
+                continue;
             if(d.x != start)
             {
                 double[] c = new double[chord.size() + 1];
-                for(int i = 0; i < chord.size() - 1; i++) {c[i] = chord.get(i);}
+                for(int i = 0; i < chord.size(); i++) {c[i] = chord.get(i);}
                 // TODO: does not handle note overlap
                 c[chord.size()] = d.x - start;
+                System.out.println("time: " + (d.x - start));
                 result.add(c);
                 chord.clear();
             }
@@ -269,10 +282,19 @@ class MidiReader {
         }
 
         double[] c = new double[chord.size() + 1];
-        for(int i = 0; i < chord.size() - 1; i++) {c[i] = chord.get(i);}
+        for(int i = 0; i < chord.size(); i++) {c[i] = chord.get(i);}
         // TODO: does not handle note overlap
-        c[chord.size()] = drects[drects.length - 1].x - start;
+        c[chord.size()] = drects[drects.length - 1].width;
         result.add(c);
+
+        for(double[] dbs : result)
+        {
+            for(int i = 0; i < dbs.length; i++)
+            {
+                System.out.print(dbs[i] + ", ");
+            }
+            System.out.println();
+        }
 
         return result;
     }

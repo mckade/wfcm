@@ -82,7 +82,7 @@ class MarkovTable {
             // Make a copy of chord pitch array without the duration at the end
             int[] newChrd = new int[chrd.length - 1];
             for (int i = 0; i < chrd.length - 1; ++i) {
-                //System.out.println(chrd[i]);
+                System.out.println(chrd[i]);
                 newChrd[i] = (int)chrd[i];
                 rects.add(new Rectangle(
                         (int)(time*timeScale), // x = noteStartTime * scale
@@ -105,7 +105,7 @@ class MarkovTable {
 
         // Modify chordPitches to include 'mod' number of extra pitches in the appropriate key signature
         // 'mod' will be user defined eventually
-        ModKeySig(midiReader.EstimateKeySignature(), 1, chordKey);
+        //ModKeySig(midiReader.EstimateKeySignature(), 1, chordKey);
 
         chordTable = new double[chord.size()][chord.size()];
         chordLengthTable = new double[chordLength.size()][chordLength.size()];
