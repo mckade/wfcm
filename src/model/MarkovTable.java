@@ -62,12 +62,8 @@ class MarkovTable {
     boolean loadMidiFile(String filename)
     {
         // Get midi data for processing.
-        try {
-            midiReader.readMidi(filename);
-            chords = midiReader.getChords();
-        } catch (IOException ex) {
-            System.out.println("Could not read file: " + filename);
-        }
+        midiReader.readMidi(filename);
+        chords = midiReader.getChords();
         // Checking if file was successfully read.
         if (chords == null) return false;
 
