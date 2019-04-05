@@ -47,15 +47,20 @@ implements UpdateListener {
         
         // Creating components
         visualizer = new VisualizerGraphics(this);
-        visualizer.setTimeSignature(listener.getTimeSignature());
         scrollPane = new JScrollPane(visualizer);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(8);
         hbar = scrollPane.getHorizontalScrollBar();
         
+        updateSettings();
+        
         // Adding components
         add(scrollPane, BorderLayout.CENTER);
+    }
+    
+    public void updateSettings() {
+        visualizer.setTimeSignature(listener.getTimeSignature());
     }
     
     // Sets the note that the visualizer will draw.

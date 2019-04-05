@@ -58,6 +58,7 @@ public class RightPanel extends JPanel {
     // Updates the gui setting values.
     void updateSettings() {
         settingsPanel.updateSettings();
+        visualizerPanel.updateSettings();
     }
 
     // Scrolls the window to keep up with the playing music
