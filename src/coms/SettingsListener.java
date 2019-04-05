@@ -18,4 +18,5 @@ public interface SettingsListener {
     public String[] getInstrumentList();
     public void setTimeSignature(int timeSignature);
     public int getTimeSignature();
+    public void setPlayTime(double percentage);
 }

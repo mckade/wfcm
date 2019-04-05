@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 
+import coms.SettingsListener;
 import coms.UpdateEvent;
 import coms.UpdateListener;
 import coms.UpdateType;
@@ -42,12 +43,14 @@ public class VisualizerGraphics extends JComponent {
     private boolean beat = true;    // Whether or not to draw the beats.
     
     // Listener to send events to
-    private UpdateListener listener;
+    private UpdateListener ulistener;
+    private SettingsListener slistener;
     
     // Constructor
-    public VisualizerGraphics(UpdateListener listener) {
+    public VisualizerGraphics(UpdateListener ulistener, SettingsListener slistener) {
         // Setup
-        this.listener = listener;
+        this.ulistener = ulistener;
+        this.slistener = slistener;
         dim = new Dimension(0, (rowHeight+1)*88);
         setPreferredSize(dim);
         
@@ -61,6 +64,22 @@ public class VisualizerGraphics extends JComponent {
             if (index == 0) num--;
             index = (index + 1) % noteTypes.length;
         }
+        
+        setUpMouseListener();
+    }
+    
+    // Sets up the mouse listener to the visualizer.
+    private void setUpMouseListener() {
+        this.addMouseListener(new MouseAdapter() {
+            // TEMP: Sets the play line at mouse position.
+            public void mouseClicked(MouseEvent e) {
+                double t1 = e.getX()-rowWidth;
+                double t2 = dim.width;
+                t1 = t1/t2;
+                setPlayLine(t1);
+                slistener.setPlayTime(t1);
+            }
+        });
     }
 
     // Setting the notes to draw on the table.
@@ -78,7 +97,7 @@ public class VisualizerGraphics extends JComponent {
         dim.width = maxX;
         
         // Updating scrollbar and repainting.
-        listener.updateEvent(new UpdateEvent(this, UpdateType.scrollBar));
+        ulistener.updateEvent(new UpdateEvent(this, UpdateType.scrollBar));
         repaint();
     }
     

@@ -353,4 +353,5 @@ implements SettingsListener {
     }
     public void setTimeSignature(int timeSignature) {this.timeSignature = timeSignature;}
     public int getTimeSignature() {return timeSignature;}
+    public void setPlayTime(double percentage) {}
 }
