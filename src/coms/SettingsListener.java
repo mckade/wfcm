@@ -16,4 +16,6 @@ public interface SettingsListener {
     public void setInstrument(String instrument);
     public String getInstrument();
     public String[] getInstrumentList();
+    public void setTimeSignature(int timeSignature);
+    public int getTimeSignature();
 }

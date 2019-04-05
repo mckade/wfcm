@@ -44,6 +44,7 @@ implements SettingsListener {
     int tempo = 100;
     String instrument = "PIANO";
     int dynamic;
+    int timeSignature = 4;
 
     // Control
     private boolean playing = false;
@@ -350,4 +351,6 @@ implements SettingsListener {
     public String[] getInstrumentList() {
         return inst.keySet().toArray(new String[inst.keySet().size()]);
     }
+    public void setTimeSignature(int timeSignature) {this.timeSignature = timeSignature;}
+    public int getTimeSignature() {return timeSignature;}
 }
