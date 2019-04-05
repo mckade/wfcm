@@ -8,23 +8,24 @@ package model;
  * Returns the read data to be processed.
  */
 
-import jm.midi.MidiParser;
-import jm.midi.MidiUtil;
-import jm.midi.SMF;
-import jm.midi.Track;
-import jm.midi.event.*;
-import jm.music.data.*;
-import jm.music.tools.ChordAnalysis;
-import jm.music.tools.PhraseAnalysis;
-import jm.util.Read;
+import static java.lang.Math.sqrt;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import static java.lang.Math.sqrt;
+import jm.midi.MidiParser;
+import jm.midi.SMF;
+import jm.midi.Track;
+import jm.midi.event.Event;
+import jm.midi.event.NoteOff;
+import jm.midi.event.NoteOn;
+import jm.music.data.Note;
+import jm.music.data.Score;
+import jm.util.Read;
 
 public class MidiReader {
 

@@ -39,7 +39,7 @@ public class VisualizerGraphics extends JComponent {
     
     // Control
     private boolean measure = true; // Whether or not to draw the measures
-    private boolean beat = false;   // Whether or not to draw the beats.
+    private boolean beat = true;    // Whether or not to draw the beats.
     
     // Listener to send events to
     private UpdateListener listener;
@@ -90,7 +90,7 @@ public class VisualizerGraphics extends JComponent {
     }
     
     // Sets the scale of the visualizer.
-    // Ranges from 10% to 100% (.1-1)
+    // Ranges from 10% to 200% (.1-2)
     public void setScale(double percentage) {
         if (percentage >= .1 && percentage <= 1) {
             scale = percentage;
@@ -108,34 +108,35 @@ public class VisualizerGraphics extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
         int x, y, w, h, i;
         
-        // Absolute Position
+        // Drawing Background
         x = 0;
         y = 0;
-        
-        // Drawing Background
         g2.setColor(MainWindow.PANEL_BACKGROUND);
         g2.fillRect(x, y, getWidth(), getHeight());
         
         // Drawing row grid lines.
-        
+        g2.setColor(MainWindow.DIVIDER.darker());
         for (i = 0; i < 88; i++) {
-            
+            g2.drawLine(x, y-1, getWidth(), y-1);
+            y += rowHeight + 1;
         }
         
         // Drawing measure and beat grid lines if enabled.
         if (measure || beat) {
-            for (i = rowWidth; i < getWidth()+rowWidth; i += rowWidth) {
+            y = 0;
+            g2.setColor(MainWindow.DIVIDER.darker());
+            for (i = rowWidth; i < getWidth(); i += rowWidth) {
                 x += rowWidth*2;
                 if (measure && i % (rowWidth*timeSignature) == 0) {
                     // Measure
                     g2.setColor(MainWindow.DIVIDER.brighter());
                     g2.drawLine(x, y, x, getHeight());
-                    x+=1;
+                    x += 1;
                     g2.drawLine(x, y, x, getHeight());
-                }
-                else if (!beat) {
-                    // Beat
                     g2.setColor(MainWindow.DIVIDER.darker());
+                }
+                else if (beat) {
+                    // Beat
                     g2.drawLine(x, y, x, getHeight());
                 }
                 x = i;
@@ -158,24 +159,22 @@ public class VisualizerGraphics extends JComponent {
             }
         }
         
-        // Relative Position
-        x = -getX();
-        y = 0;
-        
-        // Drawing Table note headers
-        // Ensures the note headers are always showing.
-        for (i = 0; i < 88; i++) {
-            g2.setColor(MainWindow.COMPONENT_BACKGROUND);
-            g2.fillRect(x, y, rowWidth, rowHeight);
-            g2.drawLine(x+rowWidth, y-1, x + getWidth(), y-1);
-            g2.setColor(MainWindow.COMPONENT_BORDER_INNER);
-            g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
-            y += rowHeight + 1;
-        }
-        
         // Drawing play line.
         y = 0;
         g2.setColor(MainWindow.BORDER_CLICKED);
         g2.drawLine(playLine+rowWidth, y, playLine+rowWidth, getHeight());
+        
+        // Drawing Table row headers
+        // Ensures the row headers are always showing.
+        x = -getX();
+        for (i = 0; i < 88; i++) {
+            g2.setColor(MainWindow.COMPONENT_BACKGROUND);   // Header Block
+            g2.fillRect(x, y, rowWidth, rowHeight);
+            g2.setColor(MainWindow.PANEL_BACKGROUND);       // Header Separator
+            g2.drawLine(x, y-1, x+rowWidth-1, y-1);
+            g2.setColor(MainWindow.COMPONENT_BORDER_INNER); // Header Text
+            g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
+            y += rowHeight + 1;
+        }
     }
 }
