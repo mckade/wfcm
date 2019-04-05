@@ -19,6 +19,9 @@ import jm.music.tools.PhraseAnalysis;
 import jm.util.Read;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import static java.lang.Math.sqrt;
@@ -50,6 +53,47 @@ public class MidiReader {
         }
 
         public Vector<double[]> getChords() { return this.chords; }
+
+        // Adding up total durations of all Notes in piece
+        public double[] getTotalDurations() {
+            double[] durations = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            Map<Integer, List<double[]>> organizedChords = new HashMap<Integer, List<double[]>>();
+
+            // Place chords into MultiMap so it's easier to sum each pitch
+            for (double[] chord : this.chords) {
+                if (chord.length < 3) {
+                    putMultiMap(organizedChords, (int)chord[0] % 12, chord);
+                }
+            }
+
+            // Insert placeholders for pitch classes absent in the piece
+            for (int i = 0; i < 12; ++i) {
+                List<double[]> placeholder = new ArrayList<>();
+                organizedChords.putIfAbsent(i, placeholder);
+            }
+
+            // Sum the total duration of each pitch class
+            for (int i = 0; i < 12; ++i) {
+                List<double[]> pitchClass = organizedChords.get(i);
+                for (double[] chord : pitchClass) {
+                    durations[i] += chord[1];
+                }
+            }
+
+            return durations;
+        }
+
+        // Function based off of this implementation of a MultiMap at:
+        // https://www.leveluplunch.com/java/examples/guava-multimap-example/
+        public void putMultiMap(Map<Integer, List<double[]>> orgChords, int key, double[] chord) {
+            List<double[]> chordList = orgChords.get(key);
+            if(chordList == null) {
+                chordList = new ArrayList<>();
+                orgChords.put(key, chordList);
+            }
+            chordList.add(chord);
+            orgChords.put(key, chordList);
+        }
     }
 
     // Given a filename it will attempt to read a midi file.
@@ -67,6 +111,14 @@ public class MidiReader {
         Read.midi(from_midi, filename/*.getCanonicalPath()*/);
         tempo = from_midi.getTempo();
         midiScore = from_midi;
+
+        for(Note n : from_midi.getPart(0).getPhrase(0).getNoteArray())
+        {
+             System.out.println("Note: " + n.getPitch());
+            // SMF does not seem to like negative values
+            if(n.getPitch() < 0)
+                n.setPitch(0);
+        }
 
         if (from_midi.size() != 0) {
 
@@ -87,6 +139,12 @@ public class MidiReader {
             // Loop through Tracks &
             // Get Event data
             for (Vector<Event> vec : events) { parseEvents(vec, resolution); }
+
+            // Testing pitch class duration summation
+            double[] chordDurations = midiData.getTotalDurations();
+            for (double total : chordDurations) {
+                System.out.println(total);
+            }
         }
     }
 
@@ -101,9 +159,9 @@ public class MidiReader {
     public void parseEvents(Vector<Event> vec, int ppqn) {
 
         // Needed for note tracking
-        Note note;
         int onCount = 0;
         boolean offsExpected = false;
+        boolean addRest = true;
 
         // Needed for chord tracking
         Vector<Double> pitches = new Vector<>();
@@ -115,23 +173,48 @@ public class MidiReader {
             // We're mostly interested in the NoteOn/NoteOff events for chords.
             switch (eventID) {
                 case 18: // KeySig event
-
+                    /*
                     KeySig keySig = (KeySig) ev;
-                    //System.out.println("KeySig event:");
-                    //System.out.println("Key Signature: " + keySig.getKeySig()); // int -7 - 7. -7 means 7 flats. 7 means sharps
-                    //System.out.println("Key Quality: " + keySig.getKeyQuality()); // 0 for Major, 1 for minor
-                    //System.out.println("Time?: " + keySig.getTime());
+                    System.out.println("KeySig event:");
+                    System.out.println("Key Signature: " + keySig.getKeySig()); // int -7 - 7. -7 means 7 flats. 7 means sharps
+                    System.out.println("Key Quality: " + keySig.getKeyQuality()); // 0 for Major, 1 for minor
+                    System.out.println("Time?: " + keySig.getTime());
+                    */
                     break;
                 case 17: // TimeSig event
 
+                    /*
                     TimeSig timeSig = (TimeSig) ev;
-                    //System.out.println("TimeSig event:");
-                    //System.out.println("1/32 per beat: " + timeSig.getThirtySecondNotesPerBeat());
-                    //System.out.println("Metronome pulse: " + timeSig.getMetronomePulse());
+                    System.out.println("TimeSig event:");
+                    System.out.println("1/32 per beat: " + timeSig.getThirtySecondNotesPerBeat());
+                    System.out.println("Metronome pulse: " + timeSig.getMetronomePulse());
+                    System.out.println("Time Signaure: " + timeSig.getNumerator() + "/" + timeSig.getDenominator());
+                    */
+                    break;
+                case 16: // Tempo Event
+
+                    /*
+                    TempoEvent temp = (TempoEvent) ev;
+                    System.out.println("Tempo: " + temp.getTempo());
+                    tempo = temp.getTempo();
+                    */
+
                     break;
                 case 4: // NoteOff event
 
                     NoteOff off = (NoteOff) ev;
+
+                    if(off.getPitch() == 0)
+                    {
+                        // this is a rest
+                        if(!addRest)
+                        {
+                            System.out.println("Rest");
+                            midiData.chords.add(new double[]{-2147483648, 1.0 * off.getTime() / ppqn});
+                        }
+                        addRest = !addRest;
+                    }
+
                     // Disregard extra NoteOff events from chords
                     if(pitches.size() == 0)
                     {
@@ -170,12 +253,24 @@ public class MidiReader {
 
                         //System.out.println("\nNoteOn event:");
                         //on.print();
-
+                        //System.out.print("On: " + on.getPitch());
                         // Add pitch value to vector
                         pitches.add((double)Short.toUnsignedInt(on.getPitch()));
                         if(!offsExpected)
                             onCount++;
                     } else {
+                        //on.print();
+                        if(on.getPitch() == 0)
+                        {
+                            // this is a rest
+                            if(!addRest)
+                            {
+                                System.out.println("Rest: " + 1.0 * on.getTime() / ppqn);
+                                midiData.chords.add(new double[]{-2147483648, 1.0 * on.getTime() / ppqn});
+                            }
+                            addRest = !addRest;
+                            break;
+                        }
                         // Disregard extra NoteOff events from chords
                         if(pitches.size() == 0)
                         {
@@ -193,11 +288,8 @@ public class MidiReader {
                             break;
                         }
 
-                        //System.out.println("\nNoteOff event:");
-                        //on.print();
-
+                        System.out.println("Note: " + 1.0 * on.getTime() / ppqn);
                         pitches.add(1.0 * on.getTime() / ppqn);
-
                         midiData.chords.add(vectorToPitchArr(pitches));
 
                         // Clear pitch vector for next chord.
@@ -253,8 +345,8 @@ public class MidiReader {
      *     found at this URL: http://rnhart.net/articles/key-finding
      * @param pitchDurations - an array containing the the
      *                       total durations of each note in the piece.
-     * @return An int 1 - 24 corresponding to a specific key.
-     *          e.g. 1 -> CMaj, 2 -> Cmin, 3 -> C#Maj, etc.
+     * @return An int 1 - 12 corresponding to a specific key.
+     *          e.g. 1 -> CMaj, 2 -> GMaj, 3 -> DMaj, etc.
      */
 
     public int krumhanslSchmuckler(double[] pitchDurations) {
@@ -302,7 +394,7 @@ public class MidiReader {
         double durDiffSumSq = 0;
 
         //
-        for (int i = 0; i < 12; ++i) {
+        for (int i = 0; i < 24; ++i) {
             profileDiffSumSq = 0;
             durDiffSumSq = 0;
 
@@ -415,5 +507,9 @@ public class MidiReader {
             default: // Shouldn't get here
                 return 0;
         }
+    }
+
+    public int EstimateKeySignature() {
+        return krumhanslSchmuckler(midiData.getTotalDurations());
     }
 }

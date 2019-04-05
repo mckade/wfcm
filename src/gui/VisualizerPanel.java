@@ -74,6 +74,10 @@ implements UpdateListener {
         // if it has, move scroll to the right bounds
         if(curLeftEdge > rightBounds)
             hbar.setValue((int)rightBounds);
+
+        // if the left edge is too far to the left, scroll left
+        if(curLeftEdge < hbar.getValue())
+            hbar.setValue((int)curLeftEdge);
     }
 
     public void updateEvent(UpdateEvent e) {

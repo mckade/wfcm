@@ -60,8 +60,9 @@ public class RightPanel extends JPanel {
         settingsPanel.updateSettings();
     }
 
-    // Updates the scroll position of the visualizer.
-    void updateScroll(double percentage) {
+    // Scrolls the window to keep up with the playing music
+    void updateScroll(double percentage)
+    {
         visualizerPanel.setScroll(percentage);
     }
 }
