@@ -106,8 +106,6 @@ class MarkovTable {
         }
 
 
-        chordTable = new double[chord.size()][chord.size()];
-        chordLengthTable = new double[chordLength.size()][chordLength.size()];
         sample = rects.toArray(new Rectangle[0]);
 
         generateTable(chordPitches);
@@ -131,8 +129,14 @@ class MarkovTable {
         lengthMods.add(new ChordDuration(1, chords, chordLength.size()));
         int signature = midiReader.estimateKeySignature();
         for (Modifier ct : pitchMods) {
-            keySigMods.add(new KeySignatureMod(signature, ct.getProbabilities(), 0.75));
+            keySigMods.add(new KeySignatureMod(signature, ct.getProbabilities(), 0.5));
         }
+
+        double[][] keySigModProbabilities = keySigMods.get(0).getProbabilities();
+
+        chordTable = new double[keySigModProbabilities.length][keySigModProbabilities.length];
+        chordLengthTable = new double[chordLength.size()][chordLength.size()];
+
 
         // TODO add modifier weighting, i.e, make some modifiers more
         // important than others with regard to final probability table
@@ -141,11 +145,14 @@ class MarkovTable {
         for(int i = 0; i < pitchMods.size(); i++)
         {
             double[][] modProbabilities = pitchMods.get(i).getProbabilities();
-            for(int x = 0; x < chordPitches.size(); x++)
+            for(int x = 0; x < keySigModProbabilities.length; x++)
             {
-                for(int y = 0; y < chordPitches.size(); y++)
+                for(int y = 0; y < keySigModProbabilities.length; y++)
                 {
-                    chordTable[x][y] = modProbabilities[x][y] / pitchMods.size();
+                    if (x < chordPitches.size() && y < chordPitches.size())
+                        chordTable[x][y] = modProbabilities[x][y] / pitchMods.size();
+                    else
+                        chordTable[x][y] = keySigModProbabilities[x][y] / pitchMods.size();
                 }
             }
         }
