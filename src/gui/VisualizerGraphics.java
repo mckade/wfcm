@@ -106,7 +106,7 @@ public class VisualizerGraphics extends JComponent {
     // Table and notes
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        int x, y, w, h;
+        int x, y, w, h, i;
         
         // Absolute Position
         x = 0;
@@ -116,9 +116,15 @@ public class VisualizerGraphics extends JComponent {
         g2.setColor(MainWindow.PANEL_BACKGROUND);
         g2.fillRect(x, y, getWidth(), getHeight());
         
+        // Drawing row grid lines.
+        
+        for (i = 0; i < 88; i++) {
+            
+        }
+        
         // Drawing measure and beat grid lines if enabled.
         if (measure || beat) {
-            for (int i = rowWidth; i < getWidth()+rowWidth; i += rowWidth) {
+            for (i = rowWidth; i < getWidth()+rowWidth; i += rowWidth) {
                 x += rowWidth*2;
                 if (measure && i % (rowWidth*timeSignature) == 0) {
                     // Measure
@@ -158,7 +164,7 @@ public class VisualizerGraphics extends JComponent {
         
         // Drawing Table note headers
         // Ensures the note headers are always showing.
-        for (int i = 0; i < 88; i++) {
+        for (i = 0; i < 88; i++) {
             g2.setColor(MainWindow.COMPONENT_BACKGROUND);
             g2.fillRect(x, y, rowWidth, rowHeight);
             g2.drawLine(x+rowWidth, y-1, x + getWidth(), y-1);
