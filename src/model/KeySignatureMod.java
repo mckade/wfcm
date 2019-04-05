@@ -25,7 +25,7 @@ public class KeySignatureMod extends Modifier {
 
         // Update chord pitch map in MarkovTable
         // and add any fresh pitches to freshPitches
-        UpdateChordMap();
+        UpdatePitchMap();
 
         // set cardinality to the new number of unique sample notes
         cardinality = pitchProbs.length + freshPitches.size();
@@ -45,7 +45,7 @@ public class KeySignatureMod extends Modifier {
      *
      */
     // TODO: Modify so the pitch octave is random
-    private void UpdateChordMap() {
+    private void UpdatePitchMap() {
 
         int[] C = new int[] {JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.F4, JMC.G4};
         int[] G = new int[] {JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.FS4, JMC.G4};
@@ -105,7 +105,7 @@ public class KeySignatureMod extends Modifier {
         }
 
         for (int pitch : keySig) {
-            modifyPitchMap(new int[] {pitch});
+            modify(new int[] {pitch});
         }
     }
 
@@ -116,7 +116,7 @@ public class KeySignatureMod extends Modifier {
      *
      * @param pitch - pitch to attempt to add
      */
-    public void modifyPitchMap(int[] pitch) {
+    public void modify(int[] pitch) {
         if (MarkovTable.chord.putIfAbsent(pitch, MarkovTable.chordKey) == null) {
             MarkovTable.chordKey++;
             freshPitches.add(pitch);
