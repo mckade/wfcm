@@ -265,6 +265,7 @@ class MidiReader {
 
             start = d.x;
             chord.add(d.y);
+            System.out.println("Added: " + d.y +" at time " + d.x);
         }
 
         double[] c = new double[chord.size() + 1];
