@@ -27,6 +27,9 @@ implements UpdateListener {
     private JScrollBar hbar;
     private double scrollLimit = 0.8;
     
+    // Control
+    private boolean follow = true;
+    
     // Constructor
     public VisualizerPanel() {
         // Setup
@@ -40,20 +43,26 @@ implements UpdateListener {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(8);
+        hbar = scrollPane.getHorizontalScrollBar();
         
         // Adding components
         add(scrollPane, BorderLayout.CENTER);
-
-        hbar = scrollPane.getHorizontalScrollBar();
     }
     
+    // Sets the note that the visualizer will draw.
     public void setNotes(Rectangle[] notes) {
         visualizer.setNotes(notes);
     }
+    
+    // Updates the position of the playLine.
+    public void setPlayLine(double percentage) {
+        visualizer.setPlayLine(percentage); 
+    }
 
-    public void setScroll(double percentage)
-    {
-        if(hbar.getValueIsAdjusting())
+    // Updates the scroll position of the visualizer.
+    public void setScroll(double percentage) {
+        setPlayLine(percentage);
+        if(!follow || hbar.getValueIsAdjusting())
             return;
 
         double windowWidth = scrollPane.getViewportBorderBounds().width;
