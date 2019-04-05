@@ -38,6 +38,7 @@ public class SettingsPanel extends JPanel
 implements ChangeListener, ActionListener {
     
     // Components
+    // Settings
     JLabel settings;
     JLabel tempo_label;
     JSpinner tempo_spinner;
@@ -46,6 +47,8 @@ implements ChangeListener, ActionListener {
     JSpinner noteCount_spinner;
     JLabel instrument_label;
     JComboBox<String> instrument_comboBox;
+    
+    // Preferences
     
     // Control
     Object changed;

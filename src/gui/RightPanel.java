@@ -51,13 +51,17 @@ public class RightPanel extends JPanel {
     }
     
     // Passes note information to the visualizer.
-    public void setNotes(Rectangle[] notes) {visualizerPanel.setNotes(notes);}
+    public void setNotes(Rectangle[] notes) {
+        visualizerPanel.setNotes(notes);
+    }
 
     // Updates the gui setting values.
-    void updateSettings() {settingsPanel.updateSettings();}
+    void updateSettings() {
+        settingsPanel.updateSettings();
+    }
 
-    void updateScroll(double percentage)
-    {
+    // Updates the scroll position of the visualizer.
+    void updateScroll(double percentage) {
         visualizerPanel.setScroll(percentage);
     }
 }

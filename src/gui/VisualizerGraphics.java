@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
@@ -33,9 +34,12 @@ public class VisualizerGraphics extends JComponent {
     // Table
     private int rowHeight = 15;
     private Dimension dim;
+    private int playLine = 0;
     
     // Listener to send events to
     private UpdateListener listener;
+    
+    BufferedImage buffer;
     
     // Constructor
     public VisualizerGraphics(UpdateListener listener) {
@@ -59,6 +63,7 @@ public class VisualizerGraphics extends JComponent {
     // Setting the notes to draw on the table.
     public void setNotes(Rectangle[] notes) {
         this.notes = notes;
+        buffer = null;  // Removing current buffer, since screen size changes.
         
         // Getting the x dimension of the table.
         // This is so we are able to scroll through all the notes.
@@ -74,11 +79,24 @@ public class VisualizerGraphics extends JComponent {
         listener.updateEvent(new UpdateEvent(this, UpdateType.scrollBar));
         repaint();
     }
+    
+    // Sets the position of the playLine.
+    // @percentage, the percentage of the music that has been played.
+    public void setPlayLine(double percentage) {
+        playLine = (int) (percentage * dim.width);
+        repaint();
+    }
 
     // Painting the component
     // Table and notes
     public void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+        
+        // Creating buffer if it hasn't been created.
+        if (buffer == null) {
+            buffer = new BufferedImage(getWidth()+dim.width, getHeight(), BufferedImage.TYPE_INT_RGB);
+        }
+        
+        Graphics2D g2 = (Graphics2D) buffer.getGraphics();
         int x, y, w, h;
         
         // Absolute Position
@@ -135,5 +153,12 @@ public class VisualizerGraphics extends JComponent {
             g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
             y += rowHeight + 1;
         }
+        
+        // Drawing play line.
+        y = 0;
+        g2.setColor(MainWindow.BORDER_CLICKED);
+        g2.drawLine(playLine+EIGHTH, y, playLine+EIGHTH, getHeight());
+        
+        g.drawImage(buffer, 0, 0, null);
     }
 }
