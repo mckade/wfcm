@@ -176,7 +176,7 @@ class MidiReader {
                     dur = (first + 1) * quantize;
 
                 first = (int)stime;
-                if(stime == 0)
+                if(first == 0)
                     stime = 0;
                 else if(stime - first < stime - (first + 1))
                     stime = first * quantize;
