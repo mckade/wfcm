@@ -22,20 +22,30 @@ public class MusicState implements MetaEventListener
     // Listener to send events to
     private UpdateListener listener;
 
-    // playback progress
-    private double playPercentage = 0.0;
-
     MusicState(UpdateListener listener) {
         this.listener = listener;
     }
 
     // Play the MIDI file located at OUTPUT
-    void play() {
+    void play(boolean updateFile, double playPercentage) {
         if(audio != null)
+        {
+            if(updateFile)
+            {
+                refresh(playPercentage);
+            }
+            unpause();
             return;
+        }
 
         audio = new AudioFilePlayThread(this, playPercentage);
         audio.start();
+    }
+
+    void refresh(double playPercentage)
+    {
+        if(audio != null)
+            audio.refreshFile(playPercentage);
     }
 
     // Stop the midi player
@@ -56,6 +66,9 @@ public class MusicState implements MetaEventListener
     // Notified when the thread currently playing the midi is finished
     private void songFinished()
     {
+        audio.pause();
+        audio.skip(0);
+        scroll(0);
         listener.updateEvent(new UpdateEvent(this, UpdateType.music));
     }
 
@@ -77,7 +90,6 @@ public class MusicState implements MetaEventListener
 
     void skip(double percentage)
     {
-
         if(audio !=  null)
             audio.skip(percentage);
     }
@@ -99,7 +111,6 @@ public class MusicState implements MetaEventListener
         {
             // just received a stop message
             songFinished();
-            audio.stopMusic();
         }
     }
 }

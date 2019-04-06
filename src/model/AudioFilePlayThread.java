@@ -5,8 +5,6 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,8 +44,8 @@ class AudioFilePlayThread extends Thread {
         // Make the MusicState object listen for Meta Events, i.e., "stopped playing"
         sequencer.addMetaEventListener(ms);
         sequencer.start();
-        skip(playPercentage);
         keepPlaybackProgress();
+        skip(playPercentage);
     }
 
     // Make the sequencer stop playing
@@ -113,5 +111,22 @@ class AudioFilePlayThread extends Thread {
 
         timer = new Timer();
         timer.scheduleAtFixedRate(task, 0, delay);
+    }
+
+    void refreshFile(double playPercentage)
+    {
+        // reload the out.MID file
+        try {
+            sequencer.close();
+            is.close();
+
+            sequencer.open();
+            is = new BufferedInputStream(new FileInputStream(new File(MusicState.OUTPUT)));
+            sequencer.setSequence(is);
+        } catch (IOException | InvalidMidiDataException | MidiUnavailableException e) {
+            e.printStackTrace();
+        }
+        // reset the play position
+        skip(playPercentage);
     }
 }

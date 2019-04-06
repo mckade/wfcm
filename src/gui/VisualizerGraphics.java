@@ -75,12 +75,21 @@ public class VisualizerGraphics extends JComponent {
             // Temp, moves playLine (aka changes playtime)
             public void mousePressed(MouseEvent e) {
                 double point = e.getX()-rowWidth;
-                if (point >= noteArea)          // Clicked pass playable notes
+                if (point >= noteArea)   // Clicked pass playable notes
+                {
                     slistener.setPlayTime(1);
+                    slistener.onClick();
+                }
                 else if (point <= 0)            // Clicked before playable notes
+                {
                     slistener.setPlayTime(0);
+                    slistener.onClick();
+                }
                 else                            // Clicked within playable notes
+                {
                     slistener.setPlayTime(point/noteArea);
+                    slistener.onClick();
+                }
                 updatePlayLine();
             }
         });
@@ -188,5 +197,9 @@ public class VisualizerGraphics extends JComponent {
             g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
             y += rowHeight + 1;
         }
+    }
+
+    public int getNoteArea() {
+        return noteArea;
     }
 }

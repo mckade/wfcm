@@ -75,8 +75,7 @@ implements UpdateListener {
         double windowWidth = scrollPane.getViewport().getWidth();
 
         // represents the updated position of the currently playing note
-        // TODO: Fix this, don't go off of the horizontal bar, since it has some "extra" space at the end.
-        double curLeftEdge = listener.getPlayTime() * hbar.getMaximum();
+        double curLeftEdge = listener.getPlayTime() * visualizer.getNoteArea();
         double rightBounds = scrollLimit * windowWidth + hbar.getValue();
         // check if the left edge has passed the scroll limit point of the window
         // if it has, move scroll to the right bounds
@@ -86,6 +85,11 @@ implements UpdateListener {
         // if the left edge is too far to the left, scroll left
         if(curLeftEdge < hbar.getValue())
             hbar.setValue((int)curLeftEdge);
+    }
+
+    public void scrollToEnd()
+    {
+        hbar.setValue(hbar.getMaximum());
     }
 
     // Update event to update the scrollPane

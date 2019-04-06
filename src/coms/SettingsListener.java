@@ -13,30 +13,31 @@ import java.awt.Rectangle;
 public interface SettingsListener {
     
     // Visuals/MIDI
-    public Rectangle[] getNotes();
-    public void setPlayTime(double playTime);
-    public double getPlayTime();
+    Rectangle[] getNotes();
+    void setPlayTime(double playTime);
+    double getPlayTime();
+    void onClick();
     
     // Settings
     // Note count
-    public void setNoteCount(int noteCount);
-    public int getNoteCount();
+    void setNoteCount(int noteCount);
+    int getNoteCount();
     
     // Tempo
-    public void setTempo(int tempo);
-    public int getTempo();
+    void setTempo(int tempo);
+    int getTempo();
     
     // Instrument
-    public void setInstrument(String instrument);
-    public String getInstrument();
-    public String[] getInstrumentList();
+    void setInstrument(String instrument);
+    String getInstrument();
+    String[] getInstrumentList();
     
     // Signatures
-    public void setTimeSignature(int timeSignature);
-    public int getTimeSignature();
+    void setTimeSignature(int timeSignature);
+    int getTimeSignature();
     
     // Preferences
     // Follow
-    public void setFollow(boolean follow);
-    public boolean getFollow();
+    void setFollow(boolean follow);
+    boolean getFollow();
 }

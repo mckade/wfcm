@@ -45,6 +45,7 @@ implements SettingsListener {
     private String instrument = "PIANO";
     private int dynamic;
     private int timeSignature = 4;
+    private boolean settingsChanged = false;
     
     // Preferences
     private boolean follow = true;
@@ -208,6 +209,8 @@ implements SettingsListener {
     
     // Imports a MIDI sample to use in music generation
     public boolean importSample(File file) {
+        ms.stop();
+
         boolean test = mTable.loadMidiFile(file.getAbsolutePath());
         tempo = (int)mTable.getTempo();
         PTable[] pt = new PTable[2];
@@ -223,7 +226,11 @@ implements SettingsListener {
         }
 
         s = mTable.getScore();
+        noteData = mTable.getSample();
         dynamic = s.getPart(0).getPhrase(0).getNote(0).getDynamic();
+
+        setPlayTime(0);
+        ms.skip(0);
 
         return test;
     }
@@ -242,7 +249,10 @@ implements SettingsListener {
     // Generates new music using the given sample.
     public boolean generateMusic()
     {
-        ms.unpause();
+        ms.pause();
+        setPlayTime(0);
+        ms.skip(0);
+        ms.refresh(playTime);
 
         // use wfc and mTable
         s = new Score("Procedural", tempo);
@@ -294,12 +304,15 @@ implements SettingsListener {
     // Plays the song on the visualizer.
     public void playSong() {
         playing = true;
-        ms.play();
+        if(settingsChanged)
+            updateMidi();
+        ms.play(settingsChanged, playTime);
+        settingsChanged = false;
     }
     // Pauses the song on the visualizer.
     public void pauseSong() {
         playing = false;
-        ms.stop();
+        ms.pause();
     }
     
     // Checks whether or not the song is playing.
@@ -365,32 +378,33 @@ implements SettingsListener {
     ///////////////////////////
     
     // Visuals/MIDI
-    public Rectangle[] getNotes() {return noteData;}
-    public void setPlayTime(double playTime) {this.playTime = playTime;}
-    public double getPlayTime() {return playTime;}
+    public Rectangle[] getNotes() { return noteData; }
+    public void setPlayTime(double playTime) { this.playTime = playTime; }
+    public void onClick() { ms.skip(playTime); }
+    public double getPlayTime() { return playTime; }
     
     // Settings
     // Note Count
-    public void setNoteCount(int noteCount) {this.noteLength = noteCount;}
-    public int getNoteCount() {return noteLength;}
+    public void setNoteCount(int noteCount) { this.noteLength = noteCount; }
+    public int getNoteCount() { return noteLength; }
     
     // Tempo
-    public void setTempo(int tempo) {this.tempo = tempo; updateMidi();}
-    public int getTempo() {return tempo;}
+    public void setTempo(int tempo) { this.tempo = tempo; settingsChanged = true; }
+    public int getTempo() { return tempo;}
     
     // Instrument
-    public void setInstrument(String instrument) {this.instrument = instrument; updateMidi();}
-    public String getInstrument() {return instrument;}
+    public void setInstrument(String instrument) { this.instrument = instrument; settingsChanged = true; }
+    public String getInstrument() { return instrument; }
     public String[] getInstrumentList() {
         return inst.keySet().toArray(new String[inst.keySet().size()]);
     }
     
     // Signatures
-    public void setTimeSignature(int timeSignature) {this.timeSignature = timeSignature;}
-    public int getTimeSignature() {return timeSignature;}
+    public void setTimeSignature(int timeSignature) { this.timeSignature = timeSignature; }
+    public int getTimeSignature() { return timeSignature; }
     
     // Preferences
     // Follow
-    public void setFollow(boolean follow) {this.follow = follow;}
-    public boolean getFollow() {return follow;}
+    public void setFollow(boolean follow) { this.follow = follow; }
+    public boolean getFollow() { return follow; }
 }

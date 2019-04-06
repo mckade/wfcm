@@ -141,9 +141,11 @@ implements UpdateListener, ButtonListener {
         case playTime:
             mgen.setPlayTime(e.getPlayTime());
             rightPanel.updatePlayLine();
+            break;
         case music:
-            //mgen.pauseSong();
-            //leftPanel.addLog("Music Finished Playing.");
+            mgen.pauseSong();
+            leftPanel.addLog("Music Finished Playing.");
+            break;
         default:
         }
     }
@@ -261,15 +263,21 @@ implements UpdateListener, ButtonListener {
         case MusicControlPanel.PLAY:
             if (mgen.isPlaying()) break;    // Music already playing
             mgen.playSong();
-            leftPanel.addLog("Playing Muisc...");
+            leftPanel.addLog("Playing Music...");
             break;
         // Skip Left
         case MusicControlPanel.SKIPLEFT:
             mgen.setPlayTime(0);
+            rightPanel.updatePlayLine();
+            mgen.onClick();
             break;
         // SkipRight
         case MusicControlPanel.SKIPRIGHT:
+            mgen.pauseSong();
             mgen.setPlayTime(1);
+            rightPanel.updatePlayLine();
+            mgen.onClick();
+            rightPanel.scrollToEnd();
             break;
         }
     }
