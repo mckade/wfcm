@@ -37,8 +37,8 @@ public class LogPanel extends JPanel {
     // Constructor
     public LogPanel() {
         // Setup
-        setBackground(MainWindow.C_PANEL_BACKGROUND);
-        setBorder(MainWindow.B_PANEL_BORDER);
+        setBackground(Visuals.C_PANEL_BACKGROUND);
+        setBorder(Visuals.B_PANEL_BORDER);
         setLayout(new BorderLayout());
         
         // Creating components

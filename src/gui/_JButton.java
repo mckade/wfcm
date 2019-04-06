@@ -25,24 +25,24 @@ implements MouseListener {
     // Border visuals
     public static final Border DEFAULT = BorderFactory.createCompoundBorder(
             BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(MainWindow.C_BORDER_OUTER, 2),
-                    BorderFactory.createLineBorder(MainWindow.C_COMPONENT_BORDER, 2)),
+                    BorderFactory.createLineBorder(Visuals.C_BORDER_OUTER, 2),
+                    BorderFactory.createLineBorder(Visuals.C_COMPONENT_BORDER, 2)),
             BorderFactory.createEmptyBorder(5, 5, 5, 5));
     public static final Border HOVERED = BorderFactory.createCompoundBorder(
             BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(MainWindow.C_BORDER_HOVERED, 2),
-                    BorderFactory.createLineBorder(MainWindow.C_COMPONENT_BORDER, 2)),
+                    BorderFactory.createLineBorder(Visuals.C_BORDER_HOVERED, 2),
+                    BorderFactory.createLineBorder(Visuals.C_COMPONENT_BORDER, 2)),
             BorderFactory.createEmptyBorder(5, 5, 5, 5));
     public static final Border CLICKED = BorderFactory.createCompoundBorder(
             BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(MainWindow.C_BORDER_HOVERED, 2),
-                    BorderFactory.createLineBorder(MainWindow.C_BORDER_CLICKED, 2)),
+                    BorderFactory.createLineBorder(Visuals.C_BORDER_HOVERED, 2),
+                    BorderFactory.createLineBorder(Visuals.C_BORDER_CLICKED, 2)),
             BorderFactory.createEmptyBorder(5, 5, 5, 5));
     
     public _JButton(String text) {
         // Setup
         super(text);
-        setBackground(MainWindow.C_COMPONENT_BACKGROUND);
+        setBackground(Visuals.C_COMPONENT_BACKGROUND);
         setForeground(Color.WHITE);
         setBorder(DEFAULT);
         setModel(new DefaultButtonModel() {
