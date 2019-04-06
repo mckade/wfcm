@@ -14,8 +14,7 @@ public class MusicControlPanel extends JPanel
 implements ActionListener {
     
     // Button ids
-    public static final String PAUSE = "pause";
-    public static final String PLAY = "play";
+    public static final String PLAY_PAUSE = "play_pause";
     public static final String SKIPLEFT = "skipleft";
     public static final String SKIPRIGHT = "skipright";
     
@@ -23,14 +22,12 @@ implements ActionListener {
     private ButtonListener listener;
     
     // Components
-    private _Button pause;
-    private _Button play;
+    private _Button play_pause;
     private _Button skipLeft;
     private _Button skipRight;
     
     // Control
     boolean playing = false;
-    boolean paused = false;
 
     public MusicControlPanel(ButtonListener listener) {
         // Setup
@@ -41,12 +38,9 @@ implements ActionListener {
         
         // Creating components
         // TODO: Change to circular buttons with images.
-        pause = new _Button("Pause");
-        pause.addActionListener(this);
-        pause.setActionCommand(PAUSE);
-        play = new _Button("Play");
-        play.addActionListener(this);
-        play.setActionCommand(PLAY);
+        play_pause = new _Button("Play|Pause");
+        play_pause.addActionListener(this);
+        play_pause.setActionCommand(PLAY_PAUSE);
         skipLeft = new _Button("Skip Left");
         skipLeft.addActionListener(this);
         skipLeft.setActionCommand(SKIPLEFT);
@@ -55,12 +49,11 @@ implements ActionListener {
         skipRight.setActionCommand(SKIPRIGHT);
         
         // Adding components
-        add(pause);
-        add(play);
+        add(play_pause);
         add(skipLeft);
         add(skipRight);
     }
-
+    
     // Sends an event to the listener that a button was clicked.
     // Passes on the button id.
     private void fireButtonClicked(Object source, String id) {

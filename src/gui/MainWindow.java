@@ -253,17 +253,16 @@ implements UpdateListener, ButtonListener {
             break;
 
         // Music Control
-        // pause
-        case MusicControlPanel.PAUSE:
-            if (!mgen.isPlaying()) break;   // Music isn't playing
-            mgen.pauseSong();
-            leftPanel.addLog("Paused Music.");
-            break;
-        // play
-        case MusicControlPanel.PLAY:
-            if (mgen.isPlaying()) break;    // Music already playing
-            mgen.playSong();
-            leftPanel.addLog("Playing Music...");
+        // Play|Pause
+        case MusicControlPanel.PLAY_PAUSE:
+            if (mgen.isPlaying()) {
+                mgen.pauseSong();
+                leftPanel.addLog("Paused Music.");
+            }
+            else {
+                mgen.playSong();
+                leftPanel.addLog("Playing Music...");
+            }
             break;
         // Skip Left
         case MusicControlPanel.SKIPLEFT:
