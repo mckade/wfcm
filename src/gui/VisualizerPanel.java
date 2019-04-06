@@ -10,7 +10,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Rectangle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -34,9 +33,6 @@ implements UpdateListener {
     // Listener to send events to
     SettingsListener listener;
     
-    // Control
-    private boolean follow = true;
-    
     // Constructor
     public VisualizerPanel(SettingsListener listener) {
         // Setup
@@ -53,36 +49,34 @@ implements UpdateListener {
         scrollPane.getHorizontalScrollBar().setUnitIncrement(8);
         hbar = scrollPane.getHorizontalScrollBar();
         
-        updateSettings();
+        // Getting default values
+        updateVisualizer();
         
         // Adding components
         add(scrollPane, BorderLayout.CENTER);
     }
     
-    public void updateSettings() {
-        visualizer.setTimeSignature(listener.getTimeSignature());
+    // Resets the scroll bar
+    // Updates visualizer graphics
+    public void updateVisualizer() {
+        visualizer.updateVisualizer();
+        hbar.setValue(0);
     }
     
-    // Sets the note that the visualizer will draw.
-    public void setNotes(Rectangle[] notes) {
-        visualizer.setNotes(notes);
-    }
-    
-    // Updates the position of the playLine.
-    public void setPlayLine(double percentage) {
-        visualizer.setPlayLine(percentage); 
-    }
-
     // Updates the scroll position of the visualizer.
-    public void setScroll(double percentage) {
-        setPlayLine(percentage);
-        if(!follow || hbar.getValueIsAdjusting())
+    public void updatePlayLine() {
+        visualizer.updatePlayLine();
+        
+        // Check whether or not the scroll follows the play line.
+        if(!listener.getFollow() || hbar.getValueIsAdjusting())
             return;
 
-        double windowWidth = scrollPane.getViewportBorderBounds().width;
+        // Getting width of viewable area
+        double windowWidth = scrollPane.getViewport().getWidth();
 
         // represents the updated position of the currently playing note
-        double curLeftEdge = percentage * hbar.getMaximum();
+        // TODO: Fix this, don't go off of the horizontal bar, since it has some "extra" space at the end.
+        double curLeftEdge = listener.getPlayTime() * hbar.getMaximum();
         double rightBounds = scrollLimit * windowWidth + hbar.getValue();
         // check if the left edge has passed the scroll limit point of the window
         // if it has, move scroll to the right bounds
@@ -94,8 +88,10 @@ implements UpdateListener {
             hbar.setValue((int)curLeftEdge);
     }
 
+    // Update event to update the scrollPane
     public void updateEvent(UpdateEvent e) {
-        scrollPane.invalidate();
-        scrollPane.validate();
+        // TODO fix this
+//        scrollPane.invalidate();
+//        scrollPane.validate();
     }
 }

@@ -11,6 +11,7 @@ package coms;
 public enum UpdateType {
     visible,
     invisible,
+    playTime,
     scrollBar,
     music
 }

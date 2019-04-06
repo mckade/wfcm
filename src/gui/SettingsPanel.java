@@ -12,14 +12,11 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Arrays;
 
 import javax.swing.JComboBox;
@@ -37,24 +34,19 @@ import coms.SettingsListener;
 public class SettingsPanel extends JPanel
 implements ChangeListener, ActionListener {
     
+    // Listener to send events to
+    private SettingsListener listener;
+    
     // Components
     // Settings
-    JLabel settings;
-    JLabel tempo_label;
-    JSpinner tempo_spinner;
-    JSlider tempo_slider;
-    JLabel noteCount_label;
-    JSpinner noteCount_spinner;
-    JLabel instrument_label;
-    JComboBox<String> instrument_comboBox;
-    
-    // Preferences
-    
-    // Control
-    Object changed;
-    
-    // Listener to send events to
-    SettingsListener listener;
+    private JLabel settings;
+    private JLabel tempo_label;
+    private JSpinner tempo_spinner;
+    private JSlider tempo_slider;
+    private JLabel noteCount_label;
+    private JSpinner noteCount_spinner;
+    private JLabel instrument_label;
+    private JComboBox<String> instrument_comboBox;
     
     // Constructor
     public SettingsPanel(SettingsListener listener) {
@@ -67,12 +59,12 @@ implements ChangeListener, ActionListener {
         // Creating components
         // Settings Label
         settings = new JLabel("Settings and Modifiers", JLabel.CENTER);
-        settings.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
+        settings.setFont(MainWindow.HEADING1);
         settings.setForeground(Color.WHITE);
         
         // Note count
         noteCount_label = new JLabel("Note Count:");
-        noteCount_label.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
+        noteCount_label.setFont(MainWindow.HEADING2);
         noteCount_label.setForeground(Color.WHITE);
         noteCount_spinner = new JSpinner(new SpinnerNumberModel(listener.getNoteCount(), 2, 99999, 1));
 //        noteCount_spinner.getEditor().getComponent(0).setBackground(MainWindow.COMPONENT_BACKGROUND);
@@ -80,34 +72,27 @@ implements ChangeListener, ActionListener {
 //        noteCount_spinner.setBorder(BorderFactory.createCompoundBorder(
 //                BorderFactory.createLineBorder(MainWindow.BORDER_OUTER, 2),
 //                BorderFactory.createLineBorder(MainWindow.BORDER_INNER, 2)));
-//        
         noteCount_spinner.addChangeListener(this);
         
         // Tempo
         tempo_label = new JLabel("Tempo");
-        tempo_label.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
+        tempo_label.setFont(MainWindow.HEADING2);
         tempo_label.setForeground(Color.WHITE);
         tempo_spinner = new JSpinner(new SpinnerNumberModel(100, 30, 230, 1));
         tempo_spinner.addChangeListener(this);
         tempo_slider = new JSlider(30, 230, 100);
         tempo_slider.addChangeListener(this);
-        tempo_slider.addMouseListener(new MouseAdapter() {
-            public void mouseReleased(MouseEvent e) {
-                if (listener.getTempo() != tempo_slider.getValue())
-                    listener.setTempo(tempo_slider.getValue());
-            }
-        });
         
         // Instrument
         instrument_label = new JLabel("Instrument:");
-        instrument_label.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
+        instrument_label.setFont(MainWindow.HEADING2);
         instrument_label.setForeground(Color.WHITE);
         String[] list = listener.getInstrumentList();
         Arrays.sort(list);
         instrument_comboBox = new JComboBox<String>(list);
         instrument_comboBox.addActionListener(this);
         
-        // Getting default setting values
+        // Getting default setting values (From mgen)
         updateSettings();
         
         // Adding components
@@ -173,7 +158,7 @@ implements ChangeListener, ActionListener {
     public void updateSettings() {
         noteCount_spinner.setValue(listener.getNoteCount());
         tempo_slider.setValue(listener.getTempo());
-        instrument_comboBox.setSelectedItem((String)listener.getInstrument());
+        instrument_comboBox.setSelectedItem(listener.getInstrument());
     }
     
     // Changes the settings and pushes them to music generator.
@@ -184,13 +169,11 @@ implements ChangeListener, ActionListener {
             listener.setNoteCount((int)noteCount_spinner.getValue());
         // Tempo
         else if ((int)tempo_spinner.getValue() != tempo_slider.getValue()) {
-            if (e.getSource() == tempo_spinner) {
+            if (e.getSource() == tempo_spinner)
                 tempo_slider.setValue((int)tempo_spinner.getValue());
-                listener.setTempo(tempo_slider.getValue());
-            }
-            else if (e.getSource() == tempo_slider) {
+            else if (e.getSource() == tempo_slider)
                 tempo_spinner.setValue(tempo_slider.getValue());
-            }
+            listener.setTempo(tempo_slider.getValue());
         }
     }
     

@@ -86,8 +86,8 @@ public class MusicState implements MetaEventListener
     // This makes the scroll window keep the played note in frame
     void scroll(double percentage)
     {
-        UpdateEvent e = new UpdateEvent(this, UpdateType.scrollBar);
-        e.setScroll(percentage);
+        UpdateEvent e = new UpdateEvent(this, UpdateType.playTime);
+        e.setPlayTime(percentage);
         listener.updateEvent(e);
     }
 
