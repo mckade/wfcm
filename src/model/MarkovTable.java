@@ -107,8 +107,6 @@ class MarkovTable {
 
         sample = rects.toArray(new Rectangle[0]);
 
-        generateTable(chordPitches);
-
         return true;
     }
     
@@ -169,6 +167,7 @@ class MarkovTable {
     void setKeysigWeight(double w)
     {
         keysigWeight = w;
+        generateTable(chordPitches);
     }
 
     double[][] getPitchTable()

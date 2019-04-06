@@ -212,8 +212,8 @@ implements SettingsListener {
     public boolean importSample(File file) {
         ms.stop();
 
-        mTable.setKeysigWeight(keySigWeight);
         boolean test = mTable.loadMidiFile(file.getAbsolutePath());
+        mTable.setKeysigWeight(keySigWeight);
         tempo = (int)mTable.getTempo();
         PTable[] pt = new PTable[2];
         pt[0] = new PTable(mTable.getPitchTable());
