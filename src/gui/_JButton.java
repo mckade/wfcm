@@ -19,7 +19,7 @@ import javax.swing.JButton;
 import javax.swing.border.Border;
 
 @SuppressWarnings("serial")
-public class _Button extends JButton
+public class _JButton extends JButton
 implements MouseListener {
     
     // Border visuals
@@ -39,7 +39,7 @@ implements MouseListener {
                     BorderFactory.createLineBorder(MainWindow.C_BORDER_CLICKED, 2)),
             BorderFactory.createEmptyBorder(5, 5, 5, 5));
     
-    public _Button(String text) {
+    public _JButton(String text) {
         // Setup
         super(text);
         setBackground(MainWindow.C_COMPONENT_BACKGROUND);

@@ -22,9 +22,9 @@ implements ActionListener {
     private ButtonListener listener;
     
     // Components
-    private _Button play_pause;
-    private _Button skipLeft;
-    private _Button skipRight;
+    private _JButton play_pause;
+    private _JButton skipLeft;
+    private _JButton skipRight;
     
     // Control
     boolean playing = false;
@@ -38,13 +38,13 @@ implements ActionListener {
         
         // Creating components
         // TODO: Change to circular buttons with images.
-        play_pause = new _Button("Play|Pause");
+        play_pause = new _JButton("Play");
         play_pause.addActionListener(this);
         play_pause.setActionCommand(PLAY_PAUSE);
-        skipLeft = new _Button("Skip Left");
+        skipLeft = new _JButton("Skip Left");
         skipLeft.addActionListener(this);
         skipLeft.setActionCommand(SKIPLEFT);
-        skipRight = new _Button("Skip Right");
+        skipRight = new _JButton("Skip Right");
         skipRight.addActionListener(this);
         skipRight.setActionCommand(SKIPRIGHT);
         
@@ -52,6 +52,15 @@ implements ActionListener {
         add(play_pause);
         add(skipLeft);
         add(skipRight);
+    }
+    
+    // Toggles the view between play and pause.
+    public void togglePlayPauseView() {
+        playing = !playing;
+        if (playing)
+            play_pause.setText("Pause");
+        else
+            play_pause.setText("Play");
     }
     
     // Sends an event to the listener that a button was clicked.

@@ -31,8 +31,8 @@ implements ActionListener {
     private ButtonListener listener;
     
     // Components
-    private _Button generate;
-    private _Button recycle;
+    private _JButton generate;
+    private _JButton recycle;
     
     // Constructor
     public GenerationButtonPanel(ButtonListener listener) {
@@ -44,11 +44,11 @@ implements ActionListener {
         
         // Creating components
         // Generate
-        generate = new _Button("Generate");
+        generate = new _JButton("Generate");
         generate.addActionListener(this);
         generate.setActionCommand(GENERATE);
         // Recycle
-        recycle = new _Button("Recycle");
+        recycle = new _JButton("Recycle");
         recycle.setPreferredSize(generate.getPreferredSize());
         recycle.addActionListener(this);
         recycle.setActionCommand(RECYCLE);

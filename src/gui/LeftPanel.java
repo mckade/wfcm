@@ -30,7 +30,7 @@ public class LeftPanel extends JPanel {
     private UpdateListener listener;
     
     // Panels
-    private GenerationButtonPanel buttonPanel;
+    private GenerationButtonPanel generationButtonPanel;
     private LogPanel logPanel;
     
     // Control
@@ -44,11 +44,11 @@ public class LeftPanel extends JPanel {
         setLayout(new BorderLayout());
         
         // Creating panels
-        buttonPanel = new GenerationButtonPanel(blistener);
+        generationButtonPanel = new GenerationButtonPanel(blistener);
         logPanel = new LogPanel();
         
         // Adding panels
-        add(buttonPanel, BorderLayout.NORTH);
+        add(generationButtonPanel, BorderLayout.NORTH);
         add(logPanel, BorderLayout.CENTER);
     }
     

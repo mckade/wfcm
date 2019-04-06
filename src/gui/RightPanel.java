@@ -85,6 +85,11 @@ public class RightPanel extends JPanel {
         add(tabPane, BorderLayout.SOUTH);
     }
     
+    // Toggles the view between play and pause.
+    public void togglePlayPauseView() {
+        musicControlPanel.togglePlayPauseView();
+    }
+    
     // Toggles the visibility of the settings panel.
     public void toggleSettingsPanel() {
         tabPane.setVisible(settingsVisable = !settingsVisable);

@@ -150,6 +150,7 @@ implements UpdateListener, ButtonListener {
             break;
         case music:
             mgen.pauseSong();
+            rightPanel.togglePlayPauseView();
             leftPanel.addLog("Music Finished Playing.");
             break;
         default:
@@ -193,7 +194,10 @@ implements UpdateListener, ButtonListener {
         case MainWindowMenuBar.IMPORT:
             tfile = FileDialog.openFile(this, FileDialog.IMPORT_EXPORT);
             if (tfile == null) break;   // Canceled
-            mgen.pauseSong();
+            if (mgen.isPlaying()) {
+                mgen.pauseSong();
+                rightPanel.togglePlayPauseView();
+            }
             leftPanel.addLog("Loading MIDI...");
             if (mgen.importSample(tfile)) {
                 sample = true;
@@ -243,7 +247,10 @@ implements UpdateListener, ButtonListener {
         // Generation
         // Generate
         case GenerationButtonPanel.GENERATE:
-            mgen.pauseSong();
+            if (mgen.isPlaying()) {
+                mgen.pauseSong();
+                rightPanel.togglePlayPauseView();
+            }
             leftPanel.addLog("Generating Music...");
             mgen.generateMusic();
             rightPanel.fullUpdate();
@@ -251,7 +258,10 @@ implements UpdateListener, ButtonListener {
             break;
         // Recycle
         case GenerationButtonPanel.RECYCLE:
-            mgen.pauseSong();
+            if (mgen.isPlaying()) {
+                mgen.pauseSong();
+                rightPanel.togglePlayPauseView();
+            }
             leftPanel.addLog("Recycleing Music...");
             mgen.recycleMusic();
             rightPanel.fullUpdate();
@@ -269,6 +279,7 @@ implements UpdateListener, ButtonListener {
                 mgen.playSong();
                 leftPanel.addLog("Playing Music...");
             }
+            rightPanel.togglePlayPauseView();
             break;
         // Skip Left
         case MusicControlPanel.SKIPLEFT:
@@ -278,7 +289,10 @@ implements UpdateListener, ButtonListener {
             break;
         // SkipRight
         case MusicControlPanel.SKIPRIGHT:
-            mgen.pauseSong();
+            if (mgen.isPlaying()) {
+                mgen.pauseSong();
+                rightPanel.togglePlayPauseView();
+            }
             mgen.setPlayTime(1);
             rightPanel.updatePlayLine();
             mgen.onClick();
