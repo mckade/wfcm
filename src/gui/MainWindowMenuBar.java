@@ -33,7 +33,7 @@ import coms.ButtonEvent;
 import coms.ButtonListener;
 
 @SuppressWarnings("serial")
-public class _MenuBar extends JMenuBar
+public class MainWindowMenuBar extends JMenuBar
 implements ActionListener {
     
     // Menu item ids
@@ -46,7 +46,6 @@ implements ActionListener {
     public static final String IMPORT = "import";
     public static final String EXPORT = "export";
     public static final String EXIT = "exit";
-    
     // Window
     public static final String LEFTPANEL = "leftpanel";
     public static final String SETTINGS = "settings";
@@ -55,7 +54,7 @@ implements ActionListener {
     private ButtonListener listener;
 
     // Constructor
-    public _MenuBar(ButtonListener listener) {
+    public MainWindowMenuBar(ButtonListener listener) {
         // Setup
         this.listener = listener;
         

@@ -5,8 +5,8 @@
  *
  * The main window of the graphical user interface.
  * Holds two halves of the gui.
- * - The left consisting of the buttons and log.
- * - The right consisting of the visualizer and settings.
+ * - The left consisting of the generation buttons and log.
+ * - The right consisting of the visualizer, settings, and music control.
  *
  * Handles varies events between components.
  * - Menu bar items
@@ -20,6 +20,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.io.File;
 
@@ -40,7 +41,7 @@ import model.MusicGenerator;
 public class MainWindow extends JFrame 
 implements UpdateListener, ButtonListener {
     
-    // Both Default visuals
+    // Default visuals
     public static final Color BORDER_OUTER = new Color(0, 92, 75);
     public static final Color BORDER_INNER = new Color(8, 145, 119);
     public static final Color BORDER_HOVERED = new Color(80, 55, 110);
@@ -56,6 +57,12 @@ implements UpdateListener, ButtonListener {
     // Component visuals
     public static final Color COMPONENT_BACKGROUND = new Color(0, 40, 32);
     public static final Color COMPONENT_BORDER_INNER = new Color(14, 184, 152);
+    // Font visuals
+    public static final Font HEADING1 = new Font(Font.DIALOG, Font.PLAIN, 16);
+    public static final Font HEADING2 = new Font(Font.DIALOG, Font.PLAIN, 12);
+    public static final Font BUTTON = null;
+    public static final Color FONTCOLOR1 = Color.WHITE;
+    public static final Color FONTCOLOR2 = new Color(0,0,0);
 
     // Panels
     private LeftPanel leftPanel;
@@ -63,21 +70,23 @@ implements UpdateListener, ButtonListener {
     private JSplitPane splitPane;
     
     // Components
-    private _MenuBar menuBar;
+    private MainWindowMenuBar menuBar;
     
-    // Controller and controls
+    // Controller
     private MusicGenerator mgen;
+    
+    // Saved Info
     private File file = null;
+    
+    // Control
     private boolean sample = false;
     private boolean playable = false;
-    private boolean paused = false;
     
     // Constructor
     public MainWindow() {
         // Setup
         super("Proc Music");
         Dimension dim = new Dimension(1024, 768);
-        mgen = new MusicGenerator(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(dim);
         setSize(dim);
@@ -85,9 +94,15 @@ implements UpdateListener, ButtonListener {
         getContentPane().setBackground(PANEL_BACKGROUND);
         setLayout(new BorderLayout());
         
-        // Creating Panels and components
-        leftPanel = new LeftPanel(this, this);
-        rightPanel = new RightPanel(mgen);
+        // Controller
+        mgen = new MusicGenerator(this);
+        
+        // Creating Panels
+        // Left: (Generation Buttons and Log)
+        // Right: (Music Control, Settings, Preferences, Visualizer)
+        leftPanel = new LeftPanel(this, this);  
+        rightPanel = new RightPanel(mgen, this);      
+        // Movable divider between Left and Right
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         splitPane.setUI(new BasicSplitPaneUI() {
@@ -101,7 +116,9 @@ implements UpdateListener, ButtonListener {
                 };
             }
         });
-        menuBar = new _MenuBar(this);
+        
+        // Creating Components
+        menuBar = new MainWindowMenuBar(this);
         
         // Adding Panels and components
         add(splitPane, BorderLayout.CENTER);
@@ -110,88 +127,7 @@ implements UpdateListener, ButtonListener {
         // Finished setup
         setVisible(true);
     }
-
-    // Handles events from the menu bar.
-    public void menuItemClicked(ButtonEvent e) {
-        File tfile;
-        
-        switch (e.getID()) {
-        // File
-        // New
-        case _MenuBar.NEW:
-            // NYI
-            break;
-        // Open    
-        case _MenuBar.OPEN:
-            file = FileDialog.openFile(this, FileDialog.SAVE_OPEN);
-            mgen.openVisualizerTable(file);
-            break;
-        // Close    
-        case _MenuBar.CLOSE:
-            // NYI
-            break;
-        // Save    
-        case _MenuBar.SAVE:
-            if (file == null)
-                file = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
-            if (file != null)
-                mgen.saveVisualizerTable(file);
-            break;
-        // SaveAs    
-        case _MenuBar.SAVEAS:
-            tfile = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
-            if (tfile != null) {
-                file = tfile;
-                mgen.saveVisualizerTable(file);
-            }
-            break;
-        // Import   
-        case _MenuBar.IMPORT:
-            tfile = FileDialog.openFile(this, FileDialog.IMPORT_EXPORT);
-            if (tfile != null) {
-                if (mgen.importSample(tfile)) {
-                    leftPanel.addLog("Loading sample...");
-                    sample = true;
-                    playable = true;
-                    rightPanel.setNotes(mgen.getSampleNotes());
-                    rightPanel.updateSettings();
-                    leftPanel.addLog("Sample loaded.");
-                }
-                else {
-                    leftPanel.addLog("Failed to load sample.");
-                }
-            }
-            break;
-        // Export    
-        case _MenuBar.EXPORT:
-            if (!sample) {
-                leftPanel.addLog("Unable to export MIDI\nFirst import a MIDI sample and generate music.");
-                return;
-            }
-            tfile = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
-            if (tfile != null) {
-                leftPanel.addLog("Exporting MIDI...");
-                mgen.exportMIDI(file);
-                leftPanel.addLog("Finished");
-            }
-            break;
-        // Exit   
-        case _MenuBar.EXIT:
-            System.exit(0);
-            break;
-            
-        // Window
-        // LeftPanel
-        case _MenuBar.LEFTPANEL:
-            leftPanel.toggleVisible();
-            break;
-        // Settings   
-        case _MenuBar.SETTINGS:
-            rightPanel.toggleSettingsPanel();
-            break;
-        }
-    }
-
+    
     // Handles events calling for an update
     public void updateEvent(UpdateEvent e) {
         switch (e.getUpdateType()) {
@@ -202,68 +138,138 @@ implements UpdateListener, ButtonListener {
         case invisible:
             splitPane.setDividerSize(0);
             break;
+        case playTime:
+            mgen.setPlayTime(e.getPlayTime());
+            rightPanel.updatePlayLine();
         case music:
-            leftPanel.togglePlayStop();
-            mgen.stopSong();
-            paused = false;
-            break;
-        case scrollBar:
-            rightPanel.updateScroll(e.getScroll());
+            //mgen.pauseSong();
+            //leftPanel.addLog("Music Finished Playing.");
         default:
         }
     }
 
+    // Handles events from the menu bar.
+    public void menuItemClicked(ButtonEvent e) {
+        File tfile; // Temp file holding
+        
+        switch (e.getID()) {
+        // File
+        // New
+        case MainWindowMenuBar.NEW:
+            // NYI
+            break;
+        // Open    
+        case MainWindowMenuBar.OPEN:
+            file = FileDialog.openFile(this, FileDialog.SAVE_OPEN);
+            mgen.openVisualizerTable(file);
+            break;
+        // Close    
+        case MainWindowMenuBar.CLOSE:
+            // NYI
+            break;
+        // Save    
+        case MainWindowMenuBar.SAVE:
+            if (file == null)   // Checking if file has a save location.
+                file = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
+            if (file != null)   // Saving at file location.
+                mgen.saveVisualizerTable(file);
+            break;
+        // SaveAs    
+        case MainWindowMenuBar.SAVEAS:
+            tfile = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
+            if (tfile == null) break;   // Canceled
+            file = tfile;   // Updating current file save location
+            mgen.saveVisualizerTable(file);
+            break;
+        // Import   
+        case MainWindowMenuBar.IMPORT:
+            tfile = FileDialog.openFile(this, FileDialog.IMPORT_EXPORT);
+            if (tfile == null) break;   // Canceled
+            mgen.pauseSong();
+            leftPanel.addLog("Loading MIDI...");
+            if (mgen.importSample(tfile)) {
+                sample = true;
+                playable = true;
+                rightPanel.fullUpdate();
+                leftPanel.addLog("MIDI loaded.");
+            }
+            else leftPanel.addLog("Failed to load MIDI.");
+            break;
+        // Export    
+        case MainWindowMenuBar.EXPORT:
+            tfile = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
+            if (tfile == null) break;   // Canceled
+            leftPanel.addLog("Exporting MIDI...");
+            if (mgen.exportMIDI(file))
+                leftPanel.addLog("MIDI exported.");
+            else leftPanel.addLog("Failed to export MIDI.");
+            break;
+        // Exit   
+        case MainWindowMenuBar.EXIT:
+            System.exit(0);
+            break;
+            
+        // Window
+        // LeftPanel
+        case MainWindowMenuBar.LEFTPANEL:
+            leftPanel.toggleVisible();
+            break;
+        // Settings   
+        case MainWindowMenuBar.SETTINGS:
+            rightPanel.toggleSettingsPanel();
+            break;
+        }
+    }
+
     // Handles events for when a button is clicked.
+    // Either generation buttons or music control
     public void buttonClicked(ButtonEvent e) {
         // Checking if a sample has been imported.
-        if (!sample) {
+        // TODO: Change this later when users can add notes.
+        if (!sample || !playable) {
             leftPanel.addLog("Unable to complete action.\nFirst import a MIDI sample.");
             return;
         }
         
         switch (e.getID()) {
+        // Generation
         // Generate
-        case ButtonPanel.GENERATE:
+        case GenerationButtonPanel.GENERATE:
+            mgen.pauseSong();
             leftPanel.addLog("Generating Music...");
-            if(mgen.stopSong()) {
-                leftPanel.togglePlayStop();
-                paused = false;
-            }
             mgen.generateMusic();
-            rightPanel.setNotes(mgen.getNotes());  // Passing the notes to the visualizer.
+            rightPanel.fullUpdate();
             leftPanel.addLog("Finished.");
             break;
-        // Play/Stop
-        case ButtonPanel.PLAY_STOP:
-            if (!playable) {
-                leftPanel.addLog("Unable to play music.\nNo music to play.");
-                return;
-            }
-            
-            // Toggling play/stop button
-            if (!mgen.isPlaying()) {
-                mgen.playSong();
-                leftPanel.addLog("Playing music...");
-            }
-            else {
-                mgen.stopSong();
-                leftPanel.addLog("Stopped music");
-                paused = false;
-            }
-            leftPanel.togglePlayStop();
+        // Recycle
+        case GenerationButtonPanel.RECYCLE:
+            mgen.pauseSong();
+            leftPanel.addLog("Recycleing Music...");
+            mgen.recycleMusic();
+            rightPanel.fullUpdate();
+            leftPanel.addLog("Finished.");
             break;
-        // Pause
-        case ButtonPanel.PAUSE_RESUME:
-            paused = !paused;
-            if (paused) {
-                leftPanel.addLog("Paused music");
-                mgen.pauseSong();
-            }
-            else {
-                leftPanel.addLog("Unpaused music");
-                mgen.unpauseSong();
-            }
-            leftPanel.togglePauseResume();
+        
+        // Music Control
+        // pause
+        case MusicControlPanel.PAUSE:
+            if (!mgen.isPlaying()) break;   // Music isn't playing
+            mgen.pauseSong();
+            leftPanel.addLog("Paused Music.");
+            break;
+        // play
+        case MusicControlPanel.PLAY:
+            if (mgen.isPlaying()) break;    // Music already playing
+            mgen.playSong();
+            leftPanel.addLog("Playing Muisc...");
+            break;
+        // Skip Left
+        case MusicControlPanel.SKIPLEFT:
+            mgen.setPlayTime(0);
+            break;
+        // SkipRight
+        case MusicControlPanel.SKIPRIGHT:
+            mgen.setPlayTime(1);
             break;
         }
     }

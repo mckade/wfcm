@@ -15,7 +15,7 @@ import java.util.EventObject;
 public class UpdateEvent extends EventObject {
     
     private UpdateType updateType;
-    private double scroll;
+    private double playTime;
 
     public UpdateEvent(Object source, UpdateType updateType) {
         super(source);
@@ -25,14 +25,12 @@ public class UpdateEvent extends EventObject {
     public UpdateType getUpdateType() {
         return updateType;
     }
-
-    public double getScroll()
-    {
-        return scroll;
+    
+    public void setPlayTime(double playTime) {
+        this.playTime = playTime;
     }
 
-    public void setScroll(double scroll)
-    {
-        this.scroll = scroll;
+    public double getPlayTime() {
+        return playTime;
     }
 }

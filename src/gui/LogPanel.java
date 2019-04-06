@@ -46,7 +46,6 @@ public class LogPanel extends JPanel {
         title = new JLabel("Log", JLabel.CENTER);
         title.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
         title.setForeground(Color.WHITE);
-        
         // Text
         text = new JTextArea();
         text.setEditable(false);

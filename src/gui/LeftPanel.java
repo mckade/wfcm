@@ -4,7 +4,7 @@
  * @members McKade Umbenhower, Robert Randolph, Taylor Bleizeffer 
  * 
  * The left half of the main window.
- * Consists of the basic buttons and log.
+ * Consists of the basic generation buttons and log.
  * Can toggle visibility of this panel.
  */
 
@@ -30,7 +30,7 @@ public class LeftPanel extends JPanel {
     private UpdateListener listener;
     
     // Panels
-    private ButtonPanel buttonPanel;
+    private GenerationButtonPanel buttonPanel;
     private LogPanel logPanel;
     
     // Control
@@ -44,7 +44,7 @@ public class LeftPanel extends JPanel {
         setLayout(new BorderLayout());
         
         // Creating panels
-        buttonPanel = new ButtonPanel(blistener);
+        buttonPanel = new GenerationButtonPanel(blistener);
         logPanel = new LogPanel();
         
         // Adding panels
@@ -53,6 +53,7 @@ public class LeftPanel extends JPanel {
     }
     
     // Toggles the visibility of the panel.
+    // Fires an update event to the listener to update the divider. (MainWindow)
     public void toggleVisible() {
         setVisible(visible = !visible);
         if (visible)
@@ -60,12 +61,6 @@ public class LeftPanel extends JPanel {
         else
             fireUpdateEvent(this, UpdateType.invisible);
     }
-    
-    // Toggles the play/stop button between views.
-    public void togglePlayStop() {buttonPanel.togglePlayStop();}
-    
-    // Toggles the pause/resume button between views.
-    public void togglePauseResume() {buttonPanel.togglePauseResume();}
     
     // Add a log to the log panel.
     public void addLog(String log) {logPanel.addLog(log);}

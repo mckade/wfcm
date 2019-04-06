@@ -39,189 +39,33 @@ implements SettingsListener {
     // Available instruments.
     private Map<String, Integer> inst;
     
-    // Settings/Modifiers
-    int noteLength = 100;
-    int tempo = 100;
-    String instrument = "PIANO";
-    int dynamic;
-    int timeSignature = 4;
+    // Settings
+    private int noteLength = 100;
+    private int tempo = 100;
+    private String instrument = "PIANO";
+    private int dynamic;
+    private int timeSignature = 4;
+    
+    // Preferences
+    private boolean follow = true;
+    //private boolean keySignature = true;
 
     // Control
     private boolean playing = false;
+    private double playTime = 0;
+    
+    ///////////////////////////
+    // Constructor and setup //
+    ///////////////////////////
 
     public MusicGenerator(UpdateListener listener) {
         mTable = new MarkovTable();
-        addInsts();
         ms = new MusicState(listener);
-    }
-
-    // Saves the current generation table
-    public void saveVisualizerTable(File file) {
-        // Does nothing atm
+        setUpInstrumentList();
     }
     
-    // Opens an existing generation table
-    public boolean openVisualizerTable(File file) {
-        return false;
-        // Does nothing atm
-    }
-    
-    // Imports a MIDI sample to use in music generation
-    public boolean importSample(File file) {
-        boolean test = mTable.loadMidiFile(file.getAbsolutePath());
-        tempo = (int)mTable.getTempo();
-        PTable[] pt = new PTable[2];
-        pt[0] = new PTable(mTable.getPitchTable());
-        pt[1] = new PTable(mTable.getLengthTable());
-        wfc = new WaveFCND(pt);
-
-        // copy the sample file to out.MID so it can be played
-        try {
-            Files.copy(file.toPath(), new File(MusicState.OUTPUT).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        s = mTable.getScore();
-        dynamic = s.getPart(0).getPhrase(0).getNote(0).getDynamic();
-
-        return test;
-    }
-    
-    // Exports a music generation table as a new MIDI file
-    public void exportMIDI(File file) {
-        Write.midi(s, file.getAbsolutePath());
-    }
-    
-    // Generates music given a note length
-    public void generateMusic()
-    {
-        ms.unpause();
-
-        // use wfc and mTable
-        s = new Score("Procedural", tempo);
-        Part p = new Part("Part", inst.get(instrument), 0);
-        Vector<Note[]> notes = wfc.getNotes(noteLength);
-        Vector<Rectangle> nd = new Vector<>();
-
-        CPhrase phr = new CPhrase();
-        double time = 0.0;
-        for(Note[] chord : notes)
-        {
-            // save note info in noteTable
-            for(Note n : chord)
-            {
-                nd.add(new Rectangle((int)(time*mTable.getTimeScale()), n.getPitch(),
-                        (int)(n.getDuration()*mTable.getTimeScale()), 1));
-            }
-
-            time += chord[0].getDuration();
-
-            // System.out.println(chord);
-            int[] pitches = new int[chord.length];
-            for(int i = 0; i < chord.length; i++)
-            {
-                pitches[i] = chord[i].getPitch();
-            }
-            phr.addChord(pitches, chord[0].getDuration(), dynamic);
-        }
-
-        noteData = nd.toArray(new Rectangle[nd.size()]);
-        p.addCPhrase(phr);
-        s.addPart(p);
-        Write.midi(s, MusicState.OUTPUT);
-    }
-
-    // Update the midi instrument and tempo
-    private void updateMidi()
-    {
-        if(s == null)
-            return;
-        s.setTempo(tempo);
-        s.getPart(0).setInstrument(inst.get(instrument));
-        Write.midi(s, MusicState.OUTPUT);
-    }
-
-    // update the midi notes, instrument, and tempo
-    public void updateMidi(Rectangle[] rects)
-    {
-        s = rectsToScore(rects);
-        s.setTempo(tempo);
-        s.getPart(0).setInstrument(inst.get(instrument));
-        Write.midi(s, MusicState.OUTPUT);
-    }
-
-    // Covert an array of rectangles to a score
-    private Score rectsToScore(Rectangle[] rects)
-    {
-        CPhrase phr = new CPhrase();
-        Part part = new Part("Part", inst.get(instrument), 0);
-        Score score = new Score("Procedural", tempo);
-
-
-        Vector<Integer> pitches = new Vector<>();
-        int startTime = 0;
-        int i = 0;
-        while(i < rects.length)
-        {
-            // accumulate all pitches in the chord
-            while(rects[i].x == startTime && i < rects.length)
-            {
-                pitches.add(rects[i].x);
-                i++;
-            }
-
-            Integer[] p = pitches.toArray(new Integer[0]);
-            int[] pp = new int[p.length];
-            for(int k = 0; k < p.length; k++) {pp[k] = p[k];}
-            phr.addChord(pp, rects[i-1].width, dynamic);
-
-            startTime = rects[i].x;
-        }
-
-        part.addCPhrase(phr);
-        score.addPart(part);
-        return score;
-    }
-
-    public void playSong()
-    {
-        playing = true;
-        ms.play();
-    }
-    
-    public boolean stopSong()
-    {
-        boolean tmp = playing;
-        playing = false;
-        ms.stop();
-        return tmp;
-    }
-    
-    public void pauseSong() {
-        ms.pause();
-    }
-    
-    public void unpauseSong() {
-        ms.unpause();
-    }
-    
-    public boolean isPlaying() {
-        return playing;
-    }
-    
-    // Returns the notes of the generation.
-    public Rectangle[] getNotes() {
-        return noteData;
-    }
-
-    // Returns the notes of the generation.
-    public Rectangle[] getSampleNotes() {
-        return mTable.getSample();
-    }
-
-    private void addInsts()
-    {
+    // Creates the list of available instruments.
+    private void setUpInstrumentList() {
         inst = new HashMap<>();
         inst.put("PIANO", 0);
         inst.put("HONKYTONK_PIANO", 3);
@@ -340,18 +184,213 @@ implements SettingsListener {
         inst.put("TELEPHONE", 124);
         inst.put("HELICOPTER", 125);
     }
+    
+    ////////////////////////////
+    // User menu interactions //
+    ////////////////////////////
+    
+    // Creates a blank visualizer table
+    public boolean newVisualizerTable() {
+        return false;
+        // Does nothing atm
+    }
+    
+    // Opens an existing generation table
+    public boolean openVisualizerTable(File file) {
+        return false;
+        // Does nothing atm
+    }
 
+    // Saves the current generation table
+    public void saveVisualizerTable(File file) {
+        // Does nothing atm
+    }
+    
+    // Imports a MIDI sample to use in music generation
+    public boolean importSample(File file) {
+        boolean test = mTable.loadMidiFile(file.getAbsolutePath());
+        tempo = (int)mTable.getTempo();
+        PTable[] pt = new PTable[2];
+        pt[0] = new PTable(mTable.getPitchTable());
+        pt[1] = new PTable(mTable.getLengthTable());
+        wfc = new WaveFCND(pt);
+
+        // copy the sample file to out.MID so it can be played
+        try {
+            Files.copy(file.toPath(), new File(MusicState.OUTPUT).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        s = mTable.getScore();
+        dynamic = s.getPart(0).getPhrase(0).getNote(0).getDynamic();
+
+        return test;
+    }
+    
+    // Exports a music generation table as a new MIDI file
+    // TODO: Determine if export succeeded or not.
+    public boolean exportMIDI(File file) {
+        Write.midi(s, file.getAbsolutePath());
+        return true;
+    }
+    
+    //////////////////////////////////
+    // User generation interactions //
+    //////////////////////////////////
+    
+    // Generates new music using the given sample.
+    public boolean generateMusic()
+    {
+        ms.unpause();
+
+        // use wfc and mTable
+        s = new Score("Procedural", tempo);
+        Part p = new Part("Part", inst.get(instrument), 0);
+        Vector<Note[]> notes = wfc.getNotes(noteLength);
+        Vector<Rectangle> nd = new Vector<>();
+
+        CPhrase phr = new CPhrase();
+        double time = 0.0;
+        for(Note[] chord : notes)
+        {
+            // save note info in noteTable
+            for(Note n : chord)
+            {
+                nd.add(new Rectangle((int)(time*mTable.getTimeScale()), n.getPitch(),
+                        (int)(n.getDuration()*mTable.getTimeScale()), 1));
+            }
+
+            time += chord[0].getDuration();
+
+            // System.out.println(chord);
+            int[] pitches = new int[chord.length];
+            for(int i = 0; i < chord.length; i++)
+            {
+                pitches[i] = chord[i].getPitch();
+            }
+            phr.addChord(pitches, chord[0].getDuration(), dynamic);
+        }
+
+        noteData = nd.toArray(new Rectangle[nd.size()]);
+        p.addCPhrase(phr);
+        s.addPart(p);
+        Write.midi(s, MusicState.OUTPUT);
+        
+        return true;    // TODO: make this meaningful (when users can add their own notes)
+    }
+    
+    // Uses the current visualizer table as the sample.
+    // Then generates the new music using the sample.
+    public boolean recycleMusic() {
+        return false;
+        // Does nothing atm.
+    }
+
+    ////////////////////////////
+    // User song interactions //
+    ////////////////////////////
+    
+    // Plays the song on the visualizer.
+    public void playSong() {
+        playing = true;
+        ms.play();
+    }
+    // Pauses the song on the visualizer.
+    public void pauseSong() {
+        playing = false;
+        ms.stop();
+    }
+    
+    // Checks whether or not the song is playing.
+    public boolean isPlaying() {
+        return playing;
+    }
+    
+    ///////////////////////////////
+    // User setting interactions //
+    ///////////////////////////////
+    // MIDI Manipulation //
+    ///////////////////////
+
+    // Updates the midi instrument and tempo
+    private void updateMidi() {
+        if(s == null) return;
+        s.setTempo(tempo);
+        s.getPart(0).setInstrument(inst.get(instrument));
+        Write.midi(s, MusicState.OUTPUT);
+    }
+
+    // Updates the midi notes, instrument, and tempo
+    public void updateMidi(Rectangle[] rects) {
+        s = rectsToScore(rects);
+        updateMidi();
+    }
+
+    // Converts an array of rectangles to a score
+    private Score rectsToScore(Rectangle[] rects) {
+        CPhrase phr = new CPhrase();
+        Part part = new Part("Part", inst.get(instrument), 0);
+        Score score = new Score("Procedural", tempo);
+
+        Vector<Integer> pitches = new Vector<>();
+        int startTime = 0;
+        int i = 0;
+        while(i < rects.length)
+        {
+            // accumulate all pitches in the chord
+            while(rects[i].x == startTime && i < rects.length)
+            {
+                pitches.add(rects[i].x);
+                i++;
+            }
+
+            Integer[] p = pitches.toArray(new Integer[0]);
+            int[] pp = new int[p.length];
+            for(int k = 0; k < p.length; k++) {pp[k] = p[k];}
+            phr.addChord(pp, rects[i-1].width, dynamic);
+
+            startTime = rects[i].x;
+        }
+
+        part.addCPhrase(phr);
+        score.addPart(part);
+        return score;
+    }
+    
+    ///////////////////////////////
+    // User setting interactions //
+    ///////////////////////////////
+    // Settings: get and set //
+    ///////////////////////////
+    
+    // Visuals/MIDI
+    public Rectangle[] getNotes() {return noteData;}
+    public void setPlayTime(double playTime) {this.playTime = playTime;}
+    public double getPlayTime() {return playTime;}
+    
     // Settings
+    // Note Count
     public void setNoteCount(int noteCount) {this.noteLength = noteCount;}
     public int getNoteCount() {return noteLength;}
+    
+    // Tempo
     public void setTempo(int tempo) {this.tempo = tempo; updateMidi();}
     public int getTempo() {return tempo;}
+    
+    // Instrument
     public void setInstrument(String instrument) {this.instrument = instrument; updateMidi();}
     public String getInstrument() {return instrument;}
     public String[] getInstrumentList() {
         return inst.keySet().toArray(new String[inst.keySet().size()]);
     }
+    
+    // Signatures
     public void setTimeSignature(int timeSignature) {this.timeSignature = timeSignature;}
     public int getTimeSignature() {return timeSignature;}
-    public void setPlayTime(double percentage) {}
+    
+    // Preferences
+    // Follow
+    public void setFollow(boolean follow) {this.follow = follow;}
+    public boolean getFollow() {return follow;}
 }

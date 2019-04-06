@@ -26,6 +26,10 @@ import coms.UpdateType;
 @SuppressWarnings("serial")
 public class VisualizerGraphics extends JComponent {
     
+    // Listener to send events to
+    private UpdateListener ulistener;
+    private SettingsListener slistener;
+    
     // Notes
     private String[] noteHeaders;   // note headers
     private Rectangle[] notes;      // literal
@@ -33,25 +37,21 @@ public class VisualizerGraphics extends JComponent {
     // Table
     private int rowHeight = 15;
     private int rowWidth = 50;
+    private int noteArea;
     private Dimension dim;
     private int playLine = 0;
-    private double scale = 1;   // Scale of visualizer grid.
     private int timeSignature = 4;
     
     // Control
     private boolean measure = true; // Whether or not to draw the measures
     private boolean beat = true;    // Whether or not to draw the beats.
     
-    // Listener to send events to
-    private UpdateListener ulistener;
-    private SettingsListener slistener;
-    
     // Constructor
     public VisualizerGraphics(UpdateListener ulistener, SettingsListener slistener) {
         // Setup
         this.ulistener = ulistener;
         this.slistener = slistener;
-        dim = new Dimension(0, (rowHeight+1)*88);
+        dim = new Dimension(getWidth()*2, (rowHeight+1)*88);
         setPreferredSize(dim);
         
         // Creating note row headers C7 to A-
@@ -65,60 +65,53 @@ public class VisualizerGraphics extends JComponent {
             index = (index + 1) % noteTypes.length;
         }
         
+        updateVisualizer();
         setUpMouseListener();
     }
     
     // Sets up the mouse listener to the visualizer.
     private void setUpMouseListener() {
         this.addMouseListener(new MouseAdapter() {
-            // TEMP: Sets the play line at mouse position.
-            public void mouseClicked(MouseEvent e) {
-                double t1 = e.getX()-rowWidth;
-                double t2 = dim.width;
-                t1 = t1/t2;
-                setPlayLine(t1);
-                slistener.setPlayTime(t1);
+            // Temp, moves playLine (aka changes playtime)
+            public void mousePressed(MouseEvent e) {
+                double point = e.getX()-rowWidth;
+                if (point >= noteArea)          // Clicked pass playable notes
+                    slistener.setPlayTime(1);
+                else if (point <= 0)            // Clicked before playable notes
+                    slistener.setPlayTime(0);
+                else                            // Clicked within playable notes
+                    slistener.setPlayTime(point/noteArea);
+                updatePlayLine();
             }
         });
     }
-
-    // Setting the notes to draw on the table.
-    public void setNotes(Rectangle[] notes) {
-        this.notes = notes;
+    
+    // Updates the visualizer.
+    public void updateVisualizer() {
+        notes = slistener.getNotes();
+        timeSignature = slistener.getTimeSignature();
         
         // Getting the x dimension of the table.
         // This is so we are able to scroll through all the notes.
-        int maxX = 0;
-        for (Rectangle note: notes) {
-            if (note.x + note.width > maxX) {
-                maxX = note.x + note.width;
+        noteArea = 0;
+        if (notes != null) {
+            for (Rectangle note: notes) {
+                if (note.x + note.width > noteArea) {
+                    noteArea = note.x + note.width;
+                }
             }
         }
-        dim.width = maxX;
+        dim.width = noteArea + 1000;    // Adding a little extra scroll room
         
         // Updating scrollbar and repainting.
         ulistener.updateEvent(new UpdateEvent(this, UpdateType.scrollBar));
+        updatePlayLine();
+    }
+    
+    // Updates the position of the play line.
+    public void updatePlayLine() {
+        playLine = (int) (slistener.getPlayTime() * noteArea);
         repaint();
-    }
-    
-    // Sets the position of the playLine.
-    // @percentage, the percentage of the music that has been played.
-    public void setPlayLine(double percentage) {
-        playLine = (int) (percentage * dim.width);
-        repaint();
-    }
-    
-    // Sets the scale of the visualizer.
-    // Ranges from 10% to 200% (.1-2)
-    public void setScale(double percentage) {
-        if (percentage >= .1 && percentage <= 1) {
-            scale = percentage;
-        }
-    }
-    
-    // Sets the time signature of the visualizer.
-    public void setTimeSignature(int timeSignature) {
-        this.timeSignature = timeSignature;
     }
 
     // Painting the component

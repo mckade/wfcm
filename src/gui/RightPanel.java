@@ -11,10 +11,11 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
+import coms.ButtonListener;
 import coms.SettingsListener;
 
 @SuppressWarnings("serial")
@@ -24,46 +25,50 @@ public class RightPanel extends JPanel {
     static final int MINWIDTH = 600;
     
     // Panels
+    private MusicControlPanel musicControlPanel;
     private VisualizerPanel visualizerPanel;
     private SettingsPanel settingsPanel;
+    private PreferencesPanel preferencesPanel;
+    private JTabbedPane tabPane;
     
-    // Visible panels
-    private boolean settingsVis = true;
+    // Control
+    private boolean settingsVisable = true;
     
     // Constructor
-    RightPanel(SettingsListener listener) {
+    public RightPanel(SettingsListener slistener, ButtonListener blistener) {
         // Setup
         setMinimumSize(new Dimension(MINWIDTH, 200));
         setLayout(new BorderLayout());
         
         // Creating panels
-        visualizerPanel = new VisualizerPanel(listener);
-        settingsPanel = new SettingsPanel(listener);
+        musicControlPanel = new MusicControlPanel(blistener);
+        visualizerPanel = new VisualizerPanel(slistener);
+        settingsPanel = new SettingsPanel(slistener);
+        preferencesPanel = new PreferencesPanel(slistener);
+        tabPane = new JTabbedPane();
+        tabPane.addTab("Settings", settingsPanel);
+        tabPane.addTab("Preferences", preferencesPanel);
         
         // Adding panels
+        add(musicControlPanel, BorderLayout.NORTH);
         add(visualizerPanel, BorderLayout.CENTER);
-        add(settingsPanel, BorderLayout.SOUTH);
+        add(tabPane, BorderLayout.SOUTH);
     }
     
     // Toggles the visibility of the settings panel.
-    void toggleSettingsPanel() {
-        settingsPanel.setVisible(settingsVis = !settingsVis);
+    public void toggleSettingsPanel() {
+        tabPane.setVisible(settingsVisable = !settingsVisable);
     }
     
-    // Passes note information to the visualizer.
-    public void setNotes(Rectangle[] notes) {
-        visualizerPanel.setNotes(notes);
-    }
-
-    // Updates the gui setting values.
-    void updateSettings() {
+    // Updates the settings, preferences, and visualizer.
+    public void fullUpdate() {
         settingsPanel.updateSettings();
-        visualizerPanel.updateSettings();
+        preferencesPanel.updatePreferences();
+        visualizerPanel.updateVisualizer();
     }
 
     // Scrolls the window to keep up with the playing music
-    void updateScroll(double percentage)
-    {
-        visualizerPanel.setScroll(percentage);
+    public void updatePlayLine() {
+        visualizerPanel.updatePlayLine();
     }
 }
