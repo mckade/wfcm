@@ -5,6 +5,8 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequencer;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,20 +20,24 @@ class AudioFilePlayThread extends Thread {
     private long tickPos = 0;
     private long delay = 32;
     private Timer timer = new Timer();
+    private double playPercentage;
+    private InputStream is;
 
-    AudioFilePlayThread(MusicState ms)
+    AudioFilePlayThread(MusicState ms, double playPercentage)
     {
         this.ms = ms;
+        this.playPercentage = playPercentage;
     }
 
     public void run()
     {
         // When this thread is started, set up the sequencer
         sequencer = null;
+
         try {
             sequencer = MidiSystem.getSequencer();
             sequencer.open();
-            InputStream is = new BufferedInputStream(new FileInputStream(new File(MusicState.OUTPUT)));
+            is = new BufferedInputStream(new FileInputStream(new File(MusicState.OUTPUT)));
             sequencer.setSequence(is);
         } catch (MidiUnavailableException | InvalidMidiDataException | IOException e) {
             e.printStackTrace();
@@ -40,6 +46,7 @@ class AudioFilePlayThread extends Thread {
         // Make the MusicState object listen for Meta Events, i.e., "stopped playing"
         sequencer.addMetaEventListener(ms);
         sequencer.start();
+        skip(playPercentage);
         keepPlaybackProgress();
     }
 
@@ -47,6 +54,12 @@ class AudioFilePlayThread extends Thread {
     void stopMusic()
     {
         sequencer.stop();
+        sequencer.close();
+        try {
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         tickPos = 0;
         timer.cancel();
     }
@@ -72,7 +85,8 @@ class AudioFilePlayThread extends Thread {
     {
         if(t >= 0 && t < sequencer.getTickLength())
         {
-            sequencer.setTickPosition(tickPos);
+            sequencer.setTickPosition(t);
+            tickPos = t;
         }
     }
 

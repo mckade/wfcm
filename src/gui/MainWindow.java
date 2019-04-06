@@ -170,9 +170,11 @@ implements UpdateListener, ButtonListener {
             }
             tfile = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
             if (tfile != null) {
+                if(!tfile.getPath().substring(tfile.getPath().length() - 4).equals(".MID"))
+                    tfile = new File(tfile.getAbsolutePath() + ".MID");
                 leftPanel.addLog("Exporting MIDI...");
-                mgen.exportMIDI(file);
-                leftPanel.addLog("Finished");
+                mgen.exportMIDI(tfile);
+                leftPanel.addLog("MIDI exported to " + tfile.getAbsolutePath());
             }
             break;
         // Exit   

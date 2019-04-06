@@ -15,11 +15,15 @@ public class MusicState implements MetaEventListener
 {
     // default output file
     static String OUTPUT = "out.MID";
+
     // midi player thread
     private AudioFilePlayThread audio;
 
     // Listener to send events to
     private UpdateListener listener;
+
+    // playback progress
+    private double playPercentage = 0.0;
 
     MusicState(UpdateListener listener) {
         this.listener = listener;
@@ -30,7 +34,7 @@ public class MusicState implements MetaEventListener
         if(audio != null)
             return;
 
-        audio = new AudioFilePlayThread(this);
+        audio = new AudioFilePlayThread(this, playPercentage);
         audio.start();
     }
 
@@ -40,7 +44,13 @@ public class MusicState implements MetaEventListener
         if(audio == null)
             return;
         audio.stopMusic();
+        try {
+            audio.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         audio = null;
+        System.out.println("Audio play thread stopped");
     }
 
     // Notified when the thread currently playing the midi is finished
@@ -63,6 +73,13 @@ public class MusicState implements MetaEventListener
         if(audio == null)
             return;
         audio.unpause();
+    }
+
+    void skip(double percentage)
+    {
+
+        if(audio !=  null)
+            audio.skip(percentage);
     }
 
     // Send an event to update the visualizer scroll bar.

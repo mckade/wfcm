@@ -68,6 +68,8 @@ implements SettingsListener {
     
     // Imports a MIDI sample to use in music generation
     public boolean importSample(File file) {
+        ms.stop();
+
         boolean test = mTable.loadMidiFile(file.getAbsolutePath());
         tempo = (int)mTable.getTempo();
         PTable[] pt = new PTable[2];
@@ -90,6 +92,8 @@ implements SettingsListener {
     
     // Exports a music generation table as a new MIDI file
     public void exportMIDI(File file) {
+        if(s == null)
+            return;
         Write.midi(s, file.getAbsolutePath());
     }
     
@@ -353,5 +357,5 @@ implements SettingsListener {
     }
     public void setTimeSignature(int timeSignature) {this.timeSignature = timeSignature;}
     public int getTimeSignature() {return timeSignature;}
-    public void setPlayTime(double percentage) {}
+    public void setPlayTime(double percentage) {ms.skip(percentage);}
 }

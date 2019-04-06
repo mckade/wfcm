@@ -8,11 +8,6 @@ package model;
  * Returns the read data to be processed.
  */
 
-import jm.midi.MidiParser;
-import jm.midi.SMF;
-import jm.midi.Track;
-import jm.midi.event.*;
-import jm.midi.event.Event;
 import jm.music.data.*;
 import jm.util.Read;
 
@@ -136,10 +131,10 @@ class MidiReader {
         // we are going to first load the midi data into rectangles
         Vector<Vector<DRectangle>> rects = new Vector<>();
         Vector<Part> parts = s.getPartList();
-        System.out.println("Number of parts: " + parts.size());
+        // System.out.println("Number of parts: " + parts.size());
         // we are only working with 1 part
         Part p = parts.elementAt(0);
-        System.out.println("Number of phrases: " + p.getSize());
+        // System.out.println("Number of phrases: " + p.getSize());
         Vector<Phrase> phrases = p.getPhraseList();
 
         // constant used to snap notes to a grid -- 1 / 4 snaps to quarter
@@ -162,7 +157,7 @@ class MidiReader {
             quantize *= 2;
         }
 
-        System.out.println("quantize: " + quantize);
+        // System.out.println("quantize: " + quantize);
         int notenum = 0;
 
         for(Phrase phr : phrases)
@@ -236,7 +231,7 @@ class MidiReader {
         for(DRectangle d : drects)
         {
             // ignore extra rests
-            if(chord.size() > 0 && d.y < 0)
+            if(chord.size() > 0 && d.y < 0 && d.x == start)
                 continue;
             if(d.x != start)
             {
@@ -244,14 +239,14 @@ class MidiReader {
                 for(int i = 0; i < chord.size(); i++) {c[i] = chord.get(i);}
                 // TODO: does not handle note overlap
                 c[chord.size()] = d.x - start;
-                System.out.println("time: " + (d.x - start));
+                // System.out.println("time: " + (d.x - start));
                 result.add(c);
                 chord.clear();
             }
 
             start = d.x;
             chord.add(d.y);
-            System.out.println("Added: " + d.y +" at time " + d.x);
+            // System.out.println("Added: " + d.y +" at time " + d.x);
         }
 
         double[] c = new double[chord.size() + 1];
@@ -259,15 +254,6 @@ class MidiReader {
         // TODO: does not handle note overlap
         c[chord.size()] = drects[drects.length - 1].width;
         result.add(c);
-
-        for(double[] dbs : result)
-        {
-            for(int i = 0; i < dbs.length; i++)
-            {
-                System.out.print(dbs[i] + ", ");
-            }
-            System.out.println();
-        }
 
         return result;
     }
@@ -293,20 +279,6 @@ class MidiReader {
             System.out.println("No MIDI data has been read yet.");
             return -1;
         }
-    }
-
-    // CPhrase.addChord only takes int[] or Note[]
-    // So this method takes a Vector<Integer> of pitchs and converts to an
-    // int[]
-    private double[] vectorToPitchArr(Vector<Double> pitches) {
-
-        double[] ptchs = new double[pitches.size()];
-
-        for (int k = 0; k < pitches.size(); ++k) {
-            ptchs[k] = pitches.get(k);
-        }
-
-        return ptchs;
     }
 
     /**

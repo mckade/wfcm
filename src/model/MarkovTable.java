@@ -10,11 +10,9 @@ package model;
  * Used by WaveFCND to generate music
  */
 
-import jm.JMC;
 import jm.music.data.Score;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -84,7 +82,7 @@ class MarkovTable {
             // Make a copy of chord pitch array without the duration at the end
             int[] newChrd = new int[chrd.length - 1];
             for (int i = 0; i < chrd.length - 1; ++i) {
-                System.out.println(chrd[i]);
+                // System.out.println(chrd[i]);
                 newChrd[i] = (int)chrd[i];
                 rects.add(new Rectangle(
                         (int)(time*timeScale), // x = noteStartTime * scale
