@@ -26,6 +26,7 @@ class MarkovTable {
     private double[][] chordLengthTable; // chord duration transition probabilities
     private Rectangle[] sample;
     private double timeScale = 100.0;
+    private double keysigWeight;
 
     // chord holds a static reference to the unique pitch arrays in the sample
     // mapped to an integer (the index used in probability arrays)
@@ -127,7 +128,7 @@ class MarkovTable {
         lengthMods.add(new ChordDuration(1, chords, chordLength.size()));
         int signature = midiReader.estimateKeySignature();
         for (Modifier ct : pitchMods) {
-            keySigMods.add(new KeySignatureMod(signature, ct.getProbabilities(), 0.5));
+            keySigMods.add(new KeySignatureMod(signature, ct.getProbabilities(), keysigWeight));
         }
 
         double[][] keySigModProbabilities = keySigMods.get(0).getProbabilities();
@@ -140,17 +141,14 @@ class MarkovTable {
         // important than others with regard to final probability table
         // (Do we want this user controlled with presets?)
         System.out.println("Aggregating modifier probabilities");
-        for(int i = 0; i < pitchMods.size(); i++)
+        for(int i = 0; i < keySigMods.size(); i++)
         {
-            double[][] modProbabilities = pitchMods.get(i).getProbabilities();
+            double[][] modProbabilities = keySigMods.get(i).getProbabilities();
             for(int x = 0; x < keySigModProbabilities.length; x++)
             {
                 for(int y = 0; y < keySigModProbabilities.length; y++)
                 {
-                    if (x < chordPitches.size() && y < chordPitches.size())
-                        chordTable[x][y] = modProbabilities[x][y] / pitchMods.size();
-                    else
-                        chordTable[x][y] = keySigModProbabilities[x][y] / pitchMods.size();
+                    chordTable[x][y] += modProbabilities[x][y] / keySigMods.size();
                 }
             }
         }
@@ -162,10 +160,15 @@ class MarkovTable {
             {
                 for(int y = 0; y < chordLength.size(); y++)
                 {
-                    chordLengthTable[x][y] = modProbabilities[x][y] / lengthMods.size();
+                    chordLengthTable[x][y] += modProbabilities[x][y] / lengthMods.size();
                 }
             }
         }
+    }
+
+    void setKeysigWeight(double w)
+    {
+        keysigWeight = w;
     }
 
     double[][] getPitchTable()

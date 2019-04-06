@@ -134,19 +134,41 @@ public class KeySignatureMod extends Modifier {
     @Override
     protected void calculateProbabilities() {
 
+        if(weight == 1.0)
+            weight = .999;
         int freshIndex = cardinality - freshPitches.size();
 
-        // Modify incoming transition probabilities for fresh notes
-        for (int y = freshIndex; y < cardinality; ++y) {
-            for (int x = 0; x < cardinality; ++x) {
-                probabilities[x][y] = weight;
+        // Normalize the probabilities so each row adds to 1.0
+        // and make the weight be the probability a new value
+        // is transitioned to, i.e., a .25 weight will transition to
+        // a fresh pitch 25% of the time
+        for (int x = 0; x < cardinality; ++x) {
+            // add up the old row
+            double sum = 0;
+            for (int y = 0; y < freshIndex; ++y) {
+                sum += probabilities[x][y];
+            }
+
+            // increase the sum to it represents 'weight' more data
+            double adjustedSum = sum / (1.0 - weight);
+            // adjust the weight  to be (amount of new probability data) / (number of new pitches * adjusted sum)
+            double adjustedWeight = (adjustedSum - sum) / (freshPitches.size() * adjustedSum);
+
+            // divide by the total to normalize old probabilities
+            for (int y = 0; y < freshIndex; ++y) {
+                probabilities[x][y] /= adjustedSum;
+            }
+
+            // set new probabilities equal to the adjusted weight
+            for (int y = freshIndex; y < cardinality; ++y) {
+                probabilities[x][y] = adjustedWeight;
             }
         }
 
         // Modify outgoing transition probabilities for fresh notes
         for (int x = freshIndex; x < cardinality; ++x) {
             for (int y = 0; y < cardinality; ++y) {
-                probabilities[x][y] = weight;
+                probabilities[x][y] = 1.0 / cardinality;
             }
         }
     }

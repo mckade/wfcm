@@ -42,6 +42,7 @@ implements SettingsListener {
     // Settings
     private int noteLength = 100;
     private int tempo = 100;
+    private double keySigWeight = .15;
     private String instrument = "PIANO";
     private int dynamic;
     private int timeSignature = 4;
@@ -211,6 +212,7 @@ implements SettingsListener {
     public boolean importSample(File file) {
         ms.stop();
 
+        mTable.setKeysigWeight(keySigWeight);
         boolean test = mTable.loadMidiFile(file.getAbsolutePath());
         tempo = (int)mTable.getTempo();
         PTable[] pt = new PTable[2];
