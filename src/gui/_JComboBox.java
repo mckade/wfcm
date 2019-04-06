@@ -1,5 +1,8 @@
 package gui;
 
+import java.awt.Graphics;
+import java.awt.Rectangle;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.plaf.basic.BasicArrowButton;
@@ -14,6 +17,9 @@ public class _JComboBox extends JComboBox<Object> {
         setForeground(Visuals.C_FONTCOLOR1);
         setBorder(Visuals.B_COMPONENT_BORDER);
         setUI(new BasicComboBoxUI() {
+            public void paintCurrentValue(Graphics g, Rectangle bounds, boolean hasFocus) {
+                super.paintCurrentValue(g, bounds, false);
+            }
             protected JButton createArrowButton() {
                 return Visuals.createBasicArrowButton(BasicArrowButton.SOUTH);
             }
