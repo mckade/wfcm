@@ -9,15 +9,10 @@
 
 package gui;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import coms.ButtonListener;
 import coms.SettingsListener;
@@ -33,7 +28,7 @@ public class RightPanel extends JPanel {
     private VisualizerPanel visualizerPanel;
     private SettingsPanel settingsPanel;
     private PreferencesPanel preferencesPanel;
-    private JTabbedPane tabPane;
+    private _JTabbedPane tabPane;
     
     // Control
     private boolean settingsVisable = true;
@@ -50,34 +45,10 @@ public class RightPanel extends JPanel {
         visualizerPanel = new VisualizerPanel(slistener);
         settingsPanel = new SettingsPanel(slistener);
         preferencesPanel = new PreferencesPanel(slistener);
-        tabPane = new JTabbedPane();
+        tabPane = new _JTabbedPane();
         tabPane.addTab("Settings", settingsPanel);
         tabPane.addTab("Preferences", preferencesPanel);
-        tabPane.setBackground(Visuals.C_COMPONENT_BACKGROUND);
-        tabPane.setForeground(Visuals.C_COMPONENT_BORDER);
-        tabPane.setBorder(Visuals.B_PANEL_BORDER);
-        tabPane.setUI(new BasicTabbedPaneUI() {
-            protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {}
-            protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h,
-                    boolean isSelected) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(tabPane.getBackground());
-                g2.fillRect(x, y, w, h);
-            }
-            protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h,
-                    boolean isSelected) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setStroke(new BasicStroke(2));
-                if(getFocusIndex() == tabIndex) {
-                    g2.setColor(Visuals.C_BORDER_CLICKED);
-                    g2.drawRect(x, y, w, h);
-                }
-                else {
-                    g2.setColor(Visuals.C_BORDER_OUTER);
-                    g2.drawRect(x, y-1, w, h);
-                }
-            }
-        });
+        
         
         // Adding panels
         add(musicControlPanel, BorderLayout.NORTH);

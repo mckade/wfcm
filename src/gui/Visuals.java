@@ -2,9 +2,16 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicArrowButton;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class Visuals {
     public static final Color C_BORDER_OUTER = new Color(0, 92, 75);
@@ -34,4 +41,37 @@ public class Visuals {
     public static final Border B_BORDER_TAB = BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(2, 0, 0, 0, C_DIVIDER),
             BorderFactory.createEmptyBorder(5, 0, 0, 0));
+    
+    // Custom UI/Component visuals.
+    public static BasicArrowButton createBasicArrowButton(int orientation) {
+        return new BasicArrowButton(orientation, 
+                Visuals.C_COMPONENT_BORDER,
+                Visuals.C_BORDER_OUTER,
+                Visuals.C_BORDER_OUTER,
+                Visuals.C_COMPONENT_BORDER);
+    }
+    
+    public static BasicScrollBarUI createScrollBarUI() {
+        BasicScrollBarUI ui = new BasicScrollBarUI() {
+            protected JButton createDecreaseButton(int orientation) {
+                return Visuals.createBasicArrowButton(orientation);
+            }
+            protected JButton createIncreaseButton(int orientation) {
+                return Visuals.createBasicArrowButton(orientation);
+            }
+            protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
+                Graphics2D g2 = (Graphics2D) g;
+                Rectangle t = thumbRect;
+                g2.setColor(Visuals.C_COMPONENT_BORDER);
+                g2.fillRect(t.x, t.y, t.width, t.height);
+            }
+            protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+                Graphics2D g2 = (Graphics2D) g;
+                Rectangle t = trackRect;
+                g2.setColor(Visuals.C_COMPONENT_BACKGROUND);
+                g2.fillRect(t.x, t.y, t.width, t.height);
+            }
+        };
+        return ui;
+    }
 }

@@ -18,7 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -41,7 +40,7 @@ implements ChangeListener, ActionListener {
     private JLabel noteCount_label;
     private _JSpinner noteCount_spinner;
     private JLabel instrument_label;
-    private JComboBox<String> instrument_comboBox;
+    private _JComboBox instrument_comboBox;
     
     // Constructor
     public SettingsPanel(SettingsListener listener) {
@@ -74,7 +73,7 @@ implements ChangeListener, ActionListener {
         instrument_label.setForeground(Visuals.C_FONTCOLOR1);
         String[] list = listener.getInstrumentList();
         Arrays.sort(list);
-        instrument_comboBox = new JComboBox<String>(list);
+        instrument_comboBox = new _JComboBox(list);
         instrument_comboBox.addActionListener(this);
         
         // Getting default setting values (From mgen)

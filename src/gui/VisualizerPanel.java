@@ -11,10 +11,8 @@ package gui;
 
 import java.awt.BorderLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
 
 import coms.SettingsListener;
 import coms.UpdateEvent;
@@ -26,7 +24,7 @@ implements UpdateListener {
     
     // Components
     private VisualizerGraphics visualizer;
-    private JScrollPane scrollPane;
+    private _JScrollPane scrollPane;
     private JScrollBar hbar;
     private double scrollLimit = 0.8;
     
@@ -43,10 +41,7 @@ implements UpdateListener {
         
         // Creating components
         visualizer = new VisualizerGraphics(this, listener);
-        scrollPane = new JScrollPane(visualizer);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        scrollPane.getVerticalScrollBar().setUnitIncrement(8);
-        scrollPane.getHorizontalScrollBar().setUnitIncrement(8);
+        scrollPane = new _JScrollPane(visualizer);
         hbar = scrollPane.getHorizontalScrollBar();
         
         // Getting default values
