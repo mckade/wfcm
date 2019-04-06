@@ -17,8 +17,8 @@ public class _JSpinner extends JSpinner {
     }
     
     private void setUp() {
-        getEditor().getComponent(0).setBackground(MainWindow.C_COMPONENT_BACKGROUND);
-        getEditor().getComponent(0).setForeground(MainWindow.C_FONTCOLOR1);
-        setBorder(MainWindow.B_COMPONENT_BORDER);
+        getEditor().getComponent(0).setBackground(Visuals.C_COMPONENT_BACKGROUND);
+        getEditor().getComponent(0).setForeground(Visuals.C_FONTCOLOR1);
+        setBorder(Visuals.B_COMPONENT_BORDER);
     }
 }

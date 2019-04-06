@@ -22,8 +22,8 @@ implements ActionListener {
     public PreferencesPanel(SettingsListener listener) {
         // Setup
         this.listener = listener;
-        setBackground(MainWindow.C_PANEL_BACKGROUND);
-        setBorder(MainWindow.B_BORDER_TAB);
+        setBackground(Visuals.C_PANEL_BACKGROUND);
+        setBorder(Visuals.B_BORDER_TAB);
         // TODO: Change this to grid bag layout eventually.
         setLayout(new FlowLayout(FlowLayout.LEADING));
         

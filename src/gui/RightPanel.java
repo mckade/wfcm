@@ -42,7 +42,7 @@ public class RightPanel extends JPanel {
     public RightPanel(SettingsListener slistener, ButtonListener blistener) {
         // Setup
         setMinimumSize(new Dimension(MINWIDTH, 200));
-        setBackground(MainWindow.C_PANEL_BACKGROUND);
+        setBackground(Visuals.C_PANEL_BACKGROUND);
         setLayout(new BorderLayout());
         
         // Creating panels
@@ -53,9 +53,9 @@ public class RightPanel extends JPanel {
         tabPane = new JTabbedPane();
         tabPane.addTab("Settings", settingsPanel);
         tabPane.addTab("Preferences", preferencesPanel);
-        tabPane.setBackground(MainWindow.C_COMPONENT_BACKGROUND);
-        tabPane.setForeground(MainWindow.C_COMPONENT_BORDER);
-        tabPane.setBorder(MainWindow.B_PANEL_BORDER);
+        tabPane.setBackground(Visuals.C_COMPONENT_BACKGROUND);
+        tabPane.setForeground(Visuals.C_COMPONENT_BORDER);
+        tabPane.setBorder(Visuals.B_PANEL_BORDER);
         tabPane.setUI(new BasicTabbedPaneUI() {
             protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {}
             protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h,
@@ -69,11 +69,11 @@ public class RightPanel extends JPanel {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(2));
                 if(getFocusIndex() == tabIndex) {
-                    g2.setColor(MainWindow.C_BORDER_CLICKED);
+                    g2.setColor(Visuals.C_BORDER_CLICKED);
                     g2.drawRect(x, y, w, h);
                 }
                 else {
-                    g2.setColor(MainWindow.C_BORDER_OUTER);
+                    g2.setColor(Visuals.C_BORDER_OUTER);
                     g2.drawRect(x, y-1, w, h);
                 }
             }

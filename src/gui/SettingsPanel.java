@@ -47,22 +47,22 @@ implements ChangeListener, ActionListener {
     public SettingsPanel(SettingsListener listener) {
         // Setup
         this.listener = listener;
-        setBackground(MainWindow.C_PANEL_BACKGROUND);
-        setBorder(MainWindow.B_BORDER_TAB);
+        setBackground(Visuals.C_PANEL_BACKGROUND);
+        setBorder(Visuals.B_BORDER_TAB);
         setLayout(new GridBagLayout());
         
         // Creating components
         // Note count
         noteCount_label = new JLabel("Note Count:");
-        noteCount_label.setFont(MainWindow.F_HEADING2);
-        noteCount_label.setForeground(MainWindow.C_FONTCOLOR1);
+        noteCount_label.setFont(Visuals.F_HEADING2);
+        noteCount_label.setForeground(Visuals.C_FONTCOLOR1);
         noteCount_spinner = new _JSpinner(listener.getNoteCount(), 2, 99999, 1);
         noteCount_spinner.addChangeListener(this);
         
         // Tempo
         tempo_label = new JLabel("Tempo");
-        tempo_label.setFont(MainWindow.F_HEADING2);
-        tempo_label.setForeground(MainWindow.C_FONTCOLOR1);
+        tempo_label.setFont(Visuals.F_HEADING2);
+        tempo_label.setForeground(Visuals.C_FONTCOLOR1);
         tempo_spinner = new _JSpinner(100, 30, 230, 1);
         tempo_spinner.addChangeListener(this);
         tempo_slider = new _JSlider(30, 230, 100);
@@ -70,8 +70,8 @@ implements ChangeListener, ActionListener {
         
         // Instrument
         instrument_label = new JLabel("Instrument:");
-        instrument_label.setFont(MainWindow.F_HEADING2);
-        instrument_label.setForeground(MainWindow.C_FONTCOLOR1);
+        instrument_label.setFont(Visuals.F_HEADING2);
+        instrument_label.setForeground(Visuals.C_FONTCOLOR1);
         String[] list = listener.getInstrumentList();
         Arrays.sort(list);
         instrument_comboBox = new JComboBox<String>(list);
