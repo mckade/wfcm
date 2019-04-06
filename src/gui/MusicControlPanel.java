@@ -32,8 +32,8 @@ implements ActionListener {
     public MusicControlPanel(ButtonListener listener) {
         // Setup
         this.listener = listener;
-        setBackground(MainWindow.PANEL_BACKGROUND);
-        setBorder(MainWindow.PANEL_BORDER);
+        setBackground(MainWindow.C_PANEL_BACKGROUND);
+        setBorder(MainWindow.B_PANEL_BORDER);
         setLayout(new FlowLayout(FlowLayout.LEADING));
         
         // Creating components

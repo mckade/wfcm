@@ -9,11 +9,15 @@
 
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import coms.ButtonListener;
 import coms.SettingsListener;
@@ -38,6 +42,7 @@ public class RightPanel extends JPanel {
     public RightPanel(SettingsListener slistener, ButtonListener blistener) {
         // Setup
         setMinimumSize(new Dimension(MINWIDTH, 200));
+        setBackground(MainWindow.C_PANEL_BACKGROUND);
         setLayout(new BorderLayout());
         
         // Creating panels
@@ -48,6 +53,31 @@ public class RightPanel extends JPanel {
         tabPane = new JTabbedPane();
         tabPane.addTab("Settings", settingsPanel);
         tabPane.addTab("Preferences", preferencesPanel);
+        tabPane.setBackground(MainWindow.C_COMPONENT_BACKGROUND);
+        tabPane.setForeground(MainWindow.C_COMPONENT_BORDER);
+        tabPane.setBorder(MainWindow.B_PANEL_BORDER);
+        tabPane.setUI(new BasicTabbedPaneUI() {
+            protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {}
+            protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h,
+                    boolean isSelected) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setColor(tabPane.getBackground());
+                g2.fillRect(x, y, w, h);
+            }
+            protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h,
+                    boolean isSelected) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setStroke(new BasicStroke(2));
+                if(getFocusIndex() == tabIndex) {
+                    g2.setColor(MainWindow.C_BORDER_CLICKED);
+                    g2.drawRect(x, y, w, h);
+                }
+                else {
+                    g2.setColor(MainWindow.C_BORDER_OUTER);
+                    g2.drawRect(x, y-1, w, h);
+                }
+            }
+        });
         
         // Adding panels
         add(musicControlPanel, BorderLayout.NORTH);

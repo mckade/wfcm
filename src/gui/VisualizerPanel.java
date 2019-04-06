@@ -37,8 +37,8 @@ implements UpdateListener {
     public VisualizerPanel(SettingsListener listener) {
         // Setup
         this.listener = listener;
-        setBackground(MainWindow.PANEL_BACKGROUND);
-        setBorder(MainWindow.PANEL_BORDER);
+        setBackground(MainWindow.C_PANEL_BACKGROUND);
+        setBorder(MainWindow.B_PANEL_BORDER);
         setLayout(new BorderLayout());
         
         // Creating components

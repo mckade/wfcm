@@ -132,11 +132,11 @@ public class VisualizerGraphics extends JComponent {
         // Drawing Background
         x = 0;
         y = 0;
-        g2.setColor(MainWindow.PANEL_BACKGROUND);
+        g2.setColor(MainWindow.C_PANEL_BACKGROUND);
         g2.fillRect(x, y, getWidth(), getHeight());
         
         // Drawing row grid lines.
-        g2.setColor(MainWindow.DIVIDER.darker());
+        g2.setColor(MainWindow.C_DIVIDER.darker());
         for (i = 0; i < 88; i++) {
             g2.drawLine(x, y-1, getWidth(), y-1);
             y += rowHeight + 1;
@@ -145,16 +145,16 @@ public class VisualizerGraphics extends JComponent {
         // Drawing measure and beat grid lines if enabled.
         if (measure || beat) {
             y = 0;
-            g2.setColor(MainWindow.DIVIDER.darker());
+            g2.setColor(MainWindow.C_DIVIDER.darker());
             for (i = rowWidth; i < getWidth(); i += rowWidth) {
                 x += rowWidth*2;
                 if (measure && i % (rowWidth*timeSignature) == 0) {
                     // Measure
-                    g2.setColor(MainWindow.DIVIDER.brighter());
+                    g2.setColor(MainWindow.C_DIVIDER.brighter());
                     g2.drawLine(x, y, x, getHeight());
                     x += 1;
                     g2.drawLine(x, y, x, getHeight());
-                    g2.setColor(MainWindow.DIVIDER.darker());
+                    g2.setColor(MainWindow.C_DIVIDER.darker());
                 }
                 else if (beat) {
                     // Beat
@@ -173,7 +173,7 @@ public class VisualizerGraphics extends JComponent {
                 y = -note.y * (rowHeight + 1) + 1536;
                 w = note.width;
                 h = rowHeight - 1;
-                g2.setColor(MainWindow.COMPONENT_BORDER_INNER);
+                g2.setColor(MainWindow.C_COMPONENT_BORDER);
                 g2.fillRect(x, y, w, h);
                 g2.setColor(Color.black);
                 g2.drawRect(x, y, w, h);
@@ -182,18 +182,18 @@ public class VisualizerGraphics extends JComponent {
         
         // Drawing play line.
         y = 0;
-        g2.setColor(MainWindow.BORDER_CLICKED);
+        g2.setColor(MainWindow.C_BORDER_CLICKED);
         g2.drawLine(playLine+rowWidth, y, playLine+rowWidth, getHeight());
         
         // Drawing Table row headers
         // Ensures the row headers are always showing.
         x = -getX();
         for (i = 0; i < 88; i++) {
-            g2.setColor(MainWindow.COMPONENT_BACKGROUND);   // Header Block
+            g2.setColor(MainWindow.C_COMPONENT_BACKGROUND);   // Header Block
             g2.fillRect(x, y, rowWidth, rowHeight);
-            g2.setColor(MainWindow.PANEL_BACKGROUND);       // Header Separator
+            g2.setColor(MainWindow.C_PANEL_BACKGROUND);       // Header Separator
             g2.drawLine(x, y-1, x+rowWidth-1, y-1);
-            g2.setColor(MainWindow.COMPONENT_BORDER_INNER); // Header Text
+            g2.setColor(MainWindow.C_COMPONENT_BORDER); // Header Text
             g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
             y += rowHeight + 1;
         }

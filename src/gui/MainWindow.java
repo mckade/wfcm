@@ -42,27 +42,33 @@ public class MainWindow extends JFrame
 implements UpdateListener, ButtonListener {
     
     // Default visuals
-    public static final Color BORDER_OUTER = new Color(0, 92, 75);
-    public static final Color BORDER_INNER = new Color(8, 145, 119);
-    public static final Color BORDER_HOVERED = new Color(80, 55, 110);
-    public static final Color BORDER_CLICKED = new Color(180, 76, 180);
-    public static final Color DIVIDER = new Color(0, 62, 52);
+    public static final Color C_BORDER_OUTER = new Color(0, 92, 75);
+    public static final Color C_BORDER_INNER = new Color(8, 145, 119);
+    public static final Color C_BORDER_HOVERED = new Color(80, 55, 110);
+    public static final Color C_BORDER_CLICKED = new Color(180, 76, 180);
+    public static final Color C_DIVIDER = new Color(0, 62, 52);
     // Panel visuals
-    public static final Color PANEL_BACKGROUND = new Color(0, 6, 5);
-    public static final Border PANEL_BORDER = BorderFactory.createCompoundBorder(
+    public static final Color C_PANEL_BACKGROUND = new Color(0, 6, 5);
+    public static final Border B_PANEL_BORDER = BorderFactory.createCompoundBorder(
             BorderFactory.createEmptyBorder(4,4,4,4),
             BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(BORDER_OUTER, 2),
-                    BorderFactory.createLineBorder(BORDER_INNER, 2)));
+                    BorderFactory.createLineBorder(C_BORDER_OUTER, 2),
+                    BorderFactory.createLineBorder(C_BORDER_INNER, 2)));
     // Component visuals
-    public static final Color COMPONENT_BACKGROUND = new Color(0, 40, 32);
-    public static final Color COMPONENT_BORDER_INNER = new Color(14, 184, 152);
+    public static final Color C_COMPONENT_BACKGROUND = new Color(0, 40, 32);
+    public static final Color C_COMPONENT_BORDER = new Color(14, 184, 152);
+    public static final Border B_COMPONENT_BORDER = BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(MainWindow.C_BORDER_OUTER, 2),
+            BorderFactory.createLineBorder(MainWindow.C_BORDER_INNER, 2));
     // Font visuals
-    public static final Font HEADING1 = new Font(Font.DIALOG, Font.PLAIN, 16);
-    public static final Font HEADING2 = new Font(Font.DIALOG, Font.PLAIN, 12);
-    public static final Font BUTTON = null;
-    public static final Color FONTCOLOR1 = Color.WHITE;
-    public static final Color FONTCOLOR2 = new Color(0,0,0);
+    public static final Font F_HEADING1 = new Font(Font.DIALOG, Font.PLAIN, 16);
+    public static final Font F_HEADING2 = new Font(Font.DIALOG, Font.PLAIN, 12);
+    public static final Color C_FONTCOLOR1 = Color.WHITE;
+    public static final Color C_FONTCOLOR2 = new Color(0,0,0);
+    // Tab
+    public static final Border B_BORDER_TAB = BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(2, 0, 0, 0, C_DIVIDER),
+            BorderFactory.createEmptyBorder(5, 0, 0, 0));
 
     // Panels
     private LeftPanel leftPanel;
@@ -91,7 +97,7 @@ implements UpdateListener, ButtonListener {
         setPreferredSize(dim);
         setSize(dim);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(PANEL_BACKGROUND);
+        getContentPane().setBackground(C_PANEL_BACKGROUND);
         setLayout(new BorderLayout());
         
         // Controller
@@ -110,7 +116,7 @@ implements UpdateListener, ButtonListener {
                 return new BasicSplitPaneDivider(this) {
                     public void setBorder(Border b) {}
                     public void paint(Graphics g) {
-                        g.setColor(DIVIDER);
+                        g.setColor(C_DIVIDER);
                         g.fillRect(0, 0, getSize().width, getSize().height);
                     }
                 };

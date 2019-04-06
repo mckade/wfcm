@@ -11,15 +11,22 @@
 
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -27,6 +34,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicSliderUI;
 
 import coms.SettingsListener;
 
@@ -39,7 +47,6 @@ implements ChangeListener, ActionListener {
     
     // Components
     // Settings
-    private JLabel settings;
     private JLabel tempo_label;
     private JSpinner tempo_spinner;
     private JSlider tempo_slider;
@@ -52,40 +59,56 @@ implements ChangeListener, ActionListener {
     public SettingsPanel(SettingsListener listener) {
         // Setup
         this.listener = listener;
-        setBackground(MainWindow.PANEL_BACKGROUND);
-        setBorder(MainWindow.PANEL_BORDER);
+        setBackground(MainWindow.C_PANEL_BACKGROUND);
+        setBorder(MainWindow.B_BORDER_TAB);
         setLayout(new GridBagLayout());
         
         // Creating components
-        // Settings Label
-        settings = new JLabel("Settings and Modifiers", JLabel.CENTER);
-        settings.setFont(MainWindow.HEADING1);
-        settings.setForeground(Color.WHITE);
-        
         // Note count
         noteCount_label = new JLabel("Note Count:");
-        noteCount_label.setFont(MainWindow.HEADING2);
+        noteCount_label.setFont(MainWindow.F_HEADING2);
         noteCount_label.setForeground(Color.WHITE);
         noteCount_spinner = new JSpinner(new SpinnerNumberModel(listener.getNoteCount(), 2, 99999, 1));
-//        noteCount_spinner.getEditor().getComponent(0).setBackground(MainWindow.COMPONENT_BACKGROUND);
-//        noteCount_spinner.getEditor().getComponent(0).setForeground(Color.WHITE);
-//        noteCount_spinner.setBorder(BorderFactory.createCompoundBorder(
-//                BorderFactory.createLineBorder(MainWindow.BORDER_OUTER, 2),
-//                BorderFactory.createLineBorder(MainWindow.BORDER_INNER, 2)));
+        noteCount_spinner.getEditor().getComponent(0).setBackground(MainWindow.C_COMPONENT_BACKGROUND);
+        noteCount_spinner.getEditor().getComponent(0).setForeground(Color.WHITE);
+        noteCount_spinner.setBorder(MainWindow.B_COMPONENT_BORDER);
         noteCount_spinner.addChangeListener(this);
         
         // Tempo
         tempo_label = new JLabel("Tempo");
-        tempo_label.setFont(MainWindow.HEADING2);
+        tempo_label.setFont(MainWindow.F_HEADING2);
         tempo_label.setForeground(Color.WHITE);
         tempo_spinner = new JSpinner(new SpinnerNumberModel(100, 30, 230, 1));
         tempo_spinner.addChangeListener(this);
+        tempo_spinner.getEditor().getComponent(0).setBackground(MainWindow.C_COMPONENT_BACKGROUND);
+        tempo_spinner.getEditor().getComponent(0).setForeground(Color.WHITE);
+        tempo_spinner.setBorder(MainWindow.B_COMPONENT_BORDER);
         tempo_slider = new JSlider(30, 230, 100);
+        tempo_slider.setBackground(MainWindow.C_PANEL_BACKGROUND);
+        tempo_slider.setUI(new BasicSliderUI(tempo_slider) {
+            public void paintThumb(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                Rectangle t = thumbRect;
+                g2.setColor(MainWindow.C_DIVIDER);
+                g2.fillRect(t.x, t.y, t.width-3, t.height);
+                g2.setColor(MainWindow.C_COMPONENT_BORDER);
+                g2.drawRect(t.x, t.y, t.width-3, t.height-1);
+            }
+            public void paintFocus(Graphics g) {}
+            public void paintTrack(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                Rectangle t = trackRect;
+                g2.setColor(MainWindow.C_DIVIDER);
+                g2.fillRect(t.x, t.y+7, t.width, t.height/5);
+                g2.setColor(MainWindow.C_COMPONENT_BORDER);
+                g2.drawRect(t.x, t.y+7, t.width, t.height/5);
+            }
+        });
         tempo_slider.addChangeListener(this);
         
         // Instrument
         instrument_label = new JLabel("Instrument:");
-        instrument_label.setFont(MainWindow.HEADING2);
+        instrument_label.setFont(MainWindow.F_HEADING2);
         instrument_label.setForeground(Color.WHITE);
         String[] list = listener.getInstrumentList();
         Arrays.sort(list);
@@ -107,7 +130,6 @@ implements ChangeListener, ActionListener {
         gc.fill = GridBagConstraints.NONE;
         gc.anchor = GridBagConstraints.FIRST_LINE_START;
         gc.insets = new Insets(0,5,5,0);
-        add(settings, gc);
         
         ////////// Row 2 //////////
         ////////// Column 1 //////////
