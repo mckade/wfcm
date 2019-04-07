@@ -11,6 +11,7 @@ package model;
  */
 
 import jm.music.data.Score;
+import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.util.*;
@@ -54,6 +55,20 @@ class MarkovTable {
 
     Rectangle[] getSample()
     {
+        // Convert DRectangles to drawable Rectangles
+        sample = new Rectangle[midiReader.getSampleRects().length];
+        int i = 0;
+        for(DRectangle drect : midiReader.getSampleRects())
+        {
+            sample[i] = new Rectangle(
+                    (int)(drect.x*timeScale), // x = noteStartTime * scale
+                    (int)drect.y, // y = pitch
+                    (int)(drect.width*timeScale), // width = duration * scale
+                    1); //height -- updated in VisualizerGraphics, so this value doesn't matter
+
+            i++;
+        }
+
         return sample;
     }
 
@@ -78,21 +93,14 @@ class MarkovTable {
         // scan the sample and update the pitch and length maps
         System.out.println("Creating chord and chord length maps");
         chordPitches = new Vector<>();
-        double time = 0.0;
         for (double[] chrd : chords) {
             // Make a copy of chord pitch array without the duration at the end
             int[] newChrd = new int[chrd.length - 1];
             for (int i = 0; i < chrd.length - 1; ++i) {
                 // System.out.println(chrd[i]);
                 newChrd[i] = (int)chrd[i];
-                rects.add(new Rectangle(
-                        (int)(time*timeScale), // x = noteStartTime * scale
-                        (int)chrd[i], // y = pitch
-                        (int)(chrd[chrd.length - 1]*timeScale), // width = duration * scale
-                        1)); //height -- updated in VisualizerGraphics, so this value doesn't matter
             }
 
-            time += chrd[chrd.length - 1];
 
             // Add new chord to chordPitches as int[]
             chordPitches.add(newChrd);
