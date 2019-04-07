@@ -336,7 +336,7 @@ class MidiReader {
             durDiffs[i] = pitchDurations[i] - durAvg;
         }
 
-        double numerator = 0;
+        double numerator;
         double denominator;
         double profileDiffSumSq;
         double durDiffSumSq;
@@ -345,6 +345,7 @@ class MidiReader {
         for (int i = 0; i < 24; ++i) {
             profileDiffSumSq = 0;
             durDiffSumSq = 0;
+            numerator = 0;
 
             // Calculate coefficient for this key
                 // Calculate numerator
@@ -387,9 +388,18 @@ class MidiReader {
             }
         }
 
-        // Map index to a number 1 - 12 corresponding to a Key
-        // on the Circle of Fifths, 1 corresponding to C,
-        // 2 corresponding to G, etc.
+        return mapKeyIndex(index);
+    }
+
+    int estimateKeySignature() {
+        return krumhanslSchmuckler(midiData.getTotalDurations());
+    }
+
+    // Map index to a number 1 - 12 corresponding to a Key
+    // on the Circle of Fifths, 1 corresponding to C,
+    // 2 corresponding to G, etc.
+    int mapKeyIndex(int index) {
+
         switch (index + 1) {
             // C
             case 1:
@@ -454,9 +464,5 @@ class MidiReader {
             default: // Shouldn't get here
                 return 0;
         }
-    }
-
-    int estimateKeySignature() {
-        return krumhanslSchmuckler(midiData.getTotalDurations());
     }
 }
