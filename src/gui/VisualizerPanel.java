@@ -94,8 +94,9 @@ implements UpdateListener {
 
     // Update event to update the scrollPane
     public void updateEvent(UpdateEvent e) {
-        // TODO fix this
-//        scrollPane.invalidate();
-//        scrollPane.validate();
+        if (scrollPane == null) return;
+        int t = scrollPane.getVerticalScrollBar().getValue();
+        scrollPane.getVerticalScrollBar().setValue(t+1);
+        scrollPane.getVerticalScrollBar().setValue(t);
     }
 }

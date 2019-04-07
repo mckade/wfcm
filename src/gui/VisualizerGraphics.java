@@ -13,6 +13,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -42,9 +44,12 @@ public class VisualizerGraphics extends JComponent {
     private Dimension dim;
     private int playLine = 0;
     private double scale = 1;
+    private double maxScale = 10;
+    private double minScale = .1;
     private double inc = .1;
-    private double max = 2;
-    private double min = .1;
+    private double maxInc = 1;
+    private double minInc = .01;
+
     
     // Control
     private boolean measure = true;     // Whether or not to draw the measures
@@ -80,13 +85,14 @@ public class VisualizerGraphics extends JComponent {
         MouseAdapter ma = new MouseAdapter() {
             double playTime;
             double point;
+            int scrollAmount;
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
             }
             public void mouseDragged(MouseEvent e) {
                 if (e.getY()+getY() > rowHeight && !dragging) return;
                 dragging = true;
-                point = e.getX()-rowWidth;
+                point = (e.getX()-rowWidth);
                 if (point >= noteArea) {        // Clicked pass playable notes
                     playTime = 1;
                     slistener.setPlayTime(playTime);
@@ -124,7 +130,11 @@ public class VisualizerGraphics extends JComponent {
             }
             public void mouseWheelMoved(MouseWheelEvent e) {
                 if (e.isControlDown()) {
-                    System.out.println("zoom!");    // Change scale
+                    if (e.getWheelRotation() > 0)
+                        decrementScale();
+                    else
+                        incrimentScale();
+                    calculateNoteArea();
                 }
                 else
                     getParent().dispatchEvent(e);   // Let the scroller take care of it.
@@ -138,26 +148,29 @@ public class VisualizerGraphics extends JComponent {
     
     // Increments the scale
     private void incrimentScale() {
-        if (scale+inc < max)
+        calculateInc();
+        if (scale+inc < maxScale)
             scale+=inc;
         else
-            scale = max;
+            scale = maxScale;
     }
     
     // Decrements the scale
     private void decrementScale() {
-        if (scale-inc > min)
+        calculateInc();
+        if (scale-inc > minScale)
             scale-=inc;
         else
-            scale = min;
+            scale = minScale;
     }
     
-    // Updates the visualizer.
-    public void updateVisualizer() {
-        notes = slistener.getNotes();
-        
-        // Getting the x dimension of the table.
-        // This is so we are able to scroll through all the notes.
+    // Calculates the increment based on the current scale
+    private void calculateInc() {
+        inc = scale*(maxInc + minInc)/10;
+    }
+    
+    // Calculates the note area for the notes.
+    private void calculateNoteArea() {
         noteArea = 0;
         if (notes != null) {
             for (Rectangle note: notes) {
@@ -166,11 +179,17 @@ public class VisualizerGraphics extends JComponent {
                 }
             }
         }
+        noteArea *= scale;
+        System.out.println(noteArea);
         dim.width = noteArea + 1000;    // Adding a little extra scroll room
-        
-        // Updating scrollbar and repainting.
         ulistener.updateEvent(new UpdateEvent(this, UpdateType.scrollBar));
         updatePlayLine();
+    }
+    
+    // Updates the visualizer.
+    public void updateVisualizer() {
+        notes = slistener.getNotes();
+        calculateNoteArea();
     }
     
     // Updates the position of the play line.
@@ -193,13 +212,13 @@ public class VisualizerGraphics extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
         int x, y, w, h, i;
         
-        // Drawing Background
+        // Drawing Background (not affected by scale)
         x = 0;
         y = 0;
         g2.setColor(Visuals.C_PANEL_BACKGROUND);
         g2.fillRect(x, y, getWidth(), getHeight());
         
-        // Drawing row grid lines.
+        // Drawing row grid lines. (not affected by scale)
         y = rowHeight+1;
         g2.setColor(Visuals.C_DIVIDER.darker());
         for (i = 0; i < 89; i++) {
@@ -207,12 +226,13 @@ public class VisualizerGraphics extends JComponent {
             y += rowHeight + 1;
         }
         
-        // Drawing measure and beat grid lines if enabled.
+        // Drawing measure and beat grid lines if enabled. (Affected by scale)
         if (measure || beat) {
             y = 0;
             g2.setColor(Visuals.C_DIVIDER.darker());
-            for (x = rowWidth; x < getWidth(); x += rowWidth) {
-                if (measure && (x % (rowWidth*slistener.getTimeSignature()) == rowWidth
+            for (i = 0; i < getWidth()/scale; i += rowWidth) {
+                x = (int) (i*scale) + rowWidth;
+                if (measure && (i % (rowWidth*slistener.getTimeSignature()) == 0
                                || slistener.getTimeSignature() == 1)) {
                     // Measure
                     g2.setColor(Visuals.C_DIVIDER.brighter());
@@ -225,14 +245,14 @@ public class VisualizerGraphics extends JComponent {
             }
         }
         
-        // Drawing notes if set.
+        // Drawing notes if set. (Affected by scale)
         // Reflects notes over x-axis, and then moves them down
         // by a magic constant to be in the correct row.
         if (notes != null) {
             for(Rectangle note: notes) {
-                x = note.x + rowWidth+1;
+                x = (int) (note.x*scale) + rowWidth+1;
                 y = -note.y * (rowHeight+1) + (rowHeight+1)*97;
-                w = note.width;
+                w = (int) (note.width*scale);
                 h = rowHeight - 1;
                 g2.setColor(Visuals.C_COMPONENT_BORDER);
                 g2.fillRect(x, y, w, h);
@@ -241,12 +261,13 @@ public class VisualizerGraphics extends JComponent {
             }
         }
         
-        // Drawing play line.
+        // Drawing play line. (Affected by scale indirectly through noteArea)
+        x = playLine + rowWidth;
         y = 0;
         g2.setColor(Visuals.C_BORDER_CLICKED);
-        g2.drawLine(playLine+rowWidth, y, playLine+rowWidth, getHeight());
+        g2.drawLine(x, y, x, getHeight());
         
-        // Drawing Table row headers
+        // Drawing Table row headers (Not affected by scale)
         // Ensures the row headers are always showing.
         x = -getX();
         y = rowHeight+1;
@@ -260,16 +281,16 @@ public class VisualizerGraphics extends JComponent {
             y += rowHeight+1;
         }
         
-        // Drawing Table column header
+        // Drawing Table column header (Not affected by scale)
         x = 0;
         y = -getY();
         g2.setColor(Visuals.C_COMPONENT_BACKGROUND);
         g2.fillRect(x, y, getWidth(), rowHeight);
         
-        // Drawing playLine knob
-        y = 0;
+        // Drawing playLine thumb (Affected by scale indirectly through noteArea)
+        y = -getY();
         g2.setColor(Visuals.C_BORDER_CLICKED);
-        g2.fillOval(playLine+rowWidth-rowHeight/2, y, rowHeight, rowHeight);
+        g2.fillOval(playLine + (rowWidth-rowHeight/2), y, rowHeight, rowHeight);
     }
 
     public int getNoteArea() {
