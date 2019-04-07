@@ -18,7 +18,7 @@ public class _JTabbedPane extends JTabbedPane {
     // Updates visuals.
     public void updateVisuals() {
         setBackground(Visuals.C_COMPONENT_BACKGROUND);
-        setForeground(Visuals.C_COMPONENT_BORDER);
+        setForeground(Visuals.C_FONTCOLOR2);
         setBorder(Visuals.B_PANEL_BORDER);
         setUI(new BasicTabbedPaneUI() {
             protected void paintFocusIndicator(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex,
