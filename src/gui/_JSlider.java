@@ -12,6 +12,10 @@ public class _JSlider extends JSlider {
     
     public _JSlider(int min, int max, int value) {
         super(min, max, value);
+    }
+    
+    // Updates visuals.
+    public void updateVisuals() {
         setBackground(Visuals.C_PANEL_BACKGROUND);
         setUI(new BasicSliderUI(this) {
             public void paintFocus(Graphics g) {}

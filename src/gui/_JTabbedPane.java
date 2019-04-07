@@ -3,6 +3,7 @@ package gui;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import javax.swing.JTabbedPane;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -12,10 +13,16 @@ public class _JTabbedPane extends JTabbedPane {
 
     public _JTabbedPane() {
         super();
+    }
+    
+    // Updates visuals.
+    public void updateVisuals() {
         setBackground(Visuals.C_COMPONENT_BACKGROUND);
         setForeground(Visuals.C_COMPONENT_BORDER);
         setBorder(Visuals.B_PANEL_BORDER);
         setUI(new BasicTabbedPaneUI() {
+            protected void paintFocusIndicator(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex,
+                    Rectangle iconRect, Rectangle textRect, boolean isSelected) {}
             protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {}
             protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h,
                     boolean isSelected) {

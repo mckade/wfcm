@@ -45,7 +45,7 @@ implements UpdateListener, ButtonListener {
     private JSplitPane splitPane;
     
     // Components
-    private MainWindowMenuBar menuBar;
+    private _JMenuBar menuBar;
     
     // Controller
     private MusicGenerator mgen;
@@ -61,6 +61,7 @@ implements UpdateListener, ButtonListener {
     public MainWindow() {
         // Setup
         super("Proc Music");
+        Visuals.setThemeDark();
         Dimension dim = new Dimension(1024, 768);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(dim);
@@ -93,14 +94,22 @@ implements UpdateListener, ButtonListener {
         });
 
         // Creating Components
-        menuBar = new MainWindowMenuBar(this);
+        menuBar = new _JMenuBar(this);
         
         // Adding Panels and components
         add(splitPane, BorderLayout.CENTER);
         setJMenuBar(menuBar);
         
+        updateVisuals();
+        
         // Finished setup
         setVisible(true);
+    }
+    
+    // Updates the visuals
+    private void updateVisuals() {
+        leftPanel.updateVisuals();
+        rightPanel.updateVisuals();
     }
 
     // Handles events calling for an update
@@ -133,34 +142,34 @@ implements UpdateListener, ButtonListener {
         switch (e.getID()) {
         // File
         // New
-        case MainWindowMenuBar.NEW:
+        case _JMenuBar.NEW:
             // NYI
             break;
         // Open    
-        case MainWindowMenuBar.OPEN:
+        case _JMenuBar.OPEN:
             file = FileDialog.openFile(this, FileDialog.SAVE_OPEN);
             mgen.openVisualizerTable(file);
             break;
         // Close    
-        case MainWindowMenuBar.CLOSE:
+        case _JMenuBar.CLOSE:
             // NYI
             break;
         // Save    
-        case MainWindowMenuBar.SAVE:
+        case _JMenuBar.SAVE:
             if (file == null)   // Checking if file has a save location.
                 file = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
             if (file != null)   // Saving at file location.
                 mgen.saveVisualizerTable(file);
             break;
         // SaveAs    
-        case MainWindowMenuBar.SAVEAS:
+        case _JMenuBar.SAVEAS:
             tfile = FileDialog.saveFile(this, FileDialog.SAVE_OPEN);
             if (tfile == null) break;   // Canceled
             file = tfile;   // Updating current file save location
             mgen.saveVisualizerTable(file);
             break;
         // Import   
-        case MainWindowMenuBar.IMPORT:
+        case _JMenuBar.IMPORT:
             tfile = FileDialog.openFile(this, FileDialog.IMPORT_EXPORT);
             if (tfile == null) break;   // Canceled
             if (mgen.isPlaying()) {
@@ -177,7 +186,7 @@ implements UpdateListener, ButtonListener {
             else leftPanel.addLog("Failed to load MIDI.");
             break;
         // Export    
-        case MainWindowMenuBar.EXPORT:
+        case _JMenuBar.EXPORT:
             tfile = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
             if (tfile == null) break;   // Canceled
             leftPanel.addLog("Exporting MIDI...");
@@ -186,18 +195,29 @@ implements UpdateListener, ButtonListener {
             else leftPanel.addLog("Failed to export MIDI.");
             break;
         // Exit   
-        case MainWindowMenuBar.EXIT:
+        case _JMenuBar.EXIT:
             System.exit(0);
             break;
             
         // Window
         // LeftPanel
-        case MainWindowMenuBar.LEFTPANEL:
+        case _JMenuBar.LEFTPANEL:
             leftPanel.toggleVisible();
             break;
         // Settings   
-        case MainWindowMenuBar.SETTINGS:
+        case _JMenuBar.SETTINGS:
             rightPanel.toggleSettingsPanel();
+            break;
+            
+        // Theme
+        // Dark
+        case _JMenuBar.DARK:
+            Visuals.setThemeDark();
+            updateVisuals();
+            break;
+        case _JMenuBar.LIGHT:
+            Visuals.setThemeLight();
+            updateVisuals();
             break;
         }
     }

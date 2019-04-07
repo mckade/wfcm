@@ -10,8 +10,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -33,36 +31,40 @@ public class LogPanel extends JPanel {
     private JTextArea text;
     private JPopupMenu menu;
     private JMenuItem clear;
+    private JScrollPane scrollPane;
 
     // Constructor
     public LogPanel() {
         // Setup
-        setBackground(Visuals.C_PANEL_BACKGROUND);
-        setBorder(Visuals.B_PANEL_BORDER);
         setLayout(new BorderLayout());
         
         // Creating components
         // Label
         title = new JLabel("Log", JLabel.CENTER);
-        title.setFont(new Font(Font.DIALOG, Font.PLAIN, 16));
-        title.setForeground(Color.WHITE);
         // Text
         text = new JTextArea();
         text.setEditable(false);
         text.setLineWrap(true);
         text.setWrapStyleWord(true);
-        text.setFont(new Font(Font.DIALOG, Font.PLAIN, 14));
-        text.setBackground(this.getBackground());
-        text.setForeground(Color.WHITE);
         setUpMouselistener();
-        
-        // Creating text scroll pane
-        JScrollPane scrollPane = new JScrollPane(text);
-        scrollPane.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, new Color(0, 92, 75)));
+        // Scroll pane
+        scrollPane = new JScrollPane(text);
         
         // Adding components
         add(title, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);      
+        add(scrollPane, BorderLayout.CENTER);
+    }
+    
+    // Updates visuals.
+    public void updateVisuals() {
+        setBackground(Visuals.C_PANEL_BACKGROUND);
+        setBorder(Visuals.B_PANEL_BORDER);
+        title.setFont(Visuals.F_HEADING1);
+        title.setForeground(Visuals.C_FONTCOLOR1);
+        text.setFont(Visuals.F_BODY);
+        text.setBackground(Visuals.C_PANEL_BACKGROUND);
+        text.setForeground(Visuals.C_FONTCOLOR1);
+        scrollPane.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, Visuals.C_BORDER_OUTER));
     }
     
     // Adds a log

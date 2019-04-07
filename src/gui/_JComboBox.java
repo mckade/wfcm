@@ -13,6 +13,10 @@ public class _JComboBox extends JComboBox<Object> {
     
     public _JComboBox(String[] list) {
         super(list);
+    }
+    
+    // Updates visuals.
+    public void updateVisuals() {
         setBackground(Visuals.C_COMPONENT_BACKGROUND);
         setForeground(Visuals.C_FONTCOLOR1);
         setBorder(Visuals.B_COMPONENT_BORDER);

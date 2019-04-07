@@ -33,7 +33,7 @@ import coms.ButtonEvent;
 import coms.ButtonListener;
 
 @SuppressWarnings("serial")
-public class MainWindowMenuBar extends JMenuBar
+public class _JMenuBar extends JMenuBar
 implements ActionListener {
     
     // Menu item ids
@@ -49,19 +49,21 @@ implements ActionListener {
     // Window
     public static final String LEFTPANEL = "leftpanel";
     public static final String SETTINGS = "settings";
+    // Theme
+    public static final String DARK = "dark";
+    public static final String LIGHT = "light";
     
     // Listeners to send events to.
     private ButtonListener listener;
 
     // Constructor
-    public MainWindowMenuBar(ButtonListener listener) {
+    public _JMenuBar(ButtonListener listener) {
         // Setup
         this.listener = listener;
         
         // File menu
         JMenu file = new JMenu("File");
         file.setMnemonic(KeyEvent.VK_F);
-
         // File menu items
         JMenuItem _new = new JMenuItem("New");
         _new.setMnemonic(KeyEvent.VK_N);
@@ -97,7 +99,6 @@ implements ActionListener {
         exit.setMnemonic(KeyEvent.VK_X);
         exit.addActionListener(this);
         exit.setActionCommand(EXIT);
-        
         // Adding file menu items to file menu.
         file.add(_new);
         file.add(open);
@@ -115,7 +116,6 @@ implements ActionListener {
         // Window menu.
         JMenu window = new JMenu("Window");
         window.setMnemonic(KeyEvent.VK_W);
-        
         // Window menu items.
         JCheckBoxMenuItem leftPanel = new JCheckBoxMenuItem("Left Panel");
         leftPanel.setSelected(true);
@@ -127,14 +127,30 @@ implements ActionListener {
         settings.setMnemonic(KeyEvent.VK_S);
         settings.addActionListener(this);
         settings.setActionCommand(SETTINGS);
-        
         // Adding window menu items to window menu.
         window.add(leftPanel);
         window.add(settings);
         
+        // Theme menu
+        JMenu theme = new JMenu("Theme");
+        theme.setMnemonic(KeyEvent.VK_T);
+        // Theme menu items
+        JMenuItem dark = new JMenuItem("Dark");
+        dark.setMnemonic(KeyEvent.VK_D);
+        dark.addActionListener(this);
+        dark.setActionCommand(DARK);
+        JMenuItem light = new JMenuItem("Light");
+        light.setMnemonic(KeyEvent.VK_L);
+        light.addActionListener(this);
+        light.setActionCommand(LIGHT);
+        // Adding theme menu items to theme menu.
+        theme.add(dark);
+        theme.add(light);
+        
         // Adding menus to menu bar.
         add(file);
         add(window);
+        add(theme);
     }
     
     // Sends an event to the listener that a menu item was clicked.

@@ -50,6 +50,7 @@ implements SettingsListener {
     
     // Preferences
     private boolean follow = true;
+    private boolean loadSampleSettings = false;
     //private boolean keySignature = true;
 
     // Control
@@ -389,18 +390,15 @@ implements SettingsListener {
     // Note Count
     public void setNoteCount(int noteCount) { this.noteLength = noteCount; }
     public int getNoteCount() { return noteLength; }
-    
     // Tempo
     public void setTempo(int tempo) { this.tempo = tempo; settingsChanged = true; }
     public int getTempo() { return tempo;}
-    
     // Instrument
     public void setInstrument(String instrument) { this.instrument = instrument; settingsChanged = true; }
     public String getInstrument() { return instrument; }
     public String[] getInstrumentList() {
         return inst.keySet().toArray(new String[inst.keySet().size()]);
     }
-    
     // Signatures
     public void setTimeSignature(int timeSignature) { this.timeSignature = timeSignature; }
     public int getTimeSignature() { return timeSignature; }
@@ -409,4 +407,7 @@ implements SettingsListener {
     // Follow
     public void setFollow(boolean follow) { this.follow = follow; }
     public boolean getFollow() { return follow; }
+    // loadSmpleSettings
+    public void setLoadSampleSettings(boolean load) {loadSampleSettings = load;}
+    public boolean getLoadSampleSettings() {return loadSampleSettings;}
 }

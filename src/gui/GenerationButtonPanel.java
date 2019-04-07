@@ -38,8 +38,6 @@ implements ActionListener {
     public GenerationButtonPanel(ButtonListener listener) {
         // Setup
         this.listener = listener;
-        setBackground(Visuals.C_PANEL_BACKGROUND);
-        setBorder(Visuals.B_PANEL_BORDER);
         setLayout(new FlowLayout(FlowLayout.LEADING));
         
         // Creating components
@@ -49,13 +47,21 @@ implements ActionListener {
         generate.setActionCommand(GENERATE);
         // Recycle
         recycle = new _JButton("Recycle");
-        recycle.setPreferredSize(generate.getPreferredSize());
         recycle.addActionListener(this);
         recycle.setActionCommand(RECYCLE);
         
         // Adding components
         add(generate);
         add(recycle);
+    }
+    
+    // Updates visuals.
+    public void updateVisuals() {
+        setBackground(Visuals.C_PANEL_BACKGROUND);
+        setBorder(Visuals.B_PANEL_BORDER);
+        generate.updateVisuals();
+        recycle.updateVisuals();
+        recycle.setPreferredSize(generate.getPreferredSize());
     }
     
     // Sends an event to the listener that a button was clicked. (MainWindow)

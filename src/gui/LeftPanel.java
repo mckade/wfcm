@@ -52,6 +52,12 @@ public class LeftPanel extends JPanel {
         add(logPanel, BorderLayout.CENTER);
     }
     
+    // Updates visuals.
+    public void updateVisuals() {
+        logPanel.updateVisuals();
+        generationButtonPanel.updateVisuals();
+    }
+    
     // Toggles the visibility of the panel.
     // Fires an update event to the listener to update the divider. (MainWindow)
     public void toggleVisible() {

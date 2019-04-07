@@ -35,8 +35,6 @@ implements UpdateListener {
     public VisualizerPanel(SettingsListener listener) {
         // Setup
         this.listener = listener;
-        setBackground(Visuals.C_PANEL_BACKGROUND);
-        setBorder(Visuals.B_PANEL_BORDER);
         setLayout(new BorderLayout());
         
         // Creating components
@@ -44,11 +42,18 @@ implements UpdateListener {
         scrollPane = new _JScrollPane(visualizer);
         hbar = scrollPane.getHorizontalScrollBar();
         
-        // Getting default values
-        updateVisualizer();
-        
         // Adding components
         add(scrollPane, BorderLayout.CENTER);
+        
+        // Getting default values
+        updateVisualizer();
+    }
+    
+    // Updates visuals.
+    public void updateVisuals() {
+        setBackground(Visuals.C_PANEL_BACKGROUND);
+        setBorder(Visuals.B_PANEL_BORDER);
+        scrollPane.updateVisuals();
     }
     
     // Resets the scroll bar

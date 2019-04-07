@@ -37,7 +37,6 @@ public class RightPanel extends JPanel {
     public RightPanel(SettingsListener slistener, ButtonListener blistener) {
         // Setup
         setMinimumSize(new Dimension(MINWIDTH, 200));
-        setBackground(Visuals.C_PANEL_BACKGROUND);
         setLayout(new BorderLayout());
         
         // Creating panels
@@ -49,11 +48,20 @@ public class RightPanel extends JPanel {
         tabPane.addTab("Settings", settingsPanel);
         tabPane.addTab("Preferences", preferencesPanel);
         
-        
         // Adding panels
         add(musicControlPanel, BorderLayout.NORTH);
         add(visualizerPanel, BorderLayout.CENTER);
         add(tabPane, BorderLayout.SOUTH);
+    }
+    
+    // Updates visuals.
+    public void updateVisuals() {
+        setBackground(Visuals.C_PANEL_BACKGROUND);
+        musicControlPanel.updateVisuals();
+        visualizerPanel.updateVisuals();
+        settingsPanel.updateVisuals();
+        preferencesPanel.updateVisuals();
+        tabPane.updateVisuals();
     }
     
     // Toggles the view between play and pause.

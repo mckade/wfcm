@@ -189,14 +189,15 @@ public class VisualizerGraphics extends JComponent {
     }
     
     // Updates the position of the play line.
-    // If music is playing doesn't update playline if the mouse is pressed.
+    // If music is playing it won't update the playline if
+    // the user is moving the playline around.
     public void updatePlayLine() {
         if (pressed && dragging) return;
         playLine = (int) (slistener.getPlayTime() * noteArea);
         repaint();
     }
     
-    // Updates the positition of the plane line forcibly.
+    // Updates the position of the plane line forcibly.
     private void updatePlayLine(double playTime) {
         playLine = (int) (playTime * noteArea);
         repaint();
@@ -268,14 +269,16 @@ public class VisualizerGraphics extends JComponent {
         x = -getX();
         y = rowHeight+1;
         for (i = 0; i < 88; i++) {
-            g2.setColor(Visuals.C_COMPONENT_BACKGROUND);   // Header Block
+            g2.setColor(Visuals.C_COMPONENT_BACKGROUND);    // Header Block
             g2.fillRect(x, y, rowWidth, rowHeight);
-            g2.setColor(Visuals.C_PANEL_BACKGROUND);       // Header Separator
+            g2.setColor(Visuals.C_PANEL_BACKGROUND);        // Header Separator
             g2.drawLine(x, y-1, x+rowWidth-1, y-1);
-            g2.setColor(Visuals.C_COMPONENT_BORDER); // Header Text
+            g2.setColor(Visuals.C_COMPONENT_BORDER);        // Header Text
             g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
             y += rowHeight+1;
         }
+        g2.setColor(Visuals.C_PANEL_BACKGROUND);    // Last Header Separator
+        g2.drawLine(x, y-1, x+rowWidth-1, y-1);
         
         // Drawing Table column header (Not affected by scale)
         x = 0;

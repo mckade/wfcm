@@ -32,8 +32,6 @@ implements ActionListener {
     public MusicControlPanel(ButtonListener listener) {
         // Setup
         this.listener = listener;
-        setBackground(Visuals.C_PANEL_BACKGROUND);
-        setBorder(Visuals.B_PANEL_BORDER);
         setLayout(new FlowLayout(FlowLayout.LEADING));
         
         // Creating components
@@ -52,6 +50,17 @@ implements ActionListener {
         add(play_pause);
         add(skipLeft);
         add(skipRight);
+    }
+    
+    // Updates visuals.
+    public void updateVisuals() {
+        setBackground(Visuals.C_PANEL_BACKGROUND);
+        setBorder(Visuals.B_PANEL_BORDER);
+        play_pause.updateVisuals();
+        skipLeft.updateVisuals();
+        skipRight.updateVisuals();
+        play_pause.setPreferredSize(skipRight.getPreferredSize());
+        skipLeft.setPreferredSize(skipRight.getPreferredSize());
     }
     
     // Toggles the view between play and pause.
