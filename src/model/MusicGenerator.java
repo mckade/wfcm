@@ -42,7 +42,7 @@ implements SettingsListener {
     // Settings
     private int noteLength = 100;
     private int tempo = 100;
-    private double keySigWeight = .15;
+    private double keySigWeight = 0.0;
     private String instrument = "PIANO";
     private int dynamic;
     private int timeSignature = 4;

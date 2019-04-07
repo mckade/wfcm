@@ -8,12 +8,14 @@ package model;
  * Returns the read data to be processed.
  */
 
+import com.sun.org.apache.bcel.internal.generic.DREM;
 import jm.music.data.*;
 import jm.util.Read;
 
 import java.util.*;
 import java.util.List;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
 
 class DRectangle {
@@ -40,10 +42,8 @@ class MidiReader {
     private MidiData midiData = null;
     private double tempo;
     private Score midiScore;
+    private DRectangle[] sampleRects;
 
-    // Constructor
-    MidiReader() {
-    }
 
     // Inner class used to encapsulate data obtained form parsing
     // Event object from SMF
@@ -170,7 +170,7 @@ class MidiReader {
                 double stime = phr.getNoteStartTime(i) / quantize;
 
                 int first = (int)dur;
-                if(dur - first < dur - (first + 1))
+                if(Math.abs(dur - first) < Math.abs(dur - (first + 1)))
                     dur = first * quantize;
                 else
                     dur = (first + 1) * quantize;
@@ -178,7 +178,7 @@ class MidiReader {
                 first = (int)stime;
                 if(first == 0)
                     stime = 0;
-                else if(stime - first < stime - (first + 1))
+                else if(Math.abs(stime - first) < Math.abs(stime - (first + 1)))
                     stime = first * quantize;
                 else
                     stime = (first + 1) * quantize;
@@ -223,6 +223,8 @@ class MidiReader {
             cur++;
         }
 
+        sampleRects = drects;
+
         // Create the chord arrays where the last note is the duration
         // and the rest are the pitches
         Vector<double[]> result = new Vector<>();
@@ -262,6 +264,8 @@ class MidiReader {
     {
         return midiScore;
     }
+
+    DRectangle[] getSampleRects() { return sampleRects; }
 
     Vector<double[]> getChords() {
         if (this.midiData != null) {

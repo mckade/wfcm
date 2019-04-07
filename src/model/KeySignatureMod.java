@@ -137,6 +137,8 @@ public class KeySignatureMod extends Modifier {
         if(weight == 1.0)
             weight = .999;
         int freshIndex = cardinality - freshPitches.size();
+        double adjustedWeight;
+        double adjustedSum;
 
         // Normalize the probabilities so each row adds to 1.0
         // and make the weight be the probability a new value
@@ -150,9 +152,9 @@ public class KeySignatureMod extends Modifier {
             }
 
             // increase the sum to it represents 'weight' more data
-            double adjustedSum = sum / (1.0 - weight);
+            adjustedSum = sum / (1.0 - weight);
             // adjust the weight  to be (amount of new probability data) / (number of new pitches * adjusted sum)
-            double adjustedWeight = (adjustedSum - sum) / (freshPitches.size() * adjustedSum);
+            adjustedWeight = (adjustedSum - sum) / (freshPitches.size() * adjustedSum);
 
             // divide by the total to normalize old probabilities
             for (int y = 0; y < freshIndex; ++y) {
@@ -165,10 +167,18 @@ public class KeySignatureMod extends Modifier {
             }
         }
 
+        // increase the sum to it represents 'weight' more data
+        adjustedSum = freshIndex / (1.0 - weight);
+        // adjust the weight  to be (amount of new probability data) / (number of new pitches * adjusted sum)
+        adjustedWeight = (adjustedSum - freshIndex) / (freshPitches.size() * adjustedSum);
         // Modify outgoing transition probabilities for fresh notes
         for (int x = freshIndex; x < cardinality; ++x) {
-            for (int y = 0; y < cardinality; ++y) {
-                probabilities[x][y] = 1.0 / cardinality;
+            for (int y = 0; y < freshIndex; ++y) {
+                probabilities[x][y] = 1.0 / (freshIndex * adjustedSum);
+            }
+
+            for (int y = freshIndex; y < cardinality; ++y) {
+                probabilities[x][y] = adjustedWeight;
             }
         }
     }
