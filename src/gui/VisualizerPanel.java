@@ -82,9 +82,14 @@ implements UpdateListener {
             hbar.setValue((int)curLeftEdge);
     }
 
-    public void scrollToEnd()
-    {
+    // Scrolls to the end of the visualizer
+    public void scrollToEnd() {
         hbar.setValue(hbar.getMaximum());
+    }
+    
+    // Scrolls to the beginning of the visualizer
+    public void scrollToBeginning() {
+        hbar.setValue(0);
     }
 
     // Update event to update the scrollPane

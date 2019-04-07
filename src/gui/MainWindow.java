@@ -254,7 +254,8 @@ implements UpdateListener, ButtonListener {
         case MusicControlPanel.SKIPLEFT:
             mgen.setPlayTime(0);
             rightPanel.updatePlayLine();
-            mgen.onClick();
+            rightPanel.scrollToBeginning();
+            mgen.skipMusicPlayTime();
             break;
         // SkipRight
         case MusicControlPanel.SKIPRIGHT:
@@ -264,8 +265,8 @@ implements UpdateListener, ButtonListener {
             }
             mgen.setPlayTime(1);
             rightPanel.updatePlayLine();
-            mgen.onClick();
             rightPanel.scrollToEnd();
+            mgen.skipMusicPlayTime();
             break;
         }
     }

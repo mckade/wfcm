@@ -15,6 +15,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 import javax.swing.JComponent;
 
@@ -40,18 +41,23 @@ public class VisualizerGraphics extends JComponent {
     private int noteArea;
     private Dimension dim;
     private int playLine = 0;
-    private int timeSignature = 4;
+    private double scale = 1;
+    private double inc = .1;
+    private double max = 2;
+    private double min = .1;
     
     // Control
-    private boolean measure = true; // Whether or not to draw the measures
-    private boolean beat = true;    // Whether or not to draw the beats.
+    private boolean measure = true;     // Whether or not to draw the measures
+    private boolean beat = true;        // Whether or not to draw the beats.
+    private boolean pressed = false;    // Whether or not the mouse is pressed down.
+    private boolean dragging = false;   // Whether or not the mouse has been dragged.
     
     // Constructor
     public VisualizerGraphics(UpdateListener ulistener, SettingsListener slistener) {
         // Setup
         this.ulistener = ulistener;
         this.slistener = slistener;
-        dim = new Dimension(getWidth()*2, (rowHeight+1)*88);
+        dim = new Dimension(getWidth()*2, (rowHeight+1)*89);
         setPreferredSize(dim);
         
         // Creating note row headers C7 to A-
@@ -71,34 +77,84 @@ public class VisualizerGraphics extends JComponent {
     
     // Sets up the mouse listener to the visualizer.
     private void setUpMouseListener() {
-        this.addMouseListener(new MouseAdapter() {
-            // Temp, moves playLine (aka changes playtime)
-            public void mousePressed(MouseEvent e) {
-                double point = e.getX()-rowWidth;
-                if (point >= noteArea)   // Clicked pass playable notes
-                {
-                    slistener.setPlayTime(1);
-                    slistener.onClick();
-                }
-                else if (point <= 0)            // Clicked before playable notes
-                {
-                    slistener.setPlayTime(0);
-                    slistener.onClick();
-                }
-                else                            // Clicked within playable notes
-                {
-                    slistener.setPlayTime(point/noteArea);
-                    slistener.onClick();
-                }
-                updatePlayLine();
+        MouseAdapter ma = new MouseAdapter() {
+            double playTime;
+            double point;
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
             }
-        });
+            public void mouseDragged(MouseEvent e) {
+                if (e.getY()+getY() > rowHeight && !dragging) return;
+                dragging = true;
+                point = e.getX()-rowWidth;
+                if (point >= noteArea) {        // Clicked pass playable notes
+                    playTime = 1;
+                    slistener.setPlayTime(playTime);
+                }
+                else if (point <= 0) {          // Clicked before playable notes
+                    playTime = 0;
+                    slistener.setPlayTime(playTime);
+                }
+                else {                          // Clicked within playable notes
+                    playTime = point/noteArea;
+                    slistener.setPlayTime(playTime);
+                }
+                updatePlayLine(playTime);
+            }
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+            }
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+            }
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+            }
+            public void mousePressed(MouseEvent e) {
+                pressed = true;
+                mouseDragged(e);
+            }
+            public void mouseReleased(MouseEvent e) {
+                if (pressed && dragging) {
+                    slistener.setPlayTime(playTime);
+                    slistener.skipMusicPlayTime();
+                }
+                pressed = false;
+                dragging = false;
+            }
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.isControlDown()) {
+                    System.out.println("zoom!");    // Change scale
+                }
+                else
+                    getParent().dispatchEvent(e);   // Let the scroller take care of it.
+            }
+        };
+        
+        addMouseListener(ma);
+        addMouseMotionListener(ma);
+        addMouseWheelListener(ma);
+    }
+    
+    // Increments the scale
+    private void incrimentScale() {
+        if (scale+inc < max)
+            scale+=inc;
+        else
+            scale = max;
+    }
+    
+    // Decrements the scale
+    private void decrementScale() {
+        if (scale-inc > min)
+            scale-=inc;
+        else
+            scale = min;
     }
     
     // Updates the visualizer.
     public void updateVisualizer() {
         notes = slistener.getNotes();
-        timeSignature = slistener.getTimeSignature();
         
         // Getting the x dimension of the table.
         // This is so we are able to scroll through all the notes.
@@ -118,8 +174,16 @@ public class VisualizerGraphics extends JComponent {
     }
     
     // Updates the position of the play line.
+    // If music is playing doesn't update playline if the mouse is pressed.
     public void updatePlayLine() {
+        if (pressed && dragging) return;
         playLine = (int) (slistener.getPlayTime() * noteArea);
+        repaint();
+    }
+    
+    // Updates the positition of the plane line forcibly.
+    private void updatePlayLine(double playTime) {
+        playLine = (int) (playTime * noteArea);
         repaint();
     }
 
@@ -136,8 +200,9 @@ public class VisualizerGraphics extends JComponent {
         g2.fillRect(x, y, getWidth(), getHeight());
         
         // Drawing row grid lines.
+        y = rowHeight+1;
         g2.setColor(Visuals.C_DIVIDER.darker());
-        for (i = 0; i < 88; i++) {
+        for (i = 0; i < 89; i++) {
             g2.drawLine(x, y-1, getWidth(), y-1);
             y += rowHeight + 1;
         }
@@ -146,21 +211,17 @@ public class VisualizerGraphics extends JComponent {
         if (measure || beat) {
             y = 0;
             g2.setColor(Visuals.C_DIVIDER.darker());
-            for (i = rowWidth; i < getWidth(); i += rowWidth) {
-                x += rowWidth*2;
-                if (measure && i % (rowWidth*timeSignature) == 0) {
+            for (x = rowWidth; x < getWidth(); x += rowWidth) {
+                if (measure && (x % (rowWidth*slistener.getTimeSignature()) == rowWidth
+                               || slistener.getTimeSignature() == 1)) {
                     // Measure
                     g2.setColor(Visuals.C_DIVIDER.brighter());
                     g2.drawLine(x, y, x, getHeight());
-                    x += 1;
-                    g2.drawLine(x, y, x, getHeight());
+                    g2.drawLine(x+1, y, x+1, getHeight());
                     g2.setColor(Visuals.C_DIVIDER.darker());
                 }
-                else if (beat) {
-                    // Beat
+                else if (beat)
                     g2.drawLine(x, y, x, getHeight());
-                }
-                x = i;
             }
         }
         
@@ -169,8 +230,8 @@ public class VisualizerGraphics extends JComponent {
         // by a magic constant to be in the correct row.
         if (notes != null) {
             for(Rectangle note: notes) {
-                x = note.x + rowWidth + 1;
-                y = -note.y * (rowHeight + 1) + 1536;
+                x = note.x + rowWidth+1;
+                y = -note.y * (rowHeight+1) + (rowHeight+1)*97;
                 w = note.width;
                 h = rowHeight - 1;
                 g2.setColor(Visuals.C_COMPONENT_BORDER);
@@ -188,6 +249,7 @@ public class VisualizerGraphics extends JComponent {
         // Drawing Table row headers
         // Ensures the row headers are always showing.
         x = -getX();
+        y = rowHeight+1;
         for (i = 0; i < 88; i++) {
             g2.setColor(Visuals.C_COMPONENT_BACKGROUND);   // Header Block
             g2.fillRect(x, y, rowWidth, rowHeight);
@@ -195,8 +257,14 @@ public class VisualizerGraphics extends JComponent {
             g2.drawLine(x, y-1, x+rowWidth-1, y-1);
             g2.setColor(Visuals.C_COMPONENT_BORDER); // Header Text
             g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
-            y += rowHeight + 1;
+            y += rowHeight+1;
         }
+        
+        // Drawing Table column header
+        x = 0;
+        y = -getY();
+        g2.setColor(Visuals.C_COMPONENT_BACKGROUND);
+        g2.fillRect(x, y, getWidth(), rowHeight);
     }
 
     public int getNoteArea() {

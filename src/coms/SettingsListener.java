@@ -16,7 +16,7 @@ public interface SettingsListener {
     Rectangle[] getNotes();
     void setPlayTime(double playTime);
     double getPlayTime();
-    void onClick();
+    void skipMusicPlayTime();
     
     // Settings
     // Note count
