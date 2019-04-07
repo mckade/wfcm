@@ -265,6 +265,11 @@ public class VisualizerGraphics extends JComponent {
         y = -getY();
         g2.setColor(Visuals.C_COMPONENT_BACKGROUND);
         g2.fillRect(x, y, getWidth(), rowHeight);
+        
+        // Drawing playLine knob
+        y = 0;
+        g2.setColor(Visuals.C_BORDER_CLICKED);
+        g2.fillOval(playLine+rowWidth-rowHeight/2, y, rowHeight, rowHeight);
     }
 
     public int getNoteArea() {
