@@ -402,6 +402,8 @@ implements SettingsListener {
     // Signatures
     public void setTimeSignature(int timeSignature) { this.timeSignature = timeSignature; }
     public int getTimeSignature() { return timeSignature; }
+    public void setKeySignatureWeight(double keySignatureWeight) {keySigWeight = keySignatureWeight; }
+    public double getKeySignatureWeight() {return keySigWeight; }
     
     // Preferences
     // Follow

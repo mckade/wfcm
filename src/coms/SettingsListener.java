@@ -32,6 +32,8 @@ public interface SettingsListener {
     // Signatures
     public void setTimeSignature(int timeSignature);
     public int getTimeSignature();
+    public void setKeySignatureWeight(double keySignatureWeight);
+    public double getKeySignatureWeight();
     
     // Preferences
     // Follow

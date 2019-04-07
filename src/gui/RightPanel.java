@@ -36,7 +36,7 @@ public class RightPanel extends JPanel {
     // Constructor
     public RightPanel(SettingsListener slistener, ButtonListener blistener) {
         // Setup
-        setMinimumSize(new Dimension(MINWIDTH, 200));
+        setMinimumSize(new Dimension(MINWIDTH, 0));
         setLayout(new BorderLayout());
         
         // Creating panels
