@@ -63,7 +63,7 @@ public class Visuals {
         F_BODY = new Font(Font.DIALOG, Font.PLAIN, 14);
         F_BUTTON = F_HEADING1;
         C_FONTCOLOR1 = Color.WHITE;
-        C_FONTCOLOR2 = new Color(0,0,0);
+        C_FONTCOLOR2 = C_COMPONENT_BORDER;
         // Tab
         B_BORDER_TAB = BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(2, 0, 0, 0, C_DIVIDER),

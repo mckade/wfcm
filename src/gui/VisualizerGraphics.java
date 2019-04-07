@@ -273,7 +273,7 @@ public class VisualizerGraphics extends JComponent {
             g2.fillRect(x, y, rowWidth, rowHeight);
             g2.setColor(Visuals.C_PANEL_BACKGROUND);        // Header Separator
             g2.drawLine(x, y-1, x+rowWidth-1, y-1);
-            g2.setColor(Visuals.C_COMPONENT_BORDER);        // Header Text
+            g2.setColor(Visuals.C_FONTCOLOR2);              // Header Text
             g2.drawString(noteHeaders[i], x+15, y+(rowHeight*4/5));
             y += rowHeight+1;
         }

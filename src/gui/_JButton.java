@@ -9,7 +9,6 @@
 
 package gui;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -64,7 +63,7 @@ implements MouseListener {
                         BorderFactory.createLineBorder(Visuals.C_BORDER_CLICKED, 2)),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setBackground(Visuals.C_COMPONENT_BACKGROUND);
-        setForeground(Color.WHITE);
+        setForeground(Visuals.C_FONTCOLOR1);
         setBorder(DEFAULT);
         setFont(Visuals.F_BUTTON);
     }
