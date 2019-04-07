@@ -180,7 +180,6 @@ public class VisualizerGraphics extends JComponent {
             }
         }
         noteArea *= scale;
-        System.out.println(noteArea);
         dim.width = noteArea + 1000;    // Adding a little extra scroll room
         ulistener.updateEvent(new UpdateEvent(this, UpdateType.scrollBar));
         updatePlayLine();
