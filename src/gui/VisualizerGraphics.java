@@ -13,8 +13,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -85,7 +83,6 @@ public class VisualizerGraphics extends JComponent {
         MouseAdapter ma = new MouseAdapter() {
             double playTime;
             double point;
-            int scrollAmount;
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
             }
