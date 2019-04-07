@@ -382,7 +382,7 @@ implements SettingsListener {
     // Visuals/MIDI
     public Rectangle[] getNotes() { return noteData; }
     public void setPlayTime(double playTime) { this.playTime = playTime; }
-    public void onClick() { ms.skip(playTime); }
+    public void skipMusicPlayTime() { ms.skip(playTime); }
     public double getPlayTime() { return playTime; }
     
     // Settings

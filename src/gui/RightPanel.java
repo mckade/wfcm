@@ -77,5 +77,14 @@ public class RightPanel extends JPanel {
     public void updatePlayLine() {
         visualizerPanel.updatePlayLine();
     }
-    public void scrollToEnd() {visualizerPanel.scrollToEnd();}
+    
+    // Scrolls to the end of the visualizer
+    public void scrollToEnd() {
+        visualizerPanel.scrollToEnd();
+    }
+    
+    // Scrolls to the beginning of the visualizer
+    public void scrollToBeginning() {
+        visualizerPanel.scrollToBeginning();
+    }
 }
