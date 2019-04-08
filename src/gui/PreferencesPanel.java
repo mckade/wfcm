@@ -27,7 +27,7 @@ implements ActionListener {
         // Creating components
         follow = new _JCheckBox("Follow PlayLine");
         follow.addActionListener(this);
-        loadSampleSettings = new _JCheckBox("Load settings of sample on import");
+        loadSampleSettings = new _JCheckBox("Load settings of imported sample");
         loadSampleSettings.addActionListener(this);
         
         // Adding components

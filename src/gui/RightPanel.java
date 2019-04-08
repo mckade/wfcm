@@ -27,7 +27,9 @@ public class RightPanel extends JPanel {
     private MusicControlPanel musicControlPanel;
     private VisualizerPanel visualizerPanel;
     private SettingsPanel settingsPanel;
+    private _JScrollPane settingsScrollPane;
     private PreferencesPanel preferencesPanel;
+    private _JScrollPane preferencesScrollPane;
     private _JTabbedPane tabPane;
     
     // Control
@@ -43,10 +45,13 @@ public class RightPanel extends JPanel {
         musicControlPanel = new MusicControlPanel(blistener);
         visualizerPanel = new VisualizerPanel(slistener);
         settingsPanel = new SettingsPanel(slistener);
+        settingsScrollPane = new _JScrollPane(settingsPanel);
         preferencesPanel = new PreferencesPanel(slistener);
+        preferencesScrollPane = new _JScrollPane(preferencesPanel);
         tabPane = new _JTabbedPane();
-        tabPane.addTab("Settings", settingsPanel);
-        tabPane.addTab("Preferences", preferencesPanel);
+        tabPane.setPreferredSize(new Dimension(0, 175));
+        tabPane.addTab("Settings", settingsScrollPane);
+        tabPane.addTab("Preferences", preferencesScrollPane);
         
         // Adding panels
         add(musicControlPanel, BorderLayout.NORTH);
@@ -60,7 +65,9 @@ public class RightPanel extends JPanel {
         musicControlPanel.updateVisuals();
         visualizerPanel.updateVisuals();
         settingsPanel.updateVisuals();
+        settingsScrollPane.updateVisuals();
         preferencesPanel.updateVisuals();
+        preferencesScrollPane.updateVisuals();
         tabPane.updateVisuals();
     }
     
