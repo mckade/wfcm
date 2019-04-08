@@ -84,7 +84,9 @@ public class VisualizerGraphics extends JComponent {
             double playTime;
             double point;
             public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+                int x = e.getX()-rowWidth-1;
+                int y = (e.getY() - (rowHeight+1)*97)*-1/(rowHeight+1) + 1;
+                System.out.println("x,y: " + x + "," + y);
             }
             public void mouseDragged(MouseEvent e) {
                 if (e.getY()+getY() > rowHeight && !dragging) return;
@@ -173,6 +175,7 @@ public class VisualizerGraphics extends JComponent {
             for (Rectangle note: notes) {
                 if (note.x + note.width > noteArea) {
                     noteArea = note.x + note.width;
+                    System.out.println("note(x,y,w) : (" + note.x + "," + note.y + "," + note.width + ")");
                 }
             }
         }
