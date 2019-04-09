@@ -190,7 +190,7 @@ implements UpdateListener, ButtonListener {
             tfile = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
             if (tfile == null) break;   // Canceled
             leftPanel.addLog("Exporting MIDI...");
-            if (mgen.exportMIDI(file))
+            if (mgen.exportMIDI(tfile))
                 leftPanel.addLog("MIDI exported.");
             else leftPanel.addLog("Failed to export MIDI.");
             break;

@@ -41,6 +41,7 @@ class MidiReader {
     // Holds MIDI data which will be grabbed by MarkovTable
     private MidiData midiData = null;
     private double tempo;
+    private int timeSignature = 4;
     private Score midiScore;
     private DRectangle[] sampleRects;
 
@@ -116,6 +117,7 @@ class MidiReader {
         Score from_midi = new Score("midi_input");
         Read.midi(from_midi, filename/*.getCanonicalPath()*/);
         tempo = from_midi.getTempo();
+        timeSignature = from_midi.getTimeSignature().x;
         midiScore = from_midi;
         midiData.chords = parseScore(from_midi);
     }
@@ -283,6 +285,11 @@ class MidiReader {
             System.out.println("No MIDI data has been read yet.");
             return -1;
         }
+    }
+
+    int getTimeSignature() {
+        System.out.println("time signature " + timeSignature);
+        return timeSignature;
     }
 
     /**

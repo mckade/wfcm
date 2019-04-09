@@ -47,6 +47,7 @@ implements SettingsListener {
     private int dynamic;
     private int timeSignature = 4;
     private boolean settingsChanged = false;
+    private boolean keySigWeightChanged = false;
     
     // Preferences
     private boolean follow = true;
@@ -215,7 +216,11 @@ implements SettingsListener {
 
         boolean test = mTable.loadMidiFile(file.getAbsolutePath());
         mTable.setKeysigWeight(keySigWeight);
-        tempo = (int)mTable.getTempo();
+        if(loadSampleSettings)
+        {
+            tempo = (int)mTable.getTempo();
+            timeSignature = mTable.getTimeSignature();
+        }
         PTable[] pt = new PTable[2];
         pt[0] = new PTable(mTable.getPitchTable());
         pt[1] = new PTable(mTable.getLengthTable());
@@ -257,6 +262,16 @@ implements SettingsListener {
         ms.skip(0);
         ms.refresh(playTime);
 
+        if(keySigWeightChanged)
+        {
+            mTable.setKeysigWeight(keySigWeight);
+            PTable[] pt = new PTable[2];
+            pt[0] = new PTable(mTable.getPitchTable());
+            pt[1] = new PTable(mTable.getLengthTable());
+            wfc = new WaveFCND(pt);
+            keySigWeightChanged = false;
+        }
+
         // use wfc and mTable
         s = new Score("Procedural", tempo);
         Part p = new Part("Part", inst.get(instrument), 0);
@@ -295,9 +310,12 @@ implements SettingsListener {
     
     // Uses the current visualizer table as the sample.
     // Then generates the new music using the sample.
-    public boolean recycleMusic() {
-        return false;
-        // Does nothing atm.
+    public boolean recycleMusic()
+    {
+        if(s == null)
+            return false;
+
+        return importSample(new File(MusicState.OUTPUT));
     }
 
     ////////////////////////////
@@ -402,7 +420,10 @@ implements SettingsListener {
     // Signatures
     public void setTimeSignature(int timeSignature) { this.timeSignature = timeSignature; }
     public int getTimeSignature() { return timeSignature; }
-    public void setKeySignatureWeight(double keySignatureWeight) {keySigWeight = keySignatureWeight; }
+    public void setKeySignatureWeight(double keySignatureWeight) {
+        keySigWeight = keySignatureWeight;
+        keySigWeightChanged = true;
+    }
     public double getKeySignatureWeight() {return keySigWeight; }
     
     // Preferences
