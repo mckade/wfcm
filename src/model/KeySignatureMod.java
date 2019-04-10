@@ -71,14 +71,14 @@ public class KeySignatureMod extends Modifier {
 
         // Segment the input into segments of at most 4 notes/chords
         Vector<Vector<double[]>> segments = new Vector<>();
-        Vector<double[]> seg = new Vector<>();
+        Vector<double[]> segment = new Vector<>();
         for (int i = 0; i < chords.size(); ++i) {
-            if (seg.size() < 4) {
-                seg.add(chords.get(i));
+            if (segment.size() < 4) {
+                segment.add(chords.get(i));
                 if (i == chords.size() - 1)
-                    segments.add(seg);
+                    segments.add(segment);
             } else
-                segments.add(seg);
+                segments.add(segment);
         }
 
         // Calculate the probability of being in a specific key (any key) (structure)
@@ -95,8 +95,23 @@ public class KeySignatureMod extends Modifier {
         // A set of key-profile values will be calculate for each key.
         // These values will be the % of segments in which the scale-degree occurs
         // specific to that key.
+        Vector<Vector<Double>> keySigProfiles = new Vector<>();
         for (int[] key : keys) {
-
+            Vector<Double> keyProfiles = new Vector<>();
+            for (int pitch : key) {
+                double occurs = 0.0;
+                boolean found = false;
+                for (Vector<double[]> seg : segments) {
+                    for (double[] segPitch : seg) {
+                        if (segPitch[0] % 12 == 1.0 * (pitch % 12) && !found) {
+                            found = true;
+                            occurs++;
+                        }
+                    }
+                }
+                keyProfiles.add(occurs / segments.size());
+            }
+            keySigProfiles.add(keyProfiles);
         }
 
         int index = 0;
