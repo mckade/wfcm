@@ -22,7 +22,7 @@ public class _JSlider extends JSlider {
             public void paintThumb(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 Rectangle t = thumbRect;
-                g2.setColor(Visuals.C_DIVIDER);
+                g2.setColor(Visuals.C_COMPONENT_PART1);
                 g2.fillRect(t.x, t.y, t.width-3, t.height);
                 g2.setColor(Visuals.C_COMPONENT_BORDER);
                 g2.drawRect(t.x, t.y, t.width-3, t.height-1);
@@ -30,7 +30,7 @@ public class _JSlider extends JSlider {
             public void paintTrack(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 Rectangle t = trackRect;
-                g2.setColor(Visuals.C_DIVIDER);
+                g2.setColor(Visuals.C_COMPONENT_PART1);
                 g2.fillRect(t.x, t.y+7, t.width, t.height/5+1);
                 g2.setColor(Visuals.C_COMPONENT_BORDER);
                 g2.drawRect(t.x, t.y+7, t.width, t.height/5+1);

@@ -18,13 +18,23 @@ public class Visuals {
     public static Color C_BORDER_INNER;
     public static Color C_BORDER_HOVERED;
     public static Color C_BORDER_CLICKED;
-    public static Color C_DIVIDER;
+    public static Color C_DIVIDER1;
+    public static Color C_DIVIDER2;
+    public static Color C_DIVIDER3;
+    public static Color C_ARROW_COLOR;
+    public static Color C_ARROW_SHADEING;
+    public static Color C_TRACK;
+    public static Color C_THUMB;
+    public static Color C_PLAYLINE;
+    public static Color C_NOTE;
+    public static Color C_NOTE_SHADING;
     // Panel visuals
     public static Color C_PANEL_BACKGROUND;
     public static Border B_PANEL_BORDER;
     // Component visuals
     public static Color C_COMPONENT_BACKGROUND;
     public static Color C_COMPONENT_BORDER;
+    public static Color C_COMPONENT_PART1;
     public static Border B_COMPONENT_BORDER;
     // Font visuals
     public static Font F_HEADING1;
@@ -43,7 +53,16 @@ public class Visuals {
         C_BORDER_INNER = new Color(8, 145, 119);
         C_BORDER_HOVERED = new Color(80, 55, 110);
         C_BORDER_CLICKED = new Color(180, 76, 180);
-        C_DIVIDER = new Color(0, 62, 52);
+        C_DIVIDER1 = new Color(0, 62, 52);
+        C_DIVIDER2 = new Color(0, 43, 36);
+        C_DIVIDER3 = new Color(0, 98, 82);
+        C_ARROW_COLOR = new Color(9, 121, 100);
+        C_ARROW_SHADEING = new Color(0, 40, 32);
+        C_TRACK = C_ARROW_SHADEING;
+        C_THUMB = new Color(14, 184, 152);
+        C_PLAYLINE = C_BORDER_CLICKED;
+        C_NOTE = C_THUMB;
+        C_NOTE_SHADING = Color.black;
         // Panel visuals
         C_PANEL_BACKGROUND = new Color(0, 6, 5);
         B_PANEL_BORDER = BorderFactory.createCompoundBorder(
@@ -52,8 +71,9 @@ public class Visuals {
                         BorderFactory.createLineBorder(C_BORDER_OUTER, 2),
                         BorderFactory.createLineBorder(C_BORDER_INNER, 2)));
         // Component visuals
-        C_COMPONENT_BACKGROUND = new Color(0, 40, 32);
-        C_COMPONENT_BORDER = new Color(14, 184, 152);
+        C_COMPONENT_BACKGROUND = C_ARROW_SHADEING;
+        C_COMPONENT_BORDER = C_THUMB;
+        C_COMPONENT_PART1 = C_DIVIDER1;
         B_COMPONENT_BORDER = BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Visuals.C_BORDER_OUTER, 2),
                 BorderFactory.createLineBorder(Visuals.C_BORDER_INNER, 2));
@@ -61,47 +81,66 @@ public class Visuals {
         F_HEADING1 = new Font(Font.DIALOG, Font.PLAIN, 16);
         F_HEADING2 = new Font(Font.DIALOG, Font.PLAIN, 12);
         F_BODY = new Font(Font.DIALOG, Font.PLAIN, 14);
-        F_BUTTON = F_HEADING1;
+        F_BUTTON = F_HEADING2;
         C_FONTCOLOR1 = Color.WHITE;
         C_FONTCOLOR2 = C_COMPONENT_BORDER;
         // Tab
         B_BORDER_TAB = BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(2, 0, 0, 0, C_DIVIDER),
+                BorderFactory.createMatteBorder(2, 0, 0, 0, C_DIVIDER1),
                 BorderFactory.createEmptyBorder(5, 0, 0, 0));
     }
     
     // Light
     public static void setThemeLight() {
-        C_BORDER_OUTER = Color.WHITE;
-        C_BORDER_INNER = Color.WHITE;
-        C_BORDER_HOVERED = Color.WHITE;
-        C_BORDER_CLICKED = Color.WHITE;
-        C_DIVIDER = Color.WHITE;
+        C_BORDER_OUTER = new Color(55, 134, 205);
+        C_BORDER_INNER = new Color(157, 195, 230);
+        C_BORDER_HOVERED = new Color(40, 224, 224);
+        C_BORDER_CLICKED = C_BORDER_HOVERED;
+        C_DIVIDER1 = new Color(151, 176, 221);
+        C_DIVIDER2 = C_DIVIDER1;
+        C_DIVIDER3 = C_DIVIDER1;
+        C_ARROW_SHADEING = C_BORDER_OUTER;
+        C_ARROW_COLOR = new Color(132, 202, 232);
+        C_TRACK = new Color(201, 214, 237);
+        C_THUMB = new Color(115, 169, 219);
+        C_PLAYLINE = new Color(68, 114, 196);
+        C_NOTE = C_THUMB;
+        C_NOTE_SHADING = C_BORDER_OUTER;
         // Panel visuals
-        C_PANEL_BACKGROUND = Color.WHITE;
-        B_PANEL_BORDER = BorderFactory.createLineBorder(Color.WHITE);
+        C_PANEL_BACKGROUND = new Color(236, 243, 250);
+        B_PANEL_BORDER = BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(4,4,4,4),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(C_BORDER_OUTER, 2),
+                        BorderFactory.createLineBorder(C_BORDER_INNER, 2)));
         // Component visuals
-        C_COMPONENT_BACKGROUND = Color.WHITE;
-        C_COMPONENT_BORDER = Color.WHITE;
-        B_COMPONENT_BORDER = BorderFactory.createLineBorder(Color.WHITE);
+        new Color(180, 199, 231);
+        C_COMPONENT_BACKGROUND = C_TRACK;
+        C_COMPONENT_BORDER = C_THUMB;
+        C_COMPONENT_PART1 = new Color(132, 202, 232);   // change
+        B_COMPONENT_BORDER = BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Visuals.C_BORDER_OUTER, 2),
+                BorderFactory.createLineBorder(Visuals.C_BORDER_INNER, 2));
         // Font visuals
-        F_HEADING1 = new Font(Font.DIALOG, Font.PLAIN, 1);
-        F_HEADING2 = new Font(Font.DIALOG, Font.PLAIN, 1);
-        F_BODY = new Font(Font.DIALOG, Font.PLAIN, 1);
-        F_BUTTON = F_HEADING1;
-        C_FONTCOLOR1 = Color.WHITE;
-        C_FONTCOLOR2 = Color.WHITE;
+        F_HEADING1 = new Font(Font.DIALOG, Font.PLAIN, 16);
+        F_HEADING2 = new Font(Font.DIALOG, Font.PLAIN, 12);
+        F_BODY = new Font(Font.DIALOG, Font.PLAIN, 14);
+        F_BUTTON = F_HEADING2;
+        C_FONTCOLOR1 = Color.BLACK;
+        C_FONTCOLOR2 = C_BORDER_OUTER.darker();
         // Tab
-        B_BORDER_TAB = BorderFactory.createLineBorder(Color.WHITE);
+        B_BORDER_TAB = BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(2, 0, 0, 0, C_DIVIDER1),
+                BorderFactory.createEmptyBorder(5, 0, 0, 0));
     }
     
     // Custom UI/Component visuals.
     public static BasicArrowButton createBasicArrowButton(int orientation) {
         return new BasicArrowButton(orientation, 
-                Visuals.C_COMPONENT_BORDER,
-                Visuals.C_BORDER_OUTER,
-                Visuals.C_BORDER_OUTER,
-                Visuals.C_COMPONENT_BORDER);
+                Visuals.C_ARROW_COLOR,
+                Visuals.C_ARROW_SHADEING,
+                Visuals.C_ARROW_SHADEING,
+                Visuals.C_ARROW_COLOR);
     }
     
     public static BasicScrollBarUI createBasicScrollBarUI() {
@@ -115,13 +154,13 @@ public class Visuals {
             protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
                 Graphics2D g2 = (Graphics2D) g;
                 Rectangle t = thumbRect;
-                g2.setColor(Visuals.C_COMPONENT_BORDER);
+                g2.setColor(Visuals.C_THUMB);
                 g2.fillRect(t.x, t.y, t.width, t.height);
             }
             protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
                 Graphics2D g2 = (Graphics2D) g;
                 Rectangle t = trackRect;
-                g2.setColor(Visuals.C_COMPONENT_BACKGROUND);
+                g2.setColor(Visuals.C_TRACK);
                 g2.fillRect(t.x, t.y, t.width, t.height);
             }
         };

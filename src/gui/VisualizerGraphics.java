@@ -220,7 +220,7 @@ public class VisualizerGraphics extends JComponent {
         
         // Drawing row grid lines. (not affected by scale)
         y = rowHeight+1;
-        g2.setColor(Visuals.C_DIVIDER.darker());
+        g2.setColor(Visuals.C_DIVIDER2);
         for (i = 0; i < 89; i++) {
             g2.drawLine(x, y-1, getWidth(), y-1);
             y += rowHeight + 1;
@@ -229,16 +229,16 @@ public class VisualizerGraphics extends JComponent {
         // Drawing measure and beat grid lines if enabled. (Affected by scale)
         if (measure || beat) {
             y = 0;
-            g2.setColor(Visuals.C_DIVIDER.darker());
+            g2.setColor(Visuals.C_DIVIDER2);
             for (i = 0; i < getWidth()/scale; i += rowWidth) {
                 x = (int) (i*scale) + rowWidth;
                 if (measure && (i % (rowWidth*slistener.getTimeSignature()) == 0
                                || slistener.getTimeSignature() == 1)) {
                     // Measure
-                    g2.setColor(Visuals.C_DIVIDER.brighter());
+                    g2.setColor(Visuals.C_DIVIDER3);
                     g2.drawLine(x, y, x, getHeight());
                     g2.drawLine(x+1, y, x+1, getHeight());
-                    g2.setColor(Visuals.C_DIVIDER.darker());
+                    g2.setColor(Visuals.C_DIVIDER2);
                 }
                 else if (beat)
                     g2.drawLine(x, y, x, getHeight());
@@ -254,9 +254,9 @@ public class VisualizerGraphics extends JComponent {
                 y = -note.y * (rowHeight+1) + (rowHeight+1)*97;
                 w = (int) (note.width*scale);
                 h = rowHeight - 1;
-                g2.setColor(Visuals.C_COMPONENT_BORDER);
+                g2.setColor(Visuals.C_NOTE);
                 g2.fillRect(x, y, w, h);
-                g2.setColor(Color.black);
+                g2.setColor(Visuals.C_NOTE_SHADING);
                 g2.drawRect(x, y, w, h);
             }
         }
@@ -264,7 +264,7 @@ public class VisualizerGraphics extends JComponent {
         // Drawing play line. (Affected by scale indirectly through noteArea)
         x = playLine + rowWidth;
         y = 0;
-        g2.setColor(Visuals.C_BORDER_CLICKED);
+        g2.setColor(Visuals.C_PLAYLINE);
         g2.drawLine(x, y, x, getHeight());
         
         // Drawing Table row headers (Not affected by scale)
@@ -291,7 +291,7 @@ public class VisualizerGraphics extends JComponent {
         
         // Drawing playLine thumb (Affected by scale indirectly through noteArea)
         y = -getY();
-        g2.setColor(Visuals.C_BORDER_CLICKED);
+        g2.setColor(Visuals.C_PLAYLINE);
         g2.fillOval(playLine + (rowWidth-rowHeight/2), y, rowHeight, rowHeight);
     }
 

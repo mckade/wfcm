@@ -86,7 +86,7 @@ implements UpdateListener, ButtonListener {
                 return new BasicSplitPaneDivider(this) {
                     public void setBorder(Border b) {}
                     public void paint(Graphics g) {
-                        g.setColor(Visuals.C_DIVIDER);
+                        g.setColor(Visuals.C_DIVIDER1);
                         g.fillRect(0, 0, getSize().width, getSize().height);
                     }
                 };
