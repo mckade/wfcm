@@ -53,6 +53,8 @@ class MarkovTable {
         return midiReader.getTempo();
     }
 
+    int getTimeSignature() { return midiReader.getTimeSignature(); }
+
     Rectangle[] getSample()
     {
         // Convert DRectangles to drawable Rectangles
