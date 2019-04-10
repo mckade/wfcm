@@ -391,6 +391,7 @@ class MidiReader {
         return mapKeyIndex(index);
     }
 
+
     int estimateKeySignature() {
         return krumhanslSchmuckler(midiData.getTotalDurations());
     }

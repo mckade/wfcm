@@ -7,15 +7,45 @@ import java.util.Vector;
 
 public class KeySignatureMod extends Modifier {
 
+    private int[] C = new int[] {JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.F4, JMC.G4};
+    private int[] G = new int[] {JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.FS4, JMC.G4};
+    private int[] D = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.D4, JMC.E4, JMC.FS4, JMC.G4};
+    private int[] A = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.D4, JMC.E4, JMC.FS4, JMC.GS4};
+    private int[] E = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.DS4, JMC.E4, JMC.FS4, JMC.GS4};
+    private int[] B = new int[] {JMC.AS4, JMC.B4, JMC.CS4, JMC.DS4, JMC.E4, JMC.FS4, JMC.GS4};
+    private int[] FS = new int[] {JMC.AS4, JMC.B4, JMC.CS4, JMC.DS4, JMC.F4, JMC.FS4, JMC.GS4};
+    private int[] CS = new int[] {JMC.AS4, JMC.C4, JMC.CS4, JMC.DS4, JMC.F4, JMC.FS4, JMC.GS4};
+    private int[] Af = new int[] {JMC.GS4, JMC.AS4, JMC.C4, JMC.CS4, JMC.DS4, JMC.F4, JMC.G4};
+    private int[] Ef = new int[] {JMC.GS4, JMC.AS4, JMC.C4, JMC.D4, JMC.DS4, JMC.F4, JMC.G4};
+    private int[] Bf = new int[] {JMC.A4, JMC.AS4, JMC.C4, JMC.D4, JMC.DS4, JMC.F4, JMC.G4};
+    private int[] F = new int[] {JMC.A4, JMC.AS4, JMC.C4, JMC.D4, JMC.E4, JMC.F4, JMC.G4};
+
     private int sig;
     private double weight;
     private Vector<int[]> freshPitches;
     private int cardinality;
+    private Vector<int[]> keys;
 
     public KeySignatureMod(int sig, double[][] pitchProbs, double weight) {
 
         // Set key signature to be weighted
         this.sig = sig;
+
+        // Put keys in vector
+        keys = new Vector<>();
+        keys.add(C);
+        keys.add(G);
+        keys.add(D);
+        keys.add(A);
+        keys.add(E);
+        keys.add(B);
+        keys.add(FS);
+        keys.add(CS);
+        keys.add(Af);
+        keys.add(Ef);
+        keys.add(Bf);
+        keys.add(F);
+
 
         // Set weight
         this.weight = weight;
@@ -37,6 +67,42 @@ public class KeySignatureMod extends Modifier {
         calculateProbabilities();
     }
 
+    private int bayesianKeyFinder(Vector<double[]> chords) {
+
+        // Segment the input into segments of at most 4 notes/chords
+        Vector<Vector<double[]>> segments = new Vector<>();
+        Vector<double[]> seg = new Vector<>();
+        for (int i = 0; i < chords.size(); ++i) {
+            if (seg.size() < 4) {
+                seg.add(chords.get(i));
+                if (i == chords.size() - 1)
+                    segments.add(seg);
+            } else
+                segments.add(seg);
+        }
+
+        // Calculate the probability of being in a specific key (any key) (structure)
+        // First segment has 1/24 probability. Proceeding segments have
+        // 0.8 probability of staying in same key.
+        // We will ignore key changes.
+        double structProb = 1.0 / 24;
+        for (int i = 0; i < segments.size() - 1; ++i) {
+            structProb *= 0.8;
+        }
+
+        // Calculate the probability of a certain sequence of pitches (surface)
+        // given a structure (key signature).
+        // A set of key-profile values will be calculate for each key.
+        // These values will be the % of segments in which the scale-degree occurs
+        // specific to that key.
+        for (int[] key : keys) {
+
+        }
+
+        int index = 0;
+        return index;
+    }
+
     /**
      *
      * Increases the probability of notes in the piece's key
@@ -47,81 +113,20 @@ public class KeySignatureMod extends Modifier {
     // TODO: Modify so the pitch octave is random
     private void UpdatePitchMap() {
 
-        int[] C = new int[] {JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.F4, JMC.G4};
-        int[] G = new int[] {JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.FS4, JMC.G4};
-        int[] D = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.D4, JMC.E4, JMC.FS4, JMC.G4};
-        int[] A = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.D4, JMC.E4, JMC.FS4, JMC.GS4};
-        int[] E = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.DS4, JMC.E4, JMC.FS4, JMC.GS4};
-        int[] B = new int[] {JMC.AS4, JMC.B4, JMC.CS4, JMC.DS4, JMC.E4, JMC.FS4, JMC.GS4};
-        int[] FS = new int[] {JMC.AS4, JMC.B4, JMC.CS4, JMC.DS4, JMC.F4, JMC.FS4, JMC.GS4};
-        int[] CS = new int[] {JMC.AS4, JMC.C4, JMC.CS4, JMC.DS4, JMC.F4, JMC.FS4, JMC.GS4};
-        int[] Af = new int[] {JMC.GS4, JMC.AS4, JMC.C4, JMC.CS4, JMC.DS4, JMC.F4, JMC.G4};
-        int[] Ef = new int[] {JMC.GS4, JMC.AS4, JMC.C4, JMC.D4, JMC.DS4, JMC.F4, JMC.G4};
-        int[] Bf = new int[] {JMC.A4, JMC.AS4, JMC.C4, JMC.D4, JMC.DS4, JMC.F4, JMC.G4};
-        int[] F = new int[] {JMC.A4, JMC.AS4, JMC.C4, JMC.D4, JMC.E4, JMC.F4, JMC.G4};
+        int[] keySig = keys.get(sig);
 
-        int[] keySig = new int[]{};
 
-        switch(sig) {
-            case 1: // C / Am
-                keySig = C;
-                break;
-            case 2: // G / Emin
-                keySig = G;
-                break;
-            case 3: // D / Bm
-                keySig = D;
-                break;
-            case 4: // A / F#m
-                keySig = A;
-                break;
-            case 5: // E / C#m
-                keySig = E;
-                break;
-            case 6: // B / G#m
-                keySig = B;
-                break;
-            case 7: // F# / Ebm
-                keySig = FS;
-                break;
-            case 8: // C# / Bbm
-                keySig = CS;
-                break;
-            case 9: // Ab / Fm
-                keySig = Af;
-                break;
-            case 10: // Eb / Cm
-                keySig = Ef;
-                break;
-            case 11: // Bb / Gm
-                keySig = Bf;
-                break;
-            case 12: // F / Dm
-                keySig = F;
-                break;
-            default:
-                System.out.println("Markov table: Invalid input in ModKeySig method call.");
-                break;
-        }
-
+        // Attempt to add new pitches to MarkovTable's chord HashMap.
+        // Also add newly added pitches to an array for later probability calculations.
         for (int pitch : keySig) {
-            modify(new int[] {pitch});
+            int[] pitchArr = new int[]{pitch};
+            if (MarkovTable.chord.putIfAbsent(pitchArr, MarkovTable.chordKey) == null) {
+                MarkovTable.chordKey++;
+                freshPitches.add(pitchArr);
+            }
         }
     }
 
-    /**
-     *
-     * Method that attempts to add new pitches to MarkovTable's chord HashMap.
-     * Also add newly added pitches to an array for later probability calculations.
-     *
-     * @param pitch - pitch to attempt to add
-     */
-    public void modify(int[] pitch) {
-        if (MarkovTable.chord.putIfAbsent(pitch, MarkovTable.chordKey) == null) {
-            MarkovTable.chordKey++;
-            freshPitches.add(pitch);
-        }
-    }
 
     public void fillProbabilities(double[][] old) {
         for (int x = 0; x < old.length; ++x) {
