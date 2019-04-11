@@ -7,7 +7,6 @@ package model;
  * Controller to use separate pieces to generate music.
  */
 
-import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,7 +30,7 @@ implements SettingsListener {
     private MarkovTable mTable;
     private WaveFCND wfc;
     private Score s;
-    private Rectangle[] noteData;
+    private RNote[] noteData;
 
     // Music state
     private MusicState ms;
@@ -276,7 +275,7 @@ implements SettingsListener {
         s = new Score("Procedural", tempo);
         Part p = new Part("Part", inst.get(instrument), 0);
         Vector<Note[]> notes = wfc.getNotes(noteLength);
-        Vector<Rectangle> nd = new Vector<>();
+        Vector<RNote> nd = new Vector<>();
 
         CPhrase phr = new CPhrase();
         double time = 0.0;
@@ -285,7 +284,7 @@ implements SettingsListener {
             // save note info in noteTable
             for(Note n : chord)
             {
-                nd.add(new Rectangle((int)(time*mTable.getTimeScale()), n.getPitch(),
+                nd.add(new RNote((int)(time*mTable.getTimeScale()), n.getPitch(),
                         (int)(n.getDuration()*mTable.getTimeScale()), 1));
             }
 
@@ -300,7 +299,7 @@ implements SettingsListener {
             phr.addChord(pitches, chord[0].getDuration(), dynamic);
         }
 
-        noteData = nd.toArray(new Rectangle[nd.size()]);
+        noteData = nd.toArray(new RNote[nd.size()]);
         p.addCPhrase(phr);
         s.addPart(p);
         Write.midi(s, MusicState.OUTPUT);
@@ -356,13 +355,13 @@ implements SettingsListener {
     }
 
     // Updates the midi notes, instrument, and tempo
-    public void updateMidi(Rectangle[] rects) {
+    public void updateMidi(RNote[] rects) {
         s = rectsToScore(rects);
         updateMidi();
     }
 
     // Converts an array of rectangles to a score
-    private Score rectsToScore(Rectangle[] rects) {
+    private Score rectsToScore(RNote[] rects) {
         CPhrase phr = new CPhrase();
         Part part = new Part("Part", inst.get(instrument), 0);
         Score score = new Score("Procedural", tempo);
@@ -399,7 +398,7 @@ implements SettingsListener {
     ///////////////////////////
     
     // Visuals/MIDI
-    public Rectangle[] getNotes() { return noteData; }
+    public RNote[] getNotes() { return noteData; }
     public void setPlayTime(double playTime) { this.playTime = playTime; }
     public void skipMusicPlayTime() { ms.skip(playTime); }
     public double getPlayTime() { return playTime; }

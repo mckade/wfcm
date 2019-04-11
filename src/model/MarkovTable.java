@@ -10,12 +10,13 @@ package model;
  * Used by WaveFCND to generate music
  */
 
-import jm.music.data.Score;
-import org.w3c.dom.css.Rect;
-
-import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import jm.music.data.Score;
 
 class MarkovTable {
 
@@ -25,7 +26,7 @@ class MarkovTable {
     private Vector<int[]> chordPitches;
     private double[][] chordTable; // chord transition probabilities
     private double[][] chordLengthTable; // chord duration transition probabilities
-    private Rectangle[] sample;
+    private RNote[] sample;
     private double timeScale = 100.0;
     private double keysigWeight;
 
@@ -55,14 +56,14 @@ class MarkovTable {
 
     int getTimeSignature() { return midiReader.getTimeSignature(); }
 
-    Rectangle[] getSample()
+    RNote[] getSample()
     {
         // Convert DRectangles to drawable Rectangles
-        sample = new Rectangle[midiReader.getSampleRects().length];
+        sample = new RNote[midiReader.getSampleRects().length];
         int i = 0;
         for(DRectangle drect : midiReader.getSampleRects())
         {
-            sample[i] = new Rectangle(
+            sample[i] = new RNote(
                     (int)(drect.x*timeScale), // x = noteStartTime * scale
                     (int)drect.y, // y = pitch
                     (int)(drect.width*timeScale), // width = duration * scale
@@ -90,7 +91,7 @@ class MarkovTable {
         chordLengthKey = 0;
         chord = new HashMap<>();
         chordLength = new HashMap<>();
-        Vector<Rectangle> rects = new Vector<>();
+        Vector<RNote> rects = new Vector<>();
 
         // scan the sample and update the pitch and length maps
         System.out.println("Creating chord and chord length maps");
@@ -115,7 +116,7 @@ class MarkovTable {
         }
 
 
-        sample = rects.toArray(new Rectangle[0]);
+        sample = rects.toArray(new RNote[0]);
 
         return true;
     }

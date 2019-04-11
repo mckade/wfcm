@@ -8,11 +8,9 @@
 
 package gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -23,6 +21,7 @@ import coms.SettingsListener;
 import coms.UpdateEvent;
 import coms.UpdateListener;
 import coms.UpdateType;
+import model.RNote;
 
 @SuppressWarnings("serial")
 public class VisualizerGraphics extends JComponent {
@@ -33,7 +32,8 @@ public class VisualizerGraphics extends JComponent {
     
     // Notes
     private String[] noteHeaders;   // note headers
-    private Rectangle[] notes;      // literal
+    private RNote[] notes;      // literal
+    private NoteFinder noteFinder;
     
     // Table
     private int rowHeight = 15;
@@ -62,6 +62,7 @@ public class VisualizerGraphics extends JComponent {
         this.slistener = slistener;
         dim = new Dimension(getWidth()*2, (rowHeight+1)*89);
         setPreferredSize(dim);
+        noteFinder = new NoteFinder();
         
         // Creating note row headers C7 to A-
         String[] noteTypes = {"C", "B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#"};
@@ -84,9 +85,13 @@ public class VisualizerGraphics extends JComponent {
             double playTime;
             double point;
             public void mouseClicked(MouseEvent e) {
-                int x = e.getX()-rowWidth-1;
+                int x = e.getX() - rowWidth-1;
                 int y = (e.getY() - (rowHeight+1)*97)*-1/(rowHeight+1) + 1;
-                System.out.println("x,y: " + x + "," + y);
+                RNote note = noteFinder.getNote(x, y);
+                if (note != null) {
+                    note.toggleLock();
+                    repaint();
+                }
             }
             public void mouseDragged(MouseEvent e) {
                 if (e.getY()+getY() > rowHeight && !dragging) return;
@@ -172,10 +177,9 @@ public class VisualizerGraphics extends JComponent {
     private void calculateNoteArea() {
         noteArea = 0;
         if (notes != null) {
-            for (Rectangle note: notes) {
+            for (RNote note: notes) {
                 if (note.x + note.width > noteArea) {
                     noteArea = note.x + note.width;
-                    System.out.println("note(x,y,w) : (" + note.x + "," + note.y + "," + note.width + ")");
                 }
             }
         }
@@ -188,6 +192,7 @@ public class VisualizerGraphics extends JComponent {
     // Updates the visualizer.
     public void updateVisualizer() {
         notes = slistener.getNotes();
+        noteFinder.setNotes(notes);
         calculateNoteArea();
     }
     
@@ -249,12 +254,13 @@ public class VisualizerGraphics extends JComponent {
         // Reflects notes over x-axis, and then moves them down
         // by a magic constant to be in the correct row.
         if (notes != null) {
-            for(Rectangle note: notes) {
+            for(RNote note: notes) {
                 x = (int) (note.x*scale) + rowWidth+1;
                 y = -note.y * (rowHeight+1) + (rowHeight+1)*97;
                 w = (int) (note.width*scale);
                 h = rowHeight - 1;
-                g2.setColor(Visuals.C_NOTE);
+                if (note.isLocked()) g2.setColor(Visuals.C_NOTE_LOCKED);
+                else g2.setColor(Visuals.C_NOTE);
                 g2.fillRect(x, y, w, h);
                 g2.setColor(Visuals.C_NOTE_SHADING);
                 g2.drawRect(x, y, w, h);

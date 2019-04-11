@@ -28,6 +28,7 @@ public class Visuals {
     public static Color C_PLAYLINE;
     public static Color C_NOTE;
     public static Color C_NOTE_SHADING;
+    public static Color C_NOTE_LOCKED;
     // Panel visuals
     public static Color C_PANEL_BACKGROUND;
     public static Border B_PANEL_BORDER;
@@ -51,8 +52,8 @@ public class Visuals {
     public static void setThemeDark() {
         C_BORDER_OUTER = new Color(0, 92, 75);
         C_BORDER_INNER = new Color(8, 145, 119);
-        C_BORDER_HOVERED = new Color(80, 55, 110);
-        C_BORDER_CLICKED = new Color(180, 76, 180);
+        C_BORDER_HOVERED = new Color(180, 76, 180);
+        C_BORDER_CLICKED = C_BORDER_HOVERED;
         C_DIVIDER1 = new Color(0, 62, 52);
         C_DIVIDER2 = new Color(0, 43, 36);
         C_DIVIDER3 = new Color(0, 98, 82);
@@ -63,6 +64,7 @@ public class Visuals {
         C_PLAYLINE = C_BORDER_CLICKED;
         C_NOTE = C_THUMB;
         C_NOTE_SHADING = Color.black;
+        C_NOTE_LOCKED = new Color(80, 55, 110);
         // Panel visuals
         C_PANEL_BACKGROUND = new Color(0, 6, 5);
         B_PANEL_BORDER = BorderFactory.createCompoundBorder(
@@ -106,6 +108,7 @@ public class Visuals {
         C_PLAYLINE = new Color(68, 114, 196);
         C_NOTE = C_THUMB;
         C_NOTE_SHADING = C_BORDER_OUTER;
+        C_NOTE_LOCKED = new Color(80, 55, 110);
         // Panel visuals
         C_PANEL_BACKGROUND = new Color(236, 243, 250);
         B_PANEL_BORDER = BorderFactory.createCompoundBorder(

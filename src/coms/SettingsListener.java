@@ -8,12 +8,12 @@
 
 package coms;
 
-import java.awt.Rectangle;
+import model.RNote;
 
 public interface SettingsListener {
     
     // Visuals/MIDI
-    public Rectangle[] getNotes();
+    public RNote[] getNotes();
     public void setPlayTime(double playTime);
     public double getPlayTime();
     public void skipMusicPlayTime();
