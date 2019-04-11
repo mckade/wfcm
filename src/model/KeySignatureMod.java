@@ -7,18 +7,18 @@ import java.util.Vector;
 
 public class KeySignatureMod extends Modifier {
 
-    private int[] C = new int[] {JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.F4, JMC.G4};
-    private int[] G = new int[] {JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.FS4, JMC.G4};
-    private int[] D = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.D4, JMC.E4, JMC.FS4, JMC.G4};
+    private int[] C = new int[] {JMC.C4, JMC.D4, JMC.E4, JMC.F4, JMC.G4, JMC.A4, JMC.B4};
+    private int[] G = new int[] {JMC.G4, JMC.A4, JMC.B4, JMC.C4, JMC.D4, JMC.E4, JMC.FS4};
+    private int[] D = new int[] {JMC.D4, JMC.E4, JMC.FS4, JMC.G4, JMC.A4, JMC.B4, JMC.CS4};
     private int[] A = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.D4, JMC.E4, JMC.FS4, JMC.GS4};
-    private int[] E = new int[] {JMC.A4, JMC.B4, JMC.CS4, JMC.DS4, JMC.E4, JMC.FS4, JMC.GS4};
-    private int[] B = new int[] {JMC.AS4, JMC.B4, JMC.CS4, JMC.DS4, JMC.E4, JMC.FS4, JMC.GS4};
-    private int[] FS = new int[] {JMC.AS4, JMC.B4, JMC.CS4, JMC.DS4, JMC.F4, JMC.FS4, JMC.GS4};
-    private int[] CS = new int[] {JMC.AS4, JMC.C4, JMC.CS4, JMC.DS4, JMC.F4, JMC.FS4, JMC.GS4};
+    private int[] E = new int[] {JMC.E4, JMC.FS4, JMC.GS4, JMC.A4, JMC.B4, JMC.CS4, JMC.DS4};
+    private int[] B = new int[] {JMC.B4, JMC.CS4, JMC.DS4, JMC.E4, JMC.FS4, JMC.GS4, JMC.AS4};
+    private int[] FS = new int[] {JMC.FS4, JMC.GS4, JMC.AS4, JMC.B4, JMC.CS4, JMC.DS4, JMC.F4};
+    private int[] CS = new int[] {JMC.CS4, JMC.DS4, JMC.F4, JMC.FS4, JMC.GS4, JMC.AS4, JMC.C4};
     private int[] Af = new int[] {JMC.GS4, JMC.AS4, JMC.C4, JMC.CS4, JMC.DS4, JMC.F4, JMC.G4};
-    private int[] Ef = new int[] {JMC.GS4, JMC.AS4, JMC.C4, JMC.D4, JMC.DS4, JMC.F4, JMC.G4};
-    private int[] Bf = new int[] {JMC.A4, JMC.AS4, JMC.C4, JMC.D4, JMC.DS4, JMC.F4, JMC.G4};
-    private int[] F = new int[] {JMC.A4, JMC.AS4, JMC.C4, JMC.D4, JMC.E4, JMC.F4, JMC.G4};
+    private int[] Ef = new int[] {JMC.DS4, JMC.F4, JMC.G4, JMC.GS4, JMC.AS4, JMC.C4, JMC.D4};
+    private int[] Bf = new int[] {JMC.AS4, JMC.C4, JMC.D4, JMC.DS4, JMC.F4, JMC.G4, JMC.A4};
+    private int[] F = new int[] {JMC.F4, JMC.G4, JMC.A4, JMC.AS4, JMC.C4, JMC.D4, JMC.E4};
 
     private int sig;
     private double weight;
@@ -67,27 +67,22 @@ public class KeySignatureMod extends Modifier {
         calculateProbabilities();
     }
 
-    private int bayesianKeyFinder(Vector<double[]> chords) {
+    public int bayesianKeyFinder(Vector<double[]> chords) {
 
         // Segment the input into segments of at most 4 notes/chords
         Vector<Vector<double[]>> segments = new Vector<>();
         Vector<double[]> segment = new Vector<>();
         for (int i = 0; i < chords.size(); ++i) {
-            if (segment.size() < 4) {
+            if (segment.size() < 12) {
                 segment.add(chords.get(i));
-                if (i == chords.size() - 1)
+                if (i == chords.size() - 1) {
                     segments.add(segment);
-            } else
+                    segment = new Vector<>();
+                }
+            } else {
                 segments.add(segment);
-        }
-
-        // Calculate the probability of being in a specific key (any key) (structure)
-        // First segment has 1/24 probability. Proceeding segments have
-        // 0.8 probability of staying in same key.
-        // We will ignore key changes.
-        double structProb = 1.0 / 24;
-        for (int i = 0; i < segments.size() - 1; ++i) {
-            structProb *= 0.8;
+                segment = new Vector<>();
+            }
         }
 
         // Calculate the probability of a certain sequence of pitches (surface)
@@ -100,10 +95,11 @@ public class KeySignatureMod extends Modifier {
             Vector<Double> keyProfiles = new Vector<>();
             for (int pitch : key) {
                 double occurs = 0.0;
-                boolean found = false;
+                boolean found;
                 for (Vector<double[]> seg : segments) {
+                    found = false;
                     for (double[] segPitch : seg) {
-                        if (segPitch[0] % 12 == 1.0 * (pitch % 12) && !found) {
+                        if (segPitch[0] % 12 == (1.0 * pitch) % 12 && !found) {
                             found = true;
                             occurs++;
                         }
@@ -112,6 +108,51 @@ public class KeySignatureMod extends Modifier {
                 keyProfiles.add(occurs / segments.size());
             }
             keySigProfiles.add(keyProfiles);
+        }
+
+        // Now calculate the probability of each key signature
+        // First segment has 1/24 probability. Proceeding segments have
+        // 0.8 probability of staying in same key.
+        // We will ignore key changes.
+        double probability;
+        double presentProd;
+        double absentProd;
+        Vector<Double> profiles;
+        Vector<Double> probabilities = new Vector<>();
+        for (int i = 0; i < keySigProfiles.size(); ++i) {
+            probability = 1.0 / 24.0;
+            profiles = keySigProfiles.get(i);
+            for (int j = 0; j < segments.size(); ++j) {
+                if (profiles.get(0) == 0.0) {
+                    presentProd = Math.log(0.01);
+                    absentProd = Math.log(0.99);
+                }
+                else if (profiles.get(0) == 1) {
+                    presentProd = Math.log(0.99);
+                    absentProd = Math.log(0.01);
+                } else {
+                    presentProd = Math.log(profiles.get(0));
+                    absentProd = Math.log(1 - profiles.get(0));
+                }
+                for (int k = 1; k < profiles.size(); ++k) {
+                    if (profiles.get(k) == 0.0) {
+                        presentProd += Math.log(0.01);
+                        absentProd += Math.log(0.99);
+                    }
+                    else if (profiles.get(k) == 1) {
+                        presentProd += Math.log(0.99);
+                        absentProd += Math.log(0.01);
+                    } else {
+                        presentProd += Math.log(profiles.get(k));
+                        absentProd += Math.log(profiles.get(k));
+                    }
+                }
+                if (j == 0)
+                    probability += presentProd + absentProd;
+                else
+                    probability += Math.log(0.8) + presentProd + absentProd;
+            }
+            probabilities.add(probability);
         }
 
         int index = 0;
