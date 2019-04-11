@@ -39,7 +39,7 @@ implements ChangeListener, ActionListener {
     private JLabel tempo_label;
     private SpinSlider tempo;
     private JLabel instrument_label;
-    private _JComboBox instrument;
+    private _JComboBox<String> instrument;
     private JLabel keySignature_label;
     private SpinSlider keySignature;
     
@@ -62,7 +62,7 @@ implements ChangeListener, ActionListener {
         instrument_label = new JLabel("Instrument:");
         String[] list = listener.getInstrumentList();
         Arrays.sort(list);
-        instrument = new _JComboBox(list);
+        instrument = new _JComboBox<String>(list);
         instrument.addActionListener(this);
         // Key Signature
         keySignature_label = new JLabel("Key Signature Weight %");

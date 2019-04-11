@@ -22,6 +22,7 @@ import jm.music.data.Note;
 import jm.music.data.Part;
 import jm.music.data.Score;
 import jm.util.Write;
+import note.RNote;
 
 public class MusicGenerator
 implements SettingsListener {

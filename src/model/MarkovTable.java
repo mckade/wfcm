@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import jm.music.data.Score;
+import note.RNote;
 
 class MarkovTable {
 

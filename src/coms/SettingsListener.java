@@ -8,7 +8,7 @@
 
 package coms;
 
-import model.RNote;
+import note.RNote;
 
 public interface SettingsListener {
     

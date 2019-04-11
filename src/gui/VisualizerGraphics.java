@@ -21,7 +21,8 @@ import coms.SettingsListener;
 import coms.UpdateEvent;
 import coms.UpdateListener;
 import coms.UpdateType;
-import model.RNote;
+import note.NoteHandler;
+import note.RNote;
 
 @SuppressWarnings("serial")
 public class VisualizerGraphics extends JComponent {
@@ -33,7 +34,7 @@ public class VisualizerGraphics extends JComponent {
     // Notes
     private String[] noteHeaders;   // note headers
     private RNote[] notes;      // literal
-    private NoteFinder noteFinder;
+    private NoteHandler noteFinder;
     
     // Table
     private int rowHeight = 15;
@@ -62,7 +63,7 @@ public class VisualizerGraphics extends JComponent {
         this.slistener = slistener;
         dim = new Dimension(getWidth()*2, (rowHeight+1)*89);
         setPreferredSize(dim);
-        noteFinder = new NoteFinder();
+        noteFinder = new NoteHandler();
         
         // Creating note row headers C7 to A-
         String[] noteTypes = {"C", "B", "A#", "A", "G#", "G", "F#", "F", "E", "D#", "D", "C#"};
@@ -255,9 +256,9 @@ public class VisualizerGraphics extends JComponent {
         // by a magic constant to be in the correct row.
         if (notes != null) {
             for(RNote note: notes) {
-                x = (int) (note.x*scale) + rowWidth+1;
+                x = (int) (note.x*scale) + rowWidth + 1;
                 y = -note.y * (rowHeight+1) + (rowHeight+1)*97;
-                w = (int) (note.width*scale);
+                w = (int) (note.width*scale) - 2;
                 h = rowHeight - 1;
                 if (note.isLocked()) g2.setColor(Visuals.C_NOTE_LOCKED);
                 else g2.setColor(Visuals.C_NOTE);
