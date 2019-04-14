@@ -132,11 +132,9 @@ class MarkovTable {
         // and dist-1 NoteDuration (see NoteDuration.java for details)
         pitchMods.add(new ChordTransition(1, chordsWithoutDuration, chordsWithoutDuration.size()));
         lengthMods.add(new ChordDuration(1, chords, chordLength.size()));
-        //int signature = midiReader.estimateKeySignature();
+        int signature = midiReader.estimateKeySignature();
         for (Modifier ct : pitchMods) {
-           //keySigMods.add(new KeySignatureMod(signature, ct.getProbabilities(), keysigWeight));
-            Modifier keySig = new KeySignatureMod(1, ct.getProbabilities(), keysigWeight);
-            int test = ((KeySignatureMod) keySig).bayesianKeyFinder(chords);
+           keySigMods.add(new KeySignatureMod(signature, ct.getProbabilities(), keysigWeight));
         }
 
         double[][] keySigModProbabilities = keySigMods.get(0).getProbabilities();

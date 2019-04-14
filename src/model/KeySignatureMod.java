@@ -67,97 +67,6 @@ public class KeySignatureMod extends Modifier {
         calculateProbabilities();
     }
 
-    public int bayesianKeyFinder(Vector<double[]> chords) {
-
-        // Segment the input into segments of at most 4 notes/chords
-        Vector<Vector<double[]>> segments = new Vector<>();
-        Vector<double[]> segment = new Vector<>();
-        for (int i = 0; i < chords.size(); ++i) {
-            if (segment.size() < 12) {
-                segment.add(chords.get(i));
-                if (i == chords.size() - 1) {
-                    segments.add(segment);
-                    segment = new Vector<>();
-                }
-            } else {
-                segments.add(segment);
-                segment = new Vector<>();
-            }
-        }
-
-        // Calculate the probability of a certain sequence of pitches (surface)
-        // given a structure (key signature).
-        // A set of key-profile values will be calculate for each key.
-        // These values will be the % of segments in which the scale-degree occurs
-        // specific to that key.
-        Vector<Vector<Double>> keySigProfiles = new Vector<>();
-        for (int[] key : keys) {
-            Vector<Double> keyProfiles = new Vector<>();
-            for (int pitch : key) {
-                double occurs = 0.0;
-                boolean found;
-                for (Vector<double[]> seg : segments) {
-                    found = false;
-                    for (double[] segPitch : seg) {
-                        if (segPitch[0] % 12 == (1.0 * pitch) % 12 && !found) {
-                            found = true;
-                            occurs++;
-                        }
-                    }
-                }
-                keyProfiles.add(occurs / segments.size());
-            }
-            keySigProfiles.add(keyProfiles);
-        }
-
-        // Now calculate the probability of each key signature
-        // First segment has 1/24 probability. Proceeding segments have
-        // 0.8 probability of staying in same key.
-        // We will ignore key changes.
-        double probability;
-        double presentProd;
-        double absentProd;
-        Vector<Double> profiles;
-        Vector<Double> probabilities = new Vector<>();
-        for (int i = 0; i < keySigProfiles.size(); ++i) {
-            probability = 1.0 / 24.0;
-            profiles = keySigProfiles.get(i);
-            for (int j = 0; j < segments.size(); ++j) {
-                if (profiles.get(0) == 0.0) {
-                    presentProd = Math.log(0.01);
-                    absentProd = Math.log(0.99);
-                }
-                else if (profiles.get(0) == 1) {
-                    presentProd = Math.log(0.99);
-                    absentProd = Math.log(0.01);
-                } else {
-                    presentProd = Math.log(profiles.get(0));
-                    absentProd = Math.log(1 - profiles.get(0));
-                }
-                for (int k = 1; k < profiles.size(); ++k) {
-                    if (profiles.get(k) == 0.0) {
-                        presentProd += Math.log(0.01);
-                        absentProd += Math.log(0.99);
-                    }
-                    else if (profiles.get(k) == 1) {
-                        presentProd += Math.log(0.99);
-                        absentProd += Math.log(0.01);
-                    } else {
-                        presentProd += Math.log(profiles.get(k));
-                        absentProd += Math.log(profiles.get(k));
-                    }
-                }
-                if (j == 0)
-                    probability += presentProd + absentProd;
-                else
-                    probability += Math.log(0.8) + presentProd + absentProd;
-            }
-            probabilities.add(probability);
-        }
-
-        int index = 0;
-        return index;
-    }
 
     /**
      *
@@ -170,7 +79,6 @@ public class KeySignatureMod extends Modifier {
     private void UpdatePitchMap() {
 
         int[] keySig = keys.get(sig);
-
 
         // Attempt to add new pitches to MarkovTable's chord HashMap.
         // Also add newly added pitches to an array for later probability calculations.
