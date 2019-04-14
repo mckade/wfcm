@@ -8,12 +8,12 @@
 
 package coms;
 
-import java.awt.Rectangle;
+import note.RNote;
 
 public interface SettingsListener {
     
     // Visuals/MIDI
-    public Rectangle[] getNotes();
+    public RNote[] getNotes();
     public void setPlayTime(double playTime);
     public double getPlayTime();
     public void skipMusicPlayTime();
@@ -32,6 +32,8 @@ public interface SettingsListener {
     // Signatures
     public void setTimeSignature(int timeSignature);
     public int getTimeSignature();
+    public void setKeySignatureWeight(double keySignatureWeight);
+    public double getKeySignatureWeight();
     
     // Preferences
     // Follow

@@ -9,9 +9,9 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 
 @SuppressWarnings("serial")
-public class _JComboBox extends JComboBox<Object> {
+public class _JComboBox<T> extends JComboBox<T> {
     
-    public _JComboBox(String[] list) {
+    public _JComboBox(T[] list) {
         super(list);
     }
     

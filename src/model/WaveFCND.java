@@ -1,7 +1,7 @@
 package model;
-import jm.music.data.Note;
-
 import java.util.Vector;
+
+import jm.music.data.Note;
 
 /*
  * @filename WaveFCND.java

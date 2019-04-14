@@ -86,7 +86,7 @@ implements UpdateListener, ButtonListener {
                 return new BasicSplitPaneDivider(this) {
                     public void setBorder(Border b) {}
                     public void paint(Graphics g) {
-                        g.setColor(Visuals.C_DIVIDER);
+                        g.setColor(Visuals.C_DIVIDER1);
                         g.fillRect(0, 0, getSize().width, getSize().height);
                     }
                 };
@@ -190,7 +190,7 @@ implements UpdateListener, ButtonListener {
             tfile = FileDialog.saveFile(this, FileDialog.IMPORT_EXPORT);
             if (tfile == null) break;   // Canceled
             leftPanel.addLog("Exporting MIDI...");
-            if (mgen.exportMIDI(file))
+            if (mgen.exportMIDI(tfile))
                 leftPanel.addLog("MIDI exported.");
             else leftPanel.addLog("Failed to export MIDI.");
             break;
