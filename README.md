@@ -1,10 +1,9 @@
-# Group Name: 
-  ProcMusic
+# WFCM ProcMusic
   
-# Group Members:
+### Authors:
 McKade Umbenhower, Taylor Bleizeffer, Robert Randolph
 
-## Description of the project
+### Description of the project
   This project uses Markov Chains and ideas from [Wave Function Collapse](https://github.com/mxgmn/WaveFunctionCollapse) to procedurally generate music based on a user-input sample. The project uses MIDI files to input/output music.
   
   Upon recieving an input sample, we construct [Markov Chain Transition Matrices](https://en.wikipedia.org/wiki/Stochastic_matrix) that holds probabilistic constraints related to possible pitch and note duration transitions. One such possible input may look like the following.
